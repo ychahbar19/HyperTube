@@ -1,0 +1,26 @@
+{
+  "name": "hypertube",
+  "version": "1.0.0",
+  "description": "HyperTube is a streaming site of videos downloaded via the BitTorrent protocol.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adamceci/HyperTube/issues"
+  },
+  "homepage": "https://github.com/adamceci/HyperTube#readme",
+  "dependencies": {
+    "@angular/cli": "^9.0.3",
+    "bcrypt": "^4.0.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.2",
+    "mongoose-unique-validator": "^2.0.3",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.2"
+  }
+}

@@ -1,0 +1,39 @@
+.navbar-brand{
+    margin-left: 6vw;
+}
+
+.navbar-brand:hover{
+    transform: scale(1.05);
+}
+
+.btn-outline-warning{
+    margin-right: 2vw;
+    margin-top: 1vh;
+}
+
+.navbar-collapse{
+  flex-grow: 0;
+  margin-right: 3vw;
+}
+
+.navbar-expand{
+  justify-content: space-between;
+}
+
+.dropdown-menu{
+  left: initial;
+  right: 0;
+  background-color: rgba(37,37,38,0.8);
+}
+.dropdown-item{
+  color: rgb(173,173,173);
+}
+
+.dropdown-item:hover{
+  background-color: initial;
+  color: whitesmoke;
+}
+
+.dropdown-divider{
+  border-top-color: rgb(59, 59, 59);
+}
