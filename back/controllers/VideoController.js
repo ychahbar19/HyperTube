@@ -13,6 +13,8 @@ exports.create = (req, res, next) =>
     summary: 'Some synopsis'
   });
 
+  video.name = "Modified name";
+
   // Save the data in the database.
   video.save()
     .then(() => res.status(201).json({ message: 'Video created.' }))

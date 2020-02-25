@@ -14,8 +14,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- CRUD functions ----- */
-//router.post('/create', videoCtrl.create);
-router.get('/create', videoCtrl.create);
+router.get('/create', videoCtrl.create); //should be post
 router.get('/read', videoCtrl.create);
 router.post('/update', videoCtrl.create);
 router.get('/delete', videoCtrl.create);
