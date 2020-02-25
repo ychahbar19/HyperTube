@@ -1,4 +1,4 @@
-const Video = require('../models/VideoModel');
+const VideoModel = require('../models/VideoModel');
 
 /* ----- CRUD functions ----- */
 
@@ -8,7 +8,7 @@ exports.create = (req, res, next) =>
   /////////here static to test
   const video = new VideoModel(
   {
-    title: 'Some title',
+    name: 'Some title',
     lastSeenTimestamp: 0,
     summary: 'Some synopsis'
   });
