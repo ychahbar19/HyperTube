@@ -1,3 +1,16 @@
+/*
+SIGNUP (guests only)
+Content:
+  Form with:
+  - email           (check: valid email format, available)
+  - username        (check: valid string, available)
+  - pic             (check: valid jpg/jpeg/png/gif)
+  - last_name       (check: valid string)
+  - first_name      (check: valid string)
+  - secure password (check: at least 6 chars, 1[AZaz], 1[09], 1 special char)
+  (- preferred language: default = EN)
+*/
+
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 

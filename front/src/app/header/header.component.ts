@@ -1,3 +1,11 @@
+/*
+HEADER
+Content (= nav links):
+- If guest: Home (= logo), register, login
+- If member: Gallery (= logo), my profile, logout
+- Both: language selector
+*/
+
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 

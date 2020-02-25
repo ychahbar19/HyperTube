@@ -1,3 +1,10 @@
+/*
+HOME (guests only)
+Content:
+  https://files.slack.com/files-pri/T039P7U66-FT8DT63L4/image_d___ios.jpg
+  https://files.slack.com/files-pri/T039P7U66-FTBCVP3K8/screenshot_2020-01-29_at_15.04.56.png
+*/
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Home } from './home.model';
