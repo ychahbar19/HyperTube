@@ -21,4 +21,14 @@ export class AuthService {
       });
   }
 
+  signUp(formData){
+    this.http.post<UserModel>('http://localhost:3000/signup', formData)
+      .subscribe(response => {
+        if (response) {
+          this.user = response;
+          this.router.navigate(['/signin']);
+        }
+      });
+  }
+
 }

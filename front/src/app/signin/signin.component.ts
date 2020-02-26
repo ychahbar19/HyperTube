@@ -17,11 +17,11 @@ export class SigninComponent implements OnInit {
   }
 
   onSubmit() {
-    const userDatas = {
+    const userData = {
       username: this.signInForm.value.username,
       password: this.signInForm.value.password
     };
-    this.authService.signIn(userDatas);
+    this.authService.signIn(userData);
   }
 
 

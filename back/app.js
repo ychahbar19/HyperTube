@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 const signinRoutes = require('./routes/signin');
+const signUpRoutes = require('./routes/signup');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).
@@ -49,8 +50,7 @@ app.use((req, res, next) =>
 app.use(bodyParser.json());
 
 //check
-app.use('/', (req, res) =>
-{
+app.use('/', (req, res) => {
   /*
   const layout_elements =
   [
@@ -72,6 +72,7 @@ app.use('/', (req, res) =>
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);
+app.use('/signup', signUpRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
-      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit(f)">
+      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit()" (click)="log(f)">
         <h4 class="mb-4 form-yellow-title">Sign Up</h4>
         <div class="form-row">
           <div class="form-group col-12">
@@ -10,8 +10,6 @@
             name="avatar"
             ngModel
             #avatar="ngModel"
-            pattern="[a-zA-Z]+$"
-            (change)="log(avatar)"
             class="form-control"
             id="inputUpload4"
             placeholder="upload a picture"
@@ -25,7 +23,6 @@
             required
             #firstname="ngModel"
             pattern="[a-zA-Z]+$"
-            (change)="log(firstname)"
             class="form-control"
             id="inputFirstname4"
             placeholder="Firstname">
@@ -38,7 +35,6 @@
             ngModel
             #name="ngModel"
             pattern="[a-zA-Z]+$"
-            (change)="log(name)"
             class="form-control"
             id="inputName4"
             placeholder="Name">
@@ -68,7 +64,6 @@
           #username="ngModel"
           minlength="6"
           pattern="[a-zA-Z0-9]+$"
-          (change)="log(username)"
           class="form-control"
           id="inputUsername"
           placeholder="Username">
@@ -93,7 +88,6 @@
           required
           #email="ngModel"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-          (change)="log(email)"
           class="form-control"
           id="inputEmail"
           placeholder="example@provider.com">
@@ -117,7 +111,6 @@
             #password="ngModel"
             minlength="8"
             pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
-            (change)="log(password)"
             class="form-control"
             id="inputPassword"
             placeholder="Password">
@@ -143,7 +136,6 @@
             #confirmPassword="ngModel"
             minlength="8"
             pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
-            (change)="log(confirmPassword)"
             class="form-control"
             id="inputConfirmPassword"
             placeholder="Confirm password">
@@ -161,7 +153,7 @@
             passwords are not the same
           </div>
         </div>
-        <button type="submit" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
+        <button type="submit" [disabled]="!f.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
       </form>
     </div>
     <app-oauth></app-oauth>
