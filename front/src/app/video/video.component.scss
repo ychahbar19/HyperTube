@@ -1,0 +1,23 @@
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
+.star-rating
+{
+    display: flex;
+}
+.back-stars
+{
+    display: flex;
+    position: relative;
+    color: LightGray;
+}
+.front-stars
+{
+    display: flex;
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    color: gold;
+}

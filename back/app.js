@@ -44,31 +44,13 @@ app.use(bodyParser.json()); //Processes ALL requests to tranforms it's body into
     - The response 'res' is sent when it's content is defined.
 \* -------------------------------------------------------------------------- */
 
-const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
-const videoRoutes = require('./routes/VideoRoute');
+const videoRoute = require('./routes/VideoRoute');
+const homeRoute = require('./routes/HomeRoute');
 
-//check
-/*
-app.use('/', (req, res) =>
-{
-  const layout_elements =
-  {
-    'en': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' },
-    'fr': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' }
-  };
-  res.status(200).json(
-  {
-    message: 'Successful request to /',
-    layout_elements: layout_elements['en']
-  });
-});
-*/
-
-app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
-
-app.use('/api/video', videoRoutes);
+app.use('/api/video', videoRoute);
+app.use('/', homeRoute);
 
 /* -------------------------------------------------------------------------- *\
     5) Exports the app to make it accessible from the other files

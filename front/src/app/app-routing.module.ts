@@ -1,16 +1,25 @@
+//Modules
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SigninComponent } from './signin/signin.component';
+
+//Base components
 import { HomeComponent } from './home/home.component';
+
+//User components
 import { SignupComponent } from './signup/signup.component';
+import { SigninComponent } from './signin/signin.component';
+
+//Video components
 import { GalleryComponent } from './gallery/gallery.component';
+import { VideoComponent } from './video/video.component';
 
-
+//Routes
 const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'signin', component: SigninComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'gallery', component: GalleryComponent}
+  {path: 'signin', component: SigninComponent},
+  {path: 'gallery', component: GalleryComponent},
+  {path: 'video', component: VideoComponent}
 ];
 
 @NgModule({

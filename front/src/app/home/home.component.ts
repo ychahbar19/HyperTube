@@ -8,7 +8,7 @@ Content:
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Home } from './home.model';
-import { HomeService } from '../services/home.service';
+import { HomeService } from './home.service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +18,11 @@ import { HomeService } from '../services/home.service';
 })
 export class HomeComponent implements OnInit, OnDestroy
 {
-  public layout: Home[] = [];
+  public layout: Home = {
+                    field_1: '',
+                    field_2: '',
+                    field_3: ''
+                  };
   private layoutSubscription: Subscription;
 
   constructor(private homeService: HomeService) {}
@@ -27,7 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy
   {
     this.homeService.getLayout();
     this.layoutSubscription = this.homeService.getLayoutUpdateListener()
-      .subscribe((layoutHome: Home[]) =>
+      .subscribe((layoutHome: Home) =>
       {
         this.layout = layoutHome;
       });

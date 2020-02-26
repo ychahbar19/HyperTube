@@ -1,28 +1,31 @@
-// EXPRESS ROUTER for Video
+// EXPRESS ROUTER for Home
 
 /* ------------------------------------------------------------------------ *\
     1) Imports the required elements and creates express' Router object.
 \* ------------------------------------------------------------------------ */
 
 const express = require('express');
-//const auth = require('../middleware/auth');
-//const multer = require('../middleware/multer-config');
-const VideoController = require('../controllers/VideoController');
+//const VideoController = require('../controllers/VideoController');
 const router = express.Router();
 
 /* ------------------------------------------------------------------------ *\
     2) Calls the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
 
-/* ----- Layout ----- */
-
-
-/* ----- CRUD functions ----- */
-router.post('/create', VideoController.create);
-router.get('/read', VideoController.readAll);
-router.get('/read/:id', VideoController.readOne);
-router.put('/update/:id', VideoController.update);
-router.delete('/delete/:id', VideoController.delete);
+/* ----- check ----- */
+router.use('/', (req, res) =>
+{
+  const layout_elements =
+  {
+    'en': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' },
+    'fr': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' }
+  };
+  res.status(200).json(
+  {
+    message: 'Successful request to /',
+    layout_elements: layout_elements['en']
+  });
+});
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {
