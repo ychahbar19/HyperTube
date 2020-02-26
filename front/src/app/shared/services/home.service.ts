@@ -4,8 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { Home } from '../../home/home.model';
 
 @Injectable({ providedIn: 'root' })
-export class HomeService
-{
+export class HomeService {
   private layout: Home[] = [];
   private layoutUpdated = new Subject<Home[]>();
 

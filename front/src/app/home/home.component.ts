@@ -9,25 +9,21 @@ import { HomeService } from '../shared/services/home.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy
-{
+export class HomeComponent implements OnInit, OnDestroy {
   public layout: Home[] = [];
   private layoutSubscription: Subscription;
 
   constructor(private homeService: HomeService) {}
 
-  ngOnInit()
-  {
+  ngOnInit() {
     this.homeService.getLayout();
     this.layoutSubscription = this.homeService.getLayoutUpdateListener()
-      .subscribe((layoutHome: Home[]) =>
-      {
+      .subscribe((layoutHome: Home[]) => {
         this.layout = layoutHome;
       });
   }
 
-  ngOnDestroy()
-  {
+  ngOnDestroy() {
     this.layoutSubscription.unsubscribe();
   }
 }
