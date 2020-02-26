@@ -1,17 +1,22 @@
 const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 
+
+exports.validLoginInputs = (req, res, next) => {
+  console.log("VALID");
+  return next();
+};
+
 exports.userExists = (req, res, next) => {
   const user = new UserModel({
     username: req.body.username,
     password: req.body.password 
   });
   // check if user exists in db
-  const userExists = true;
-  if (userExists) {
-    next();
-  }
-  res.status(200).send(null);
+  const userExists = false;
+  if (userExists)
+    return next();
+  return res.status(200).send(null);
 };
 
 exports.getUserData = (req, res, next) => {
@@ -28,7 +33,7 @@ exports.getUserData = (req, res, next) => {
     photoUrl: 'https://cdn.intra.42.fr/users/small_aceciora.jpg',
     loggedIn: true
   }
-  res.status(200).json(userData);
+  return res.status(200).json(userData);
 };
 
 

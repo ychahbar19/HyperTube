@@ -53,6 +53,11 @@
             password must be at least 1 digit, 1 lowercase, 1 uppercase and 1 of special chars [@$!%*?&].
           </div>
         </div>
+        <div class="error--msg" *ngIf="error">
+          <div>
+            {{ error }}
+          </div>
+        </div>
         <div class="checkbox--div">
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
