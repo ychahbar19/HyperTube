@@ -1,35 +1,40 @@
-const userModel = require('../models/UserModel');
+const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 
-class UserController {
-  
-  async userExists(formData) {
-    // user = new UserModel();
-    // const response = await userModel.userExists();
-    const response = true;
-    return response;
+exports.userExists = (req, res, next) => {
+  const user = new UserModel({
+    username: req.body.username,
+    password: req.body.password 
+  });
+  // check if user exists in db
+  const userExists = true;
+  if (userExists) {
+    next();
   }
+  res.status(200).send(null);
+};
 
-  async getUserData(formData) {
-    // try {
-    // const userData = await userModel.getUserData();
-    // }
-    // catch(e)
-    const userData = {
-      id: 1,
-      firstName: 'Adam',
-      lastName: 'Ceciora',
-      username: formData.username,
-      photoUrl: 'https://cdn.intra.42.fr/users/small_aceciora.jpg',
-      loggedIn: true
-    }
-    return userData;
+exports.getUserData = (req, res, next) => {
+  const user = new UserModel({
+    username: req.body.username,
+    password: req.body.password
+  });
+  // get informations from db about user
+  const userData = {
+    id: 1,
+    firstName: 'Adam',
+    lastName: 'Ceciora',
+    username: req.body.username,
+    photoUrl: 'https://cdn.intra.42.fr/users/small_aceciora.jpg',
+    loggedIn: true
   }
+  res.status(200).json(userData);
+};
 
-  signin() {
-    //appel bdd pour set user a loggedIn
-  }
 
-}
+// signin() {
+//   appel bdd pour set user a loggedIn
+// }
 
-module.exports = UserController;
+
+// module.exports = UserController;

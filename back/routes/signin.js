@@ -3,23 +3,15 @@ const UserController = require('../controllers/UserController');
 
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
-    let userExists;
-    const userController = new UserController();
+router.post('/', UserController.userExists, UserController.getUserData);
 
-    userExists = await userController.userExists(req.body);
-    if (userExists) {
-        res.userController = userController;
-        next();
-    } else {
-        res.status(200).send(null);
-    }
+/* ----- Fallback function ----- */
+router.use((req, res) => {
+    res.send('Bad request to /signin');
 });
 
-router.post('/', async (req, res, next) => {
-    const userController = res.userController;
-    const userData = await userController.getUserData(req.body);
-    res.status(200).json(userData);
-});
+// router.get('/google', () => {
+  
+// });
 
 module.exports = router;

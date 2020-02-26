@@ -8,6 +8,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const homeRoutes = require('./routes/home');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 const signinRoutes = require('./routes/signin');
@@ -48,27 +49,15 @@ app.use((req, res, next) =>
 //Processes ALL requests to tranforms it's body into a Json object (usable in JS).
 app.use(bodyParser.json());
 
-//check
-app.use('/', (req, res) =>
-{
-  /*
-  const layout_elements =
-  [
-    { meta_title: 'Home', h1_title: 'Welcome to HyperTube' }
-  ];*/
-  const layout_elements =
-  {
-    'en': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' },
-    'fr': { field_1: 'field_1', field_2: 'field_2', field_3: 'field_3' }
-  };
-  res.status(200).json(
-  {
-    message: 'Successful request to /',
-    layout_elements: layout_elements.en
-  });
-});
+// const isLoggedIn = (req, res, next) => {
+//   if (req.isAuthenticated()) {
+//     return next()
+//   }
+//   return res.status(400).json({ "statusCode": 400, "message": "not authenticated" })
+// }
 
 //Send requests for the route '/api/xxx' to the router xxxRoutes.
+app.use('/', homeRoutes);
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);

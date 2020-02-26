@@ -11,7 +11,7 @@ import { SigninComponent } from './signin/signin.component';
 import { HomeComponent } from './home/home.component';
 import { SignupComponent } from './signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
-import { OauthComponent } from './oauth/oauth.component';
+import { OmniauthComponent } from './omniauth/omniauth.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,7 @@ import { OauthComponent } from './oauth/oauth.component';
     HomeComponent,
     SignupComponent,
     GalleryComponent,
-    OauthComponent
+    OmniauthComponent
   ],
   imports: [
     BrowserModule,
