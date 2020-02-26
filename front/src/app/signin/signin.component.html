@@ -1,7 +1,7 @@
 <div class="container">
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
-      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit(f)">
+      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit()">
         <h4 class="mb-4 form-yellow-title">Sign In</h4>
         <div class="form-group">
           <input
@@ -13,7 +13,6 @@
           maxlength="33"
           required
           pattern="[a-zA-Z0-9]+$"
-          (change)="log(username)"
           class="form-control"
           id="exampleInputUsername1"
           aria-describedby="usernameHelp"
@@ -38,7 +37,6 @@
           #password="ngModel"
           minlength="8"
           required
-          (change)="log(password)"
           pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
           class="form-control"
           id="exampleInputPassword1"
@@ -64,7 +62,7 @@
             <a class="sign-up--link" routerLink="" >Forgot password ?</a>
           </div>
         </div>
-        <button type="submit" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
+        <button type="submit" [disabled]="!f.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
         <p class="sign-up--link mb-0 mt-4" style="text-align: center;">
           You don't have an account yet ?
           <a class="sign-up--link" routerLink="/signup"> Register !</a>

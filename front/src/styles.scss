@@ -27,6 +27,12 @@ body {
   color: black;
 }
 
+.btn-outline-warning:disabled {
+  border-color: initial;
+  background-color: initial;
+  color: initial;
+}
+
 .container {
   overflow: auto;
   padding-bottom: 80px;

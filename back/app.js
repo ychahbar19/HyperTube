@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
+const signinRoutes = require('./routes/signin');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).
@@ -63,13 +64,14 @@ app.use('/', (req, res) =>
   res.status(200).json(
   {
     message: 'Successful request to /',
-    layout_elements: layout_elements['en']
+    layout_elements: layout_elements.en
   });
 });
 
 //Send requests for the route '/api/xxx' to the router xxxRoutes.
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/signin', signinRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

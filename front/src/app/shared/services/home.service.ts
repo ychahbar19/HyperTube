@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { Home } from '../home/home.model';
+import { Home } from '../../home/home.model';
 
 @Injectable({ providedIn: 'root' })
 export class HomeService
@@ -11,18 +11,15 @@ export class HomeService
 
   constructor(private http: HttpClient) {}
 
-  getLayout()
-  {
+  getLayout() {
     this.http.get<{message: string, layout_elements: Home[]}>('http://localhost:3000/')
-      .subscribe((responseData) =>
-      {
+      .subscribe((responseData) => {
         this.layout = responseData.layout_elements;
         this.layoutUpdated.next(this.layout);
       });
   }
 
-  getLayoutUpdateListener()
-  {
+  getLayoutUpdateListener() {
     return this.layoutUpdated.asObservable();
   }
 }

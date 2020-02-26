@@ -4,7 +4,7 @@
     1) Imports the required elements (model + node package).
 \* -------------------------------------------------------------------------- */
 
-const User = require('../models/User');
+const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
