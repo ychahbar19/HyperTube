@@ -1,6 +1,7 @@
 const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 
+// SIGN-IN MIDDLEWARES
 
 exports.validLoginInputs = (req, res, next) => {
   const username = req.body.username;
@@ -16,11 +17,7 @@ exports.userExists = (req, res, next) => {
     password: req.body.password 
   });
   // check if user exists in db
-<<<<<<< HEAD
   const userExists = true;
-=======
-  const userExists = false;
->>>>>>> efd3e822d9d69886e4a7bed13d235c1220bc698d
   if (userExists)
     return next();
   return res.status(200).send(null);
@@ -42,6 +39,14 @@ exports.getUserData = (req, res, next) => {
   }
   return res.status(200).json(userData);
 };
+
+// SIGNUP MIDDLEWARES
+
+exports.checkSignUpInput = (req, res, next) => {
+  const user = req.body;
+
+
+}
 
 
 // signin() {
