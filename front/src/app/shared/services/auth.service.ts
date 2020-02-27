@@ -30,7 +30,7 @@ export class AuthService {
           // console.log(localStorage.getItem('user'));
           this.router.navigate(['/signin']);
         } else {
-          this.router.navigate(['/signin?error=1']);
+          this.router.navigate(['/signin'], { queryParams: {error: '1'} });
           // this.error = 'Wrong username and/or password';
           // console.log(this.error);
         }

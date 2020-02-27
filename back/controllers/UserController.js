@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 
 
 exports.validLoginInputs = (req, res, next) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  if (username != null && username.length >= 6 && username.length <= 33)
   console.log("VALID");
   return next();
 };

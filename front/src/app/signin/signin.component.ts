@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { AuthService } from '../shared/services/auth.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
@@ -16,9 +16,12 @@ export class SigninComponent implements OnInit {
   constructor(private authService: AuthService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      console.log(params);
-      this.error = 'Wrong username and/or password';
+    this.route.queryParams.subscribe((queryParams: Params) => {
+      if (queryParams.error === '1') {
+        this.error = 'Wrong username and/or password';
+      } else {
+        this.error = '';
+      }
     });
   }
 

@@ -1,5 +1,9 @@
 .facebook {
   background-color: rgb(66,103,178);
+  // border-left: 1px solid rgb(161, 215, 255);
+  // border-right: 1px solid rgb(161, 215, 255);
+  border-left: 1px solid rgb(142, 142, 142);
+  border-right: 1px solid rgb(142, 142, 142);
 }
 
 .facebook img {
@@ -10,6 +14,9 @@
 
 .google {
   background-color: rgb(255,255,255);
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 .google img {
@@ -19,6 +26,9 @@
 
 .logo-42 {
   background-color: rgba(27, 27, 27, 0.8);
+  border-left: 1px solid rgb(75, 75, 75);
+  border-top: 1px solid rgb(75, 75, 75);
+  border-right: 1px solid rgb(75, 75, 75);
 }
 
 .logo-42 img {
@@ -32,7 +42,7 @@
 }
 
 .social--login button {
-  border: none;
+  // border: none;
   filter: opacity(0.8);
   border-radius: 0;
 }
