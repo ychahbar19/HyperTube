@@ -10,7 +10,7 @@ import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 
 //Video components
-import { GalleryComponent } from './gallery/gallery.component';
+import { SearchComponent } from './search/search.component';
 import { VideoComponent } from './video/video.component';
 
 //Routes
@@ -18,7 +18,7 @@ const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'signup', component: SignupComponent},
   {path: 'signin', component: SigninComponent},
-  {path: 'gallery', component: GalleryComponent},
+  {path: 'search', component: SearchComponent},
   {path: 'video', component: VideoComponent}
 ];
 

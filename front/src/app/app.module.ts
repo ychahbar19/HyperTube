@@ -17,14 +17,14 @@ import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 
 //Video components
-import { GalleryComponent } from './gallery/gallery.component';
+import { SearchComponent } from './search/search.component';
 import { VideoComponent } from './video/video.component';
 
 @NgModule({
   declarations: [
     AppComponent, HeaderComponent, FooterComponent, HomeComponent,
     OauthComponent, SignupComponent, SigninComponent,
-    GalleryComponent, VideoComponent
+    SearchComponent, VideoComponent
   ],
   imports: [
     BrowserModule,
