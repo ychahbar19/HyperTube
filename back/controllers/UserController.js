@@ -8,10 +8,9 @@ exports.userExists = (req, res, next) => {
   });
   // check if user exists in db
   const userExists = true;
-  if (userExists) {
-    next();
-  }
-  res.status(200).send(null);
+  if (userExists)
+    return next();
+  return res.status(200).send(null);
 };
 
 exports.getUserData = (req, res, next) => {
