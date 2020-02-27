@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { AuthService } from '../shared/services/auth.service';
-import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
@@ -11,18 +12,31 @@ import { ActivatedRoute, Params } from '@angular/router';
 })
 export class SigninComponent implements OnInit {
   @ViewChild('f', { static: false }) signInForm: NgForm;
-  error = '';
+  errors = {
+    username: {
+      req: '',
+      len: '',
+      pattern: ''
+    },
+    password: {
+      req: '',
+      len: '',
+      pattern: ''
+    },
+    unmatch: ''
+  };
+  emptyUsername = '';
+  userLength = '';
+  userPattern = '';
+  response: Observable<any>;
 
-  constructor(private authService: AuthService, private route: ActivatedRoute) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((queryParams: Params) => {
-      if (queryParams.error === '1') {
-        this.error = 'Wrong username and/or password';
-      } else {
-        this.error = '';
-      }
-    });
+  }
+
+  log(a) {
+    console.log(a);
   }
 
   onSubmit() {
@@ -30,6 +44,21 @@ export class SigninComponent implements OnInit {
       username: this.signInForm.value.username,
       password: this.signInForm.value.password
     };
-    this.authService.signIn(userData);
+    this.response = this.authService.signIn(userData);
+    this.response.subscribe(
+      (user) => {
+        localStorage.setItem('userId', user.id.toString());
+        this.router.navigate(['/gallery']);
+      },
+      (error) => {
+        console.log(error);
+        this.errors = error.error;
+
+        // this.userReq = error.error.username.req;
+        // this.userLength = error.error.username.len;
+        // console.log(this.userLength);
+        // this.signInForm.errors.password.length = error.error.errors.include('invalidPasswordLength');
+      }
+    );
   }
 }
