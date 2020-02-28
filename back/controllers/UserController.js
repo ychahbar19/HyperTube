@@ -1,5 +1,6 @@
 const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
 
 let inputErrors = [];
 
@@ -77,8 +78,88 @@ exports.getUserData = (req, res, next) => {
 
 // SIGNUP MIDDLEWARES
 
+// set where to stock our uploaded images
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+      cb(null, 'assets/pictures');
+  },
+
+  // By default, multer removes file extensions so let's add them back
+  filename: function(req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = function(req, file, callback) {
+  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+      req.fileValidationError = 'Only image files are allowed!';
+      return callback(new Error('Only image files are allowed!'), false);
+  }
+  callback(null, true);
+};
+
+exports.utils(req, res, function(err){
+
+  let upload = multer({ storage : storage, fileFilter: fileFilter })
+
+  upload(req, res, (err) => {
+    if (req.fileValidationError) {
+      return res.status(403).send(req.fileValidationError);
+    }
+    else if (!req.file) {
+        return res.status(403).send('Please select an image to upload');
+    }
+    else if (err instanceof multer.MulterError) {
+        return res.status(403).send(err);
+    }
+    else if (err) {
+        return res.status(403).send(err);
+    }
+
+    const data = req.file.path;
+    console.log(data);
+    
+    return res.status(200).json(data);
+  });
+
+});
+
 exports.checkSignUpInput = (req, res, next) => {
   const user = req.body;
+
+  // imageURL
+
+  // name
+  // firstname
+  // username
+  // email
+  // password
+  // confirmPassword
+
+  if (user.username == null) {
+    inputErrors.push('USR_REQ');
+  }
+  if (!validLength(username.length, 6)) {
+    inputErrors.push('USR_LEN');
+  }
+  if (!validPattern(username, /[a-zA-Z0-9]+$/)) {
+    inputErrors.push('USR_PATTERN');
+  }
+  if (password == null) {
+    inputErrors.push('PWD_REQ');
+  }
+  if (!validLength(password.length, 8)) {
+    inputErrors.push('PWD_LEN');
+  }
+  if (!validPattern(password, /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/)) {
+    inputErrors.push('PWD_PATTERN');
+  }
+
+  if (inputErrors.length) {
+    return res.status(403).json(inputErrors);
+  }
+  return next();
 
 
 }

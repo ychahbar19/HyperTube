@@ -13,7 +13,7 @@
             class="form-control"
             id="inputUpload4"
             placeholder="upload a picture"
-            accept="image/*">
+            >
           </div>
           <div class="form-group col-md-6">
             <input
@@ -40,18 +40,22 @@
             placeholder="Name">
           </div>
           <!-- ERROR HANDLER -->
-          <div class="error--msg info-error--div" *ngIf="(name.touched && !name.valid) || (firstname.touched && !firstname.valid)">
-            <div *ngIf="name.errors.required">
-              name is required
+          <div class="row">
+            <div class="error--msg info-error--div col-6" *ngIf="name.touched && !name.valid">
+              <div *ngIf="name.errors.required">
+                name is required
+              </div>
+              <div *ngIf="name.errors.pattern">
+                name should be only alphacharacters.
+              </div>
             </div>
-            <div *ngIf="name.errors.pattern">
-              name should be only alphacharacters.
-            </div>
-            <div *ngIf="firstname.errors.required">
-              firstname is required
-            </div>
-            <div *ngIf="firstname.errors.pattern">
-              firstname should be only alphacharacters.
+            <div class="error--msg info-error--div col-6" *ngIf="firstname.touched && !firstname.valid">
+              <div *ngIf="firstname.errors.required">
+                firstname is required
+              </div>
+              <div *ngIf="firstname.errors.pattern">
+                firstname should be only alphacharacters.
+              </div>
             </div>
           </div>
         </div>

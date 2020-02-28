@@ -26,14 +26,16 @@ export class AuthService {
       return this.http.post<any>('http://localhost:3000/signin', formData);
   }
 
-  signUp(formData){
-    this.http.post<UserModel>('http://localhost:3000/signup', formData)
-      .subscribe(response => {
-        if (response) {
-          this.user = response;
-          this.router.navigate(['/signin']);
-        }
-      });
+  signUp(formData: {
+    imageURL: string,
+    name: string,
+    firstname: string,
+    username: string,
+    email: string,
+    password: string,
+    confirmPassword: string
+    }): Observable<any> {
+    return this.http.post<any>('http://localhost:3000/signup', formData);
   }
 
 }

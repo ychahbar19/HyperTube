@@ -57,12 +57,17 @@ app.use(bodyParser.json());
 //   return res.status(400).json({ "statusCode": 400, "message": "not authenticated" })
 // }
 
+// set this folder as static folder we want to serve
+app.use(express.static(__dirname + '/assets'));
+
+
+
 //Send requests for the route '/api/xxx' to the router xxxRoutes.
 app.use('/', homeRoutes);
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);
-// app.use('/signup', signUpRoutes);
+app.use('/signup', signUpRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

@@ -19,13 +19,14 @@ export class SignupComponent implements OnInit {
   onSubmit() {
    const userData = {
      imageURL: this.signUpForm.value.avatar,
-     firstName: this.signUpForm.value.firstName,
+     firstname: this.signUpForm.value.firstname,
      name: this.signUpForm.value.name,
      username: this.signUpForm.value.username,
      email: this.signUpForm.value.email,
-     password: this.signUpForm.value.password,
-     confirmPassword: this.signUpForm.value.confirmPassword
+     password: this.signUpForm.value.checkPasswds.password,
+     confirmPassword: this.signUpForm.value.checkPasswds.confirmPassword
    };
+
    this.authService.signUp(userData);
   }
 
