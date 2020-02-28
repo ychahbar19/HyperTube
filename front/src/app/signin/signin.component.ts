@@ -12,31 +12,12 @@ import { AuthService } from '../shared/services/auth.service';
 })
 export class SigninComponent implements OnInit {
   @ViewChild('f', { static: false }) signInForm: NgForm;
-  errors = {
-    username: {
-      req: '',
-      len: '',
-      pattern: ''
-    },
-    password: {
-      req: '',
-      len: '',
-      pattern: ''
-    },
-    unmatch: ''
-  };
-  emptyUsername = '';
-  userLength = '';
-  userPattern = '';
   response: Observable<any>;
+  errors = [];
 
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-  }
-
-  log(a) {
-    console.log(a);
   }
 
   onSubmit() {
@@ -51,13 +32,8 @@ export class SigninComponent implements OnInit {
         this.router.navigate(['/gallery']);
       },
       (error) => {
-        console.log(error);
         this.errors = error.error;
-
-        // this.userReq = error.error.username.req;
-        // this.userLength = error.error.username.len;
-        // console.log(this.userLength);
-        // this.signInForm.errors.password.length = error.error.errors.include('invalidPasswordLength');
+        // GERER L'ERREUR EN CONSOLE !!!!
       }
     );
   }
