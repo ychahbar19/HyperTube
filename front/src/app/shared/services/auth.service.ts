@@ -23,35 +23,7 @@ export class AuthService {
   // }
 
   signIn(formData: { username: string, password: string }): Observable<any> {
-
       return this.http.post<any>('http://localhost:3000/signin', formData);
-
-  //   this.http.post<any>('http://localhost:3000/signin', formData)
-  //     .subscribe(response => {
-
-        // if (response.inputErrors) {
-        //   this.errors = response.inputErrors;
-
-
-
-
-
-
-
-
-
-  //         this.user = response;
-  //         localStorage.setItem('userId', JSON.stringify(this.user.id));
-  //         // console.log(localStorage.getItem('userId'));
-  //         // console.log(localStorage.getItem('user'));
-  //         this.router.navigate(['/signin']);
-  //       } else {
-  //         this.router.navigate(['/signin'], { queryParams: {error: '1'} });
-  //         // this.error = 'Wrong username and/or password';
-  //         // console.log(this.error);
-  //       }
-  //     });
-  //   // console.log(response);
   }
 
   signUp(formData){
