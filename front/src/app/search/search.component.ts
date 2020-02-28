@@ -19,10 +19,9 @@ Content:
   - Sort filters (date [range], genre [list])
 */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { YtsModel } from './yts.model';
+import { Component, OnInit } from '@angular/core';
 import { SearchService } from './search.service';
+import { ResultModel } from './result.model';
 
 @Component({
   selector: 'app-search',
@@ -30,25 +29,15 @@ import { SearchService } from './search.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit, OnDestroy
+export class SearchComponent implements OnInit
 {
-  public ytsResults: YtsModel[] = [];
-  private ytsSubscription: Subscription;
+  public results: ResultModel[] = [];
 
   constructor(private searchService: SearchService) {}
 
-  ngOnInit()
+  async ngOnInit()
   {
-    this.searchService.getYtsResults();
-    this.ytsSubscription = this.searchService.getYtsResultsUpdateListener()
-      .subscribe((ytsResults: YtsModel[]) =>
-      {
-        this.ytsResults = ytsResults;
-      });
-  }
-
-  ngOnDestroy()
-  {
-    this.ytsSubscription.unsubscribe();
+    this.results = await this.searchService.getResults();
+    console.log(this.results);
   }
 }
