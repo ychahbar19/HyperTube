@@ -62,7 +62,7 @@ app.use('/', homeRoutes);
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);
-app.use('/signup', signUpRoutes);
+// app.use('/signup', signUpRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

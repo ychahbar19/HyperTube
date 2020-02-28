@@ -2,7 +2,7 @@
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
       <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit()">
-        <h4 class="mb-4 form-yellow-title">Sign In</h4>
+        <h4 class="mb-4 form-yellow-title">Sign In {{ userLength }}</h4>
         <div class="form-group">
           <input
           type="text"
@@ -12,6 +12,7 @@
           minlength="6"
           maxlength="33"
           required
+          (keypress)="log(f)"
           pattern="[a-zA-Z0-9]+$"
           class="form-control"
           id="exampleInputUsername1"
@@ -23,10 +24,21 @@
             Username is required
           </div>
           <div *ngIf="username.errors.minlength">
-            Username should be minimum {{ username.errors.minlength.requiredLength }} characters
+            Username should have between 6 and 33 characters
           </div>
           <div *ngIf="username.errors.pattern">
             Username should be only alphacharacters
+          </div>
+        </div>
+        <div class="error--msg">
+          <div *ngIf="errors.username.req">
+              {{ errors.username.req }}
+          </div>
+          <div *ngIf="errors.username.len">
+            {{ errors.username.len }}
+          </div>
+          <div *ngIf="errors.username.pattern">
+            {{ errors.username.pattern }}
           </div>
         </div>
         <div class="form-group">
@@ -36,6 +48,7 @@
           ngModel
           #password="ngModel"
           minlength="8"
+          maxlength="33"
           required
           pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
           class="form-control"
@@ -44,18 +57,24 @@
         </div>
         <div class="error--msg" *ngIf="password.touched && !password.valid">
           <div *ngIf="password.errors.required">
-            password is required
+            Password is required
           </div>
           <div *ngIf="password.errors.minlength">
-            password should be minimum {{ password.errors.minlength.requiredLength }} characters
+            Password should have between 8 and 33 characters
           </div>
           <div *ngIf="password.errors.pattern">
-            password must be at least 1 digit, 1 lowercase, 1 uppercase and 1 of special chars [@$!%*?&].
+            Password must be at least 1 digit, 1 lowercase, 1 uppercase and 1 of special chars [@$!%*?&]
           </div>
         </div>
-        <div class="error--msg" *ngIf="error">
-          <div>
-            {{ error }}
+        <div class="error--msg">
+          <div *ngIf="errors.password.req">
+            {{ errors.password.req }}
+          </div>
+          <div *ngIf="errors.password.len">
+            {{ errors.password.len }}
+          </div>
+          <div *ngIf="errors.password.pattern">
+            {{ errors.password.pattern }}
           </div>
         </div>
         <div class="checkbox--div">
