@@ -7,11 +7,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { SigninComponent } from './signin/signin.component';
+import { SigninComponent } from './auth/signin/signin.component';
 import { HomeComponent } from './home/home.component';
-import { SignupComponent } from './signup/signup.component';
+import { SignupComponent } from './auth/signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
-import { OmniauthComponent } from './omniauth/omniauth.component';
+import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 
 @NgModule({
   declarations: [

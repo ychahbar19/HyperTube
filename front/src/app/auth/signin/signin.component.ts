@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -20,21 +20,21 @@ export class SigninComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSubmit() {
-    const userData = {
-      username: this.signInForm.value.username,
-      password: this.signInForm.value.password
-    };
-    this.response = this.authService.signIn(userData);
-    this.response.subscribe(
-      (user) => {
-        localStorage.setItem('userId', user.id.toString());
-        this.router.navigate(['/gallery']);
-      },
-      (error) => {
-        this.errors = error.error;
-        // GERER L'ERREUR EN CONSOLE !!!!
-      }
-    );
+  onSignin() {
+    if (this.signInForm.invalid) {
+      return;
+    }
+    this.authService.signIn(this.signInForm.value);
+    // this.response = this.authService.signIn(userData);
+    // this.response.subscribe(
+    //   (user) => {
+    //     localStorage.setItem('userId', user.id.toString());
+    //     this.router.navigate(['/gallery']);
+    //   },
+    //   (error) => {
+    //     this.errors = error.error;
+    //     // GERER L'ERREUR EN CONSOLE !!!!
+    //   }
+    // );
   }
 }

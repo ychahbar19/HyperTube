@@ -3,7 +3,7 @@ const UserController = require('../controllers/UserController');
 
 const router = express.Router();
 
-router.post('/', UserController.validLoginInputs, UserController.userExists, UserController.getUserData);
+router.post('/', UserController.loginValidation, UserController.login);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

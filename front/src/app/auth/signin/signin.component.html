@@ -1,7 +1,7 @@
 <div class="container">
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
-      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSubmit()">
+      <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSignin()">
         <h4 class="mb-4 form-yellow-title">Sign In</h4>
         <div class="form-group">
           <input
@@ -9,8 +9,6 @@
           name="username"
           ngModel
           #username="ngModel"
-          minlength="6"
-          maxlength="33"
           required
           pattern="[a-zA-Z0-9]+$"
           class="form-control"
@@ -22,22 +20,16 @@
           <div *ngIf="username.errors.required">
             Username is required
           </div>
-          <div *ngIf="username.errors.minlength">
-            Username should have between 6 and 33 characters
-          </div>
           <div *ngIf="username.errors.pattern">
-            Username should be only alphacharacters
+            Username must have between 6 and 33 alphabetical and/or numeric characters
           </div>
         </div>
         <div class="error--msg" *ngIf="errors.length">
           <div *ngIf="errors.includes('USR_REQ')">
-              Username is required
-          </div>
-          <div *ngIf="errors.includes('USR_LEN')">
-            Username should have between 6 and 33 characters
+            Username is required
           </div>
           <div *ngIf="errors.includes('USR_PATTERN')">
-            Username should be only alphacharacters
+            Username must have between 6 and 33 alphabetical and/or numeric characters
           </div>
         </div>
         <div class="form-group">
@@ -46,8 +38,6 @@
           name="password"
           ngModel
           #password="ngModel"
-          minlength="8"
-          maxlength="33"
           required
           pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
           class="form-control"
@@ -58,25 +48,20 @@
           <div *ngIf="password.errors.required">
             Password is required
           </div>
-          <div *ngIf="password.errors.minlength">
-            Password should have between 8 and 33 characters
-          </div>
           <div *ngIf="password.errors.pattern">
-            Password must be at least 1 digit, 1 lowercase, 1 uppercase and 1 of special chars [@$!%*?&]
+            Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special
+            chars : @$!%*?&
           </div>
         </div>
         <div class="error--msg" *ngIf="errors.length">
           <div *ngIf="errors.includes('PWD_REQ')">
             Password is required
           </div>
-          <div *ngIf="errors.includes('PWD_LEN')">
-            Password should have between 8 and 33 characters
-          </div>
           <div *ngIf="errors.includes('PWD_PATTERN')">
-            Password must be at least 1 digit, 1 lowercase, 1 uppercase and 1 of special chars [@$!%*?&]
+            Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&
           </div>
           <div *ngIf="errors.includes('USR_NOT_EXISTS')">
-            Username or Password invalid
+            Username and/or Password invalid
           </div>
         </div>
         <div class="checkbox--div">
