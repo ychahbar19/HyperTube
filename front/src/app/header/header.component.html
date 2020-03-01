@@ -7,12 +7,13 @@
     </button> -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav">
-            <li class="nav-item"  *ngIf="displaySignInButton()">
-                <button type="button" routerLink='signin' class="btn btn-outline-warning">Sign-In</button>
+            <li class="nav-item" *ngIf="displaySignInButton()">
+                <button type="button" routerLink='signin' class="btn btn-outline-warning">Log In</button>
             </li>
-            <ng-template #mainNavbar>
+            <ng-template #mainNavbar [ngIf]="userIsAuthenticated">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <img src="https://secure.webtoolhub.com/static/resources/icons/set128/43d7dd9d.png" alt="" width="50px" height="50px">
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#">
@@ -26,7 +27,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">
                           <i class="large material-icons">power_settings_new</i>
-                          Disconnect
+                          Log Out
                         </a>
                     </div>
                 </li>

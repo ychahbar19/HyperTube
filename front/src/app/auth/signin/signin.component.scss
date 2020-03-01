@@ -1,3 +1,5 @@
+$animate: all 0.2s ease-in-out;
+
 .container {
   margin-top: 10vh;
 }
@@ -12,11 +14,66 @@
   // box-shadow: 1px 1px 5px grey;
 }
 
-.sign-up--link {
+.small_grey_text {
   color: grey;
   text-decoration: none;
   font-size: 0.9rem;
 }
+
+.yellow_underline {
+  position: relative;
+  color: grey;
+  text-decoration: none;
+}
+
+.example {
+    .hover {
+      color: darken(rgb(243, 220, 0), 10%);
+      text-align: center;
+      margin: 0 auto;
+      padding: 0;
+      transition: $animate;
+      position: relative;
+      &:before,
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        width: 0px;
+        height: 2px;
+        margin: 5px 0 0;
+        transition: $animate;
+        transition-duration: 0.45s;
+        opacity: 0;
+        background-color: rgb(243,220,0);
+      }
+      &.hover-4 {
+        &:before {
+          left: 0;
+        }
+        &:after {
+          right: 0;
+        }
+      }
+    }
+    &:hover {
+      cursor: pointer;
+      .hover {
+        &:before,
+        &:after {
+          width: 100%;
+          opacity: 1;
+        }
+        &.hover-3,
+        &.hover-4 {
+          &:before,
+          &:after {
+            width: 50%;
+          }
+        }
+      }
+    }
+  }
 
 .sign-in--button {
   margin-top: 60px;
