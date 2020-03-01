@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AuthData } from './auth-data.model';
 
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  errors: any[] = [];
-  obsLogin: Observable<{}>;
+  private token: string;
 
   constructor(private http: HttpClient, private router: Router) { }
+
+  getToken() {
+    return this.token;
+  }
 
   // isAuthenticated(): boolean {
   //   const userData = localStorage.getItem('userInfo');
@@ -50,9 +52,10 @@ export class AuthService {
   // signIn(formData: { username: string, password: string }): Observable<any> {
   signIn(formData: { username: string, password: string }) {
     const authData: AuthData = { username: formData.username, password: formData.password };
-    this.http.post<any>('http://localhost:3000/signin', authData)
+    this.http.post<{token: string}>('http://localhost:3000/signin', authData)
       .subscribe(response => {
-        console.log(response);
+        const token = response.token;
+        this.token = token;
       })
     // return this.http.post<any>('http://localhost:3000/signin', authData);
   }
