@@ -20,11 +20,11 @@ export class SigninComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSignin() {
+  onLogin() {
     if (this.signInForm.invalid) {
       return;
     }
-    this.authService.signIn(this.signInForm.value);
+    this.authService.login(this.signInForm.value);
     // this.response = this.authService.signIn(userData);
     // this.response.subscribe(
     //   (user) => {

@@ -25,6 +25,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return (this.router.url !== '/signin' && !this.userIsAuthenticated);
   }
 
+  onLogout() {
+    this.authService.logout();
+  }
+
   ngOnDestroy() {
     this.authListenerSubs.unsubscribe();
   }
