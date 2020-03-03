@@ -56,9 +56,9 @@ exports.login = async (req, res, next) => {
         username: foundUser.username
       },
       'secret_this_should_be_longer',
-      { expiresIn: '1h' }
+      { expiresIn: '10h' }
     );
-    res.status(200).json({ token: token, expiresIn: 3600 });
+    res.status(200).json({ token: token, expiresIn: 36000 });
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
