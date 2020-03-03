@@ -51,7 +51,6 @@ export class AuthService {
       });
   }
 
-  // signIn(formData: { username: string, password: string }): Observable<any> {
   login(formData: { username: string, password: string }) {
     const authData: AuthData = { username: formData.username, password: formData.password };
     this.http.post<{token: string}>('http://localhost:3000/signin', authData)
@@ -64,7 +63,6 @@ export class AuthService {
           this.router.navigate(['/gallery']);
         }
       });
-    // return this.http.post<any>('http://localhost:3000/signin', authData);
   }
 
   logout() {

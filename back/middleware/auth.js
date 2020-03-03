@@ -19,12 +19,12 @@ module.exports = (req, res, next) => {
     jwt.verify(token, 'secret_this_should_be_longer');
     // const decodedToken = jwt.verify(token, 'secret_this_should_be_longer');
 
-    //Checks the userId from the token matches the one from the request.
-    //If so, calls next() to get the process going.
+    // Checks the userId from the token matches the one from the request.
+    // If so, calls next() to get the process going.
     // const userId = decodedToken.userId;
-    // if (req.body.userId && req.body.userId !== userId)
-    //   throw 'Invalid user id';
-    // else
+    if (req.body.userId && req.body.userId !== userId)
+      throw 'Invalid user id';
+    else
       next();
   } catch (error) {
     res.status(401).json({ error: error | 'Requête non authentifee '});

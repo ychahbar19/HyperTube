@@ -25,16 +25,5 @@ export class SigninComponent implements OnInit {
       return;
     }
     this.authService.login(this.signInForm.value);
-    // this.response = this.authService.signIn(userData);
-    // this.response.subscribe(
-    //   (user) => {
-    //     localStorage.setItem('userId', user.id.toString());
-    //     this.router.navigate(['/gallery']);
-    //   },
-    //   (error) => {
-    //     this.errors = error.error;
-    //     // GERER L'ERREUR EN CONSOLE !!!!
-    //   }
-    // );
   }
 }

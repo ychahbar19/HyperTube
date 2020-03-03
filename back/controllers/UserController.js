@@ -35,10 +35,6 @@ exports.loginValidation = (req, res, next) => {
   return next();
 };
 
-function comparePasswords(p1, p2) {
-  return bcrypt.compare(p1, p2);
-}
-
 exports.login = async (req, res, next) => {
   // check if user exists in db
   try {
@@ -47,7 +43,7 @@ exports.login = async (req, res, next) => {
       inputErrors.push('USR_NOT_EXISTS');
       return res.status(401).json(inputErrors);
     }
-    const samePwds = await comparePasswords(req.body.password, foundUser.password);
+    const samePwds = await bcrypt.compare(req.body.password, foundUser.password);
     if (!samePwds) {
       inputErrors.push('USR_NOT_EXISTS');
       return res.status(401).json(inputErrors);
@@ -106,10 +102,10 @@ exports.createUser = async (req, res, next) => {
       username: req.body.username,
       password: hashPwd
     });
-    const saveUser = await user.save();
+    const savedUser = await user.save();
     res.status(201).json({
       message: 'User created',
-      result: saveUser
+      result: savedUser
     })
   } catch (err) {
     console.log(err);
