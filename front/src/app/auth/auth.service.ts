@@ -48,7 +48,7 @@ export class AuthService {
     };
     this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
-        // if error : alert error
+        // if error : alert error (pareil pour login)
         // if success : alert success + send mail
       });
   }

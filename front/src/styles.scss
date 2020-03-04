@@ -43,3 +43,25 @@ body {
   margin-top: 2vh;
   text-align: center;
 }
+
+.spinner {
+  content: '';
+  box-sizing: border-box;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  height: 60px;
+  width: 60px;
+  margin-top: -30px;
+  margin-left: -30px;
+  border-radius: 50%;
+  border-top: 3px solid rgb(243,220,0);
+  border-right: 3px solid rgb(243,220,0);
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
