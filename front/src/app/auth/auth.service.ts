@@ -11,6 +11,7 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
+  private isLoading = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -24,6 +25,10 @@ export class AuthService {
 
   getAuthStatusListener() {
     return this.authStatusListener.asObservable();
+  }
+
+  getisLoading() {
+    return this.isLoading.asObservable();
   }
 
   createUser(
@@ -55,11 +60,15 @@ export class AuthService {
 
   login(formData: { username: string, password: string }) {
     const authData: AuthData = { username: formData.username, password: formData.password };
+    this.isLoading.next(true);
     this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/signin', authData)
       .subscribe(response => {
+        this.isLoading.next(false);
+        console.log('arrive ici');
         const token = response.token;
         this.token = token;
         if (token) {
+          console.log(token);
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;
