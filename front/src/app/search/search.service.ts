@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { YtsModel } from './result-yts.model';
-import { EztvModel } from './result-eztv.model';
+//import { YtsModel } from './result-yts.model';
+//import { EztvModel } from './result-eztv.model';
 import { ResultModel } from './result.model';
 
 @Injectable()
@@ -13,6 +13,7 @@ export class SearchService
 
   constructor(private http: HttpClient) {}
 
+  /*
   //Get movies from YTS.
   getYtsResults()
   {
@@ -59,5 +60,32 @@ export class SearchService
     eztvResults['torrents'].forEach((show) => this.addToResults('tt'+show.imdb_id, show.title));
 
     return this.allResults;
+  }
+  */
+
+
+  addToResults(imdb_id, title)
+  {
+    this.allResults[this.allResultsIndex] =
+    {
+      imdb_id: imdb_id,
+      title: title
+    };
+    this.allResultsIndex++;
+  }
+
+  async getResults()
+  {
+    return new Promise((resolve, reject) =>
+    {
+      this.http.get<{}>('http://localhost:3000/api/search/movies')
+        .toPromise()
+        .then(response =>
+              {
+                Object.entries(response).forEach(values => this.addToResults(values[0], values[1]));
+                resolve(this.allResults);
+              },
+              error => { reject(error); });
+    });
   }
 }

@@ -1,9 +1,7 @@
-// MODEL for Video
-
-//Imports node's mongoose package (=database).
+// 1) Import
 const mongoose = require('mongoose');
 
-//Creates the model for videos, as a database schema.
+// 2) Define
 var VideoSchema = new mongoose.Schema(
 {
   field_1: String,
@@ -11,5 +9,5 @@ var VideoSchema = new mongoose.Schema(
   field_3: String
 });
 
-//Exports the model.
+// 3) Export
 module.exports = mongoose.model('VideoModel', VideoSchema);

@@ -38,6 +38,5 @@ export class SearchComponent implements OnInit
   async ngOnInit()
   {
     this.results = await this.searchService.getResults();
-    console.log(this.results);
   }
 }

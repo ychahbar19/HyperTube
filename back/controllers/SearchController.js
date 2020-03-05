@@ -1,25 +1,40 @@
-const https = require('https');
+const axios = require('axios');
 
-const MovieModel = require('../models/MovieModel');
-const TVShowModel = require('../models/TVShowModel');
+const YtsResultsModel = require('../models/YtsResultsModel');
+const ResultModel = require('../models/ResultModel');
+let hypertubeResults = {};
 
+/*
+let hypertubeResults = [ResultModel];
+let hypertubeResultsIndex = 0;
 
+function addToHypertubeResults(imdb_id, title)
+{
+  hypertubeResults[hypertubeResultsIndex] =
+  {
+    imdb_id: imdb_id,
+    title: title
+  };
+  hypertubeResultsIndex++;
+}
+*/
 
 exports.searchMovies = (req, res, next) =>
 {
-
-  //https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
-  
-  MovieModel.find()
-    .then(movies => res.status(200).json(movies))
+  axios.get('https://yts.mx/api/v2/list_movies.json?query_term=lord')
+    .then(results =>
+    {
+      const ytsResults = new YtsResultsModel(results.data);
+      //ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title));
+      ytsResults.data.movies.forEach(movie => { hypertubeResults[movie.imdb_code] = movie.title; });
+      res.send(hypertubeResults);
+    })
     .catch(error => res.status(400).json({ error }));
 };
 
 exports.searchTVShows = (req, res, next) =>
 {
-  TVShowModel.find()
-    .then(tvshows => res.status(200).json(tvshows))
-    .catch(error => res.status(400).json({ error }));
+  res.send('Bad request to /api/search (tv shows)');
 };
 
 exports.searchAll = (req, res, next) =>
