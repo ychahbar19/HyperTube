@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { AuthService } from '../auth.service';
+import { LoadingService } from 'src/app/shared/services/loading.service';
 
 @Component({
   selector: 'app-signin',
@@ -16,10 +17,10 @@ export class SigninComponent implements OnInit {
   errors = [];
   isLoading: boolean;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private loadingService: LoadingService) { }
 
   ngOnInit(): void {
-    this.authService.getisLoading().subscribe(isLoading => {
+    this.loadingService.getisLoading().subscribe(isLoading => {
       this.isLoading = isLoading;
     });
   }

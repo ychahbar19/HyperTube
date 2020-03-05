@@ -1,16 +1,16 @@
 <div class="row justify-content-center">
   <h4 class="col-12 form-yellow-title">Log In with:</h4>
   <div class="col-6 col-md-5 col-lg-3 social--login justify-content-center">
-    <button class="btn logo-42 col-12">
+    <button class="btn logo-42 col-12" (click)="onProviderClicked('42')">
       <img src="../../assets/img/42--logo.jpeg" alt="42-logo" class="42--logo">
     </button>
-    <button class="btn facebook col-12">
+    <button class="btn facebook col-12" (click)="onProviderClicked('facebook')">
       <img src="../../assets/img/facebook--logo.png" alt="facebook-logo" class="facebook--logo">
     </button>
     <!-- <button class="btn logo-42 col-4">
       <img src="../../assets/img/42--logo.jpeg" alt="42-logo" class="42--logo">
     </button> -->
-    <button class="btn google col-12" #googleRef>
+    <button class="btn google col-12" (click)="onProviderClicked('google')">
       <img src="../../assets/img/google--logo.png" alt="google-logo" class="google--logo">
     </button>
     <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->

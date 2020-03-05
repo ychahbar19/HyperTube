@@ -7,12 +7,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+const keys = require('./config/keys');
 
 const homeRoutes = require('./routes/home');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
-const signinRoutes = require('./routes/signin');
-const signUpRoutes = require('./routes/signup');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).
@@ -50,24 +52,30 @@ app.use((req, res, next) =>
 //Processes ALL requests to tranforms it's body into a Json object (usable in JS).
 app.use(bodyParser.json());
 
-// const isLoggedIn = (req, res, next) => {
-//   if (req.isAuthenticated()) {
-//     return next()
-//   }
-//   return res.status(400).json({ "statusCode": 400, "message": "not authenticated" })
-// }
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: keys.google.clientID,
+      // clientID: GOOGLE_CLIENT_ID,
+      clientSecret: keys.google.clientSecret,
+      // clientSecret: GOOGLE_CLIENT_SECRET,
+      callbackURL: 'http://localhost:4200/home'
+    },
+    function(accessToken, refreshToken, profile, done) {
+      User.findOrCreate({ googleId: profile.id }, function(err, user) {
+        return done(err, user);
+      });
+    }
+  )
+);
 
 // set this folder as static folder we want to serve
 app.use(express.static(__dirname + '/assets'));
-
-
 
 //Send requests for the route '/api/xxx' to the router xxxRoutes.
 app.use('/', homeRoutes);
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
-app.use('/signin', signinRoutes);
-app.use('/signup', signUpRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

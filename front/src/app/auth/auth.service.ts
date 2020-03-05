@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 import { AuthData } from './auth-data.model';
+import { LoadingService } from '../shared/services/loading.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,9 +12,8 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
-  private isLoading = new Subject<boolean>();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private loadingService: LoadingService) { }
 
   getToken() {
     return this.token;
@@ -25,10 +25,6 @@ export class AuthService {
 
   getAuthStatusListener() {
     return this.authStatusListener.asObservable();
-  }
-
-  getisLoading() {
-    return this.isLoading.asObservable();
   }
 
   createUser(
@@ -51,7 +47,7 @@ export class AuthService {
       password: formData.passwords.password,
       confirmPassword: formData.passwords.confirmPassword
     };
-    this.http.post('http://localhost:3000/signup', authData)
+    this.http.post('http://localhost:3000/api/auth/signup', authData)
       .subscribe(response => {
         // if error : alert error (pareil pour login)
         // if success : alert success + send mail
@@ -60,24 +56,35 @@ export class AuthService {
 
   login(formData: { username: string, password: string }) {
     const authData: AuthData = { username: formData.username, password: formData.password };
-    this.isLoading.next(true);
-    this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/signin', authData)
+    this.loadingService.isLoading.next(true);
+    this.http
+      .post<{ token: string; expiresIn: number }>(
+        'http://localhost:3000/api/auth/login',
+        authData
+      )
       .subscribe(response => {
-        this.isLoading.next(false);
-        console.log('arrive ici');
+        this.loadingService.isLoading.next(false);
         const token = response.token;
         this.token = token;
         if (token) {
-          console.log(token);
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
           const now = new Date();
-          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          const expirationDate = new Date(
+            now.getTime() + expiresInDuration * 1000
+          );
           this.saveAuthData(token, expirationDate);
           this.router.navigate(['/gallery']);
         }
+      });
+  }
+
+  loginWithProvider(provider: string) {
+    this.http.get('http://localhost:3000/api/auth/' + provider)
+      .subscribe(response => {
+        console.log(response);
       });
   }
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-omniauth',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OmniauthComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
+  }
+
+  onProviderClicked(provider: string) {
+    this.authService.loginWithProvider(provider);
   }
 
 }
