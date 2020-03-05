@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { AuthService } from '../auth.service';
 
@@ -9,18 +9,68 @@ import { AuthService } from '../auth.service';
   styleUrls: ['../signin/signin.component.scss', './signup.component.scss']
 })
 export class SignupComponent implements OnInit {
-  @ViewChild('f', { static: false }) signUpForm: NgForm;
+  form: FormGroup;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.form = new FormGroup({
+      'avatar': new FormControl(
+        null,
+        { validators: [
+            Validators.required
+        ]
+        }),
+      'firstName': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('[a-zA-Z]+$')
+          ]
+        }),
+      'lastName': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('[a-zA-Z]+$')
+        ]
+        }),
+      'username': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('^[a-zA-Z0-9]{6,33}$')
+        ]
+        }),
+      'email': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$')
+        ]
+        }),
+      'password': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+        ]
+        }),
+      'confirmPassword': new FormControl(
+        null,
+        { validators: [
+            Validators.required,
+            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+        ]
+        })
+      });
   }
 
   onSignup() {
-    if (this.signUpForm.invalid) {
+    if (this.form.invalid) {
       return;
     }
-    this.authService.createUser(this.signUpForm.value);
+    this.authService.createUser(this.form.value);
   }
 
   samePwd(password1, password2) {
