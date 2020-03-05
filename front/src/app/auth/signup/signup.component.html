@@ -5,6 +5,9 @@
         <h4 class="mb-4 form-yellow-title">Sign Up</h4>
         <div class="form-row">
           <div class="form-group col-12">
+            <div class="avatar-preview col-12 mx-auto" *ngIf="avatarPreview && (avatarPreview !== '') && form.get('avatar').valid">
+              <img class="mx-auto" [src]="avatarPreview" [alt]="form.value.avatar">
+            </div>
             <button class="file--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-2"
             type="button"
             (click)="avatar.click()">
@@ -14,10 +17,10 @@
             type="file"
             accept="image/*"
             #avatar
-            formControlName="avatar"
             class="form-control"
             id="inputUpload4"
-            placeholder="upload a picture">
+            placeholder="upload a picture"
+            (change)="onAvatarPicked($event)">
           </div>
           <div class="form-group col-md-6">
             <input
@@ -135,7 +138,7 @@
             Passwords are not the same
           </div>
         </div>
-        <button type="submit" [disabled]="f.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
+        <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
       </form>
     </div>
     <app-omniauth></app-omniauth>

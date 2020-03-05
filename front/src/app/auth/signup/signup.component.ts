@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { mimeType } from './mime-type.validator';
 
 import { AuthService } from '../auth.service';
 
@@ -10,59 +12,53 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit {
   form: FormGroup;
+  avatarPreview: string;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.form = new FormGroup({
       'avatar': new FormControl(
-        null,
-        { validators: [
-            Validators.required
-        ]
+        null, {
+          validators: [Validators.required],
+          asyncValidators: [mimeType]
         }),
       'firstName': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('[a-zA-Z]+$')
-          ]
-        }),
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('[a-zA-Z]+$')
+        ]}),
       'lastName': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('[a-zA-Z]+$')
-        ]
-        }),
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('[a-zA-Z]+$')
+        ]}),
       'username': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('^[a-zA-Z0-9]{6,33}$')
-        ]
-        }),
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('^[a-zA-Z0-9]{6,33}$')
+        ]}),
       'email': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$')
-        ]
-        }),
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$')
+        ]}),
       'password': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
-        ]
-        }),
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+        ]}),
       'confirmPassword': new FormControl(
-        null,
-        { validators: [
-            Validators.required,
-            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
-        ]
-        })
+        null, {
+        validators: [
+          Validators.required,
+          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+        ]})
       });
   }
 
@@ -71,6 +67,17 @@ export class SignupComponent implements OnInit {
       return;
     }
     this.authService.createUser(this.form.value);
+  }
+
+  onAvatarPicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ avatar: file });
+    this.form.get('avatar').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.avatarPreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   samePwd(password1, password2) {

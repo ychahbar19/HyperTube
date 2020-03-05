@@ -16,3 +16,15 @@ input[type="file"]
 .file--button i{
   line-height: 40px;
 }
+
+.avatar-preview{
+  text-align: center;
+  margin-bottom: 5px;
+  height: 5rem;
+}
+
+.avatar-preview img{
+  height: 100%;
+  max-width: 100%;
+  min-width: 100px;
+}
