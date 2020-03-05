@@ -1,7 +1,8 @@
 const axios = require('axios');
 
 const YtsResultsModel = require('../models/YtsResultsModel');
-const ResultModel = require('../models/ResultModel');
+const EztvResultsModel = require('../models/EztvResultsModel');
+//const ResultModel = require('../models/ResultModel');
 let hypertubeResults = {};
 
 /*
@@ -27,14 +28,21 @@ exports.searchMovies = (req, res, next) =>
       const ytsResults = new YtsResultsModel(results.data);
       //ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title));
       ytsResults.data.movies.forEach(movie => { hypertubeResults[movie.imdb_code] = movie.title; });
-      res.send(hypertubeResults);
+      res.status(200).send(hypertubeResults);
     })
     .catch(error => res.status(400).json({ error }));
 };
 
 exports.searchTVShows = (req, res, next) =>
 {
-  res.send('Bad request to /api/search (tv shows)');
+  axios.get('https://eztv.io/api/get-torrents')
+    .then(results =>
+    {
+      const eztvResults = new EztvResultsModel(results.data);
+      eztvResults.torrents.forEach(tvshow => { hypertubeResults['tt'+tvshow.imdb_id] = tvshow.title; });
+      res.status(200).send(hypertubeResults);
+    })
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.searchAll = (req, res, next) =>

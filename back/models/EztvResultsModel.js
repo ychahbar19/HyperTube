@@ -1,9 +1,7 @@
-// MODEL for TVShow
-
-//Imports node's mongoose package (=database).
+// 1) Import
 const mongoose = require('mongoose');
 
-//Creates the models for TV shows from EZTV, as database schemas.
+// 2) Define
 var EztvTorrentSchema = new mongoose.Schema(
 {
   id: Number,
@@ -24,13 +22,13 @@ var EztvTorrentSchema = new mongoose.Schema(
   size_bytes: String
 });
 
-var EztvSchema = new mongoose.Schema(
+var EztvResultsSchema = new mongoose.Schema(
 {
   torrents_count: Number,
   limit: Number,
   page: Number,
-  torrents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'EztvTorrentSchema' }]
+  torrents: [EztvTorrentSchema]
 });
 
-//Exports the models.
-module.exports = mongoose.model('EztvModel', EztvSchema);
+// 3) Export
+module.exports = mongoose.model('EztvResultsModel', EztvResultsSchema);
