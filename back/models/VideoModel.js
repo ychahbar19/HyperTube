@@ -4,6 +4,16 @@ const mongoose = require('mongoose');
 // 2) Define
 var VideoTorrentsSchema = new mongoose.Schema(
 {
+  url: String,
+  hash: String,
+  quality: String,
+  type: String,
+  seeds: Number,
+  peers: Number,
+  size: String,
+  size_bytes: Number,
+  date_uploaded: String,
+  date_uploaded_unix: Number
 });
 
 var VideoSchema = new mongoose.Schema(

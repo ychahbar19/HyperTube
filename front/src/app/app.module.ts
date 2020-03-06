@@ -19,12 +19,13 @@ import { SigninComponent } from './signin/signin.component';
 //Video components
 import { SearchComponent } from './search/search.component';
 import { VideoComponent } from './video/video.component';
+import { CommentsComponent } from './comments/comments.component';
 
 @NgModule({
   declarations: [
     AppComponent, HeaderComponent, FooterComponent, HomeComponent,
     OauthComponent, SignupComponent, SigninComponent,
-    SearchComponent, VideoComponent
+    SearchComponent, VideoComponent, CommentsComponent
   ],
   imports: [
     BrowserModule,

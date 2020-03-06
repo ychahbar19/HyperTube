@@ -1,0 +1,11 @@
+<h2>Comments</h2>
+
+<form>
+  <textarea class="form-control" placeholder="Comment content..."></textarea>
+  <button class="btn btn-primary">Send</button>
+</form>
+
+<div *ngFor="let comment of comments">
+  <p><b>{{ comment.author_name }}</b> {{ comment.posted_datetime }}</p>
+  <p>{{ comment.content }}</p>
+</div>

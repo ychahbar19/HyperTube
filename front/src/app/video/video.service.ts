@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+//import { Observable, Subject } from 'rxjs';
 //import { VideoModel } from './video.model';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class VideoService
   {
     return new Promise((resolve, reject) =>
     {
-      this.http.get<{}>('http://localhost:3000/api/video/tt3896198')
+      this.http.get<{}>('http://localhost:3000/api/video/tt0077869-4956')
         .toPromise()
         .then(response => { resolve(response); },
               error => { reject(error); });

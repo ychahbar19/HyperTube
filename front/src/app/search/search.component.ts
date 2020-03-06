@@ -21,7 +21,6 @@ Content:
 
 import { Component, OnInit } from '@angular/core';
 import { SearchService } from './search.service';
-//import { ResultModel } from './result.model';
 
 @Component({
   selector: 'app-search',

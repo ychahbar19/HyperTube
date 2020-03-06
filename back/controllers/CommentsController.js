@@ -1,72 +1,65 @@
-const VideoModel = require('../models/VideoModel');
+const CommentModel = require('../models/CommentModel');
 
 /* ------------------------------------------------------------------------ *\
     CRUD functions
 \* ------------------------------------------------------------------------ */
 
 /* ------------------------ CREATE ------------------------ */
-exports.create = (req, res, next) =>
+exports.create = (req, res) =>
 {
   // Gets the data from POST.
-  const videoPosted = JSON.parse(req.body.thing);
+  const commentPosted = JSON.parse(req.body.thing);
 
   //Deletes the id from the request body (since mongodb will generate another).
-  delete videoPosted._id;
+  delete commentPosted._id;
 
   //Creates a new object based on the model and from the posted data.
-  const video = new VideoModel(
+  const comment = new CommentModel(
   {
     //Copies all the fields from the posted data and uses them to fill the model.
-    //Alternative: { name: videoPosted.name, lastSeenTimestamp: etc. }
-    ...videoPosted,
+    //Alternative: { name: commentPosted.author_name, etc. }
+    ...commentPosted,
   });
 
   //Uses mongoose's .save method to save the new object in the database
   //(this uses the .then .catch structure because it's asynchronous).
-  video.save()
-    .then(() => res.status(201).json({ message: 'Video created.' }))
+  comment.save()
+    .then(() => res.status(201).json({ message: 'Comment created.' }))
     .catch(error => res.status(400).json({ error }))
 };
 
 /* ------------------------ READ ------------------------ */
-exports.readAll = (req, res, next) =>
+exports.read = (req, res) =>
 {
-  VideoModel.find()
-    .then(videos => res.status(200).json(videos))
+  CommentModel.find
+  (
+    { imdb_id: req.params.video_imdb_id }
+  )
+    .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.readOne = (req, res, next) =>
-{
-  VideoModel.findOne
-  (
-    { _id: req.params.id }
-  )
-    .then(video => res.status(200).json(video))
-    .catch(error => res.status(404).json({ error }));
-};
-
 /* ------------------------ UPDATE ------------------------ */
-exports.update = (req, res, next) =>
+exports.update = (req, res) =>
 {
   //Updates the object that matches the id given as route parameter (:id),
   //with the new version of this object, but keeping it's current id.
-  VideoModel.updateOne
+  CommentModel.updateOne
   (
     { _id: req.params.id },
     { ...req.body, _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: 'Video modified.'}))
+    .then(() => res.status(200).json({ message: 'Comment modified.'}))
     .catch(error => res.status(400).json({ error }));
 };
 
 /* ------------------------ DELETE ------------------------ */
-exports.delete = (req, res, next) =>
+exports.delete = (req, res) =>
 {
-  VideoModel.deleteOne
+  CommentModel.deleteOne
   (
     { _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: 'Video deleted.'}))
+    .then(() => res.status(200).json({ message: 'Comment deleted.'}))
     .catch(error => res.status(400).json({ error }));
 };

@@ -48,11 +48,13 @@ app.use(bodyParser.json()); //Processes ALL requests to tranforms it's body into
 const userRoutes = require('./routes/user');
 const searchRoute = require('./routes/SearchRoute');
 const videoRoute = require('./routes/VideoRoute');
+const commentsRoute = require('./routes/commentsRoute');
 const homeRoute = require('./routes/HomeRoute');
 
 app.use('/api/auth', userRoutes);
 app.use('/api/search', searchRoute);
 app.use('/api/video', videoRoute);
+app.use('/api/comments', commentsRoute);
 app.use('/', homeRoute);
 
 /* -------------------------------------------------------------------------- *\
