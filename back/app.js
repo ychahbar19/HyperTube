@@ -7,10 +7,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-
-const keys = require('./config/keys');
+const passportSetup = require('./config/passport-setup');
 
 const homeRoutes = require('./routes/home');
 const stuffRoutes = require('./routes/stuff');
@@ -51,23 +48,6 @@ app.use((req, res, next) =>
 
 //Processes ALL requests to tranforms it's body into a Json object (usable in JS).
 app.use(bodyParser.json());
-
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: keys.google.clientID,
-      // clientID: GOOGLE_CLIENT_ID,
-      clientSecret: keys.google.clientSecret,
-      // clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:4200/home'
-    },
-    function(accessToken, refreshToken, profile, done) {
-      User.findOrCreate({ googleId: profile.id }, function(err, user) {
-        return done(err, user);
-      });
-    }
-  )
-);
 
 // set this folder as static folder we want to serve
 app.use(express.static(__dirname + '/assets'));

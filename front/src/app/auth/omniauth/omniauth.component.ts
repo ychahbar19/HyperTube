@@ -15,6 +15,7 @@ export class OmniauthComponent implements OnInit {
 
   onProviderClicked(provider: string) {
     this.authService.loginWithProvider(provider);
+    // this.authService.flogin();
   }
 
 }

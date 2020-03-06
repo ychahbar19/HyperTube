@@ -35,18 +35,18 @@ router.post(
   UserController.login
 );
 
-router.get('/google', (req, res, next) => {
-  passport.authenticate('google', {
-    scope: ['https://www.googleapis.com/auth/plus.login']
-  });
+router.get('/google', passport.authenticate('google', {
+  scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email']
+}));
+
+router.get('/google/redirect', (req, res) => {
+  console.log('okkkkkkkk');
+  // var responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>'
+  // responseHTML = responseHTML.replace('%value%', JSON.stringify({
+  //   user: req.user
+  // }));
+  // res.status(200).send(responseHTML);
 });
-// router.get(
-//   '/google/callback',
-//   passport.authenticate('google', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     res.redirect('/');
-//   }
-// );
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {
