@@ -1,5 +1,5 @@
 export interface AuthData {
-  photoUrl?: string;
+  avatar?: File;
   firstName?: string;
   lastName?: string;
   email?: string;

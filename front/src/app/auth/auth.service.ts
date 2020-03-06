@@ -28,28 +28,30 @@ export class AuthService {
 
   createUser(
     formData: {
+      avatar: File,
       firstName: string,
       lastName: string,
       username: string,
       email: string,
-      passwords: {
-        password: string,
-        confirmPassword: string
-      }
+      password: string,
+      confirmPassword: string
     }
   ) {
     const authData: AuthData = {
+      avatar: formData.avatar,
       firstName: formData.firstName,
       lastName: formData.lastName,
       username: formData.username,
       email: formData.email,
-      password: formData.passwords.password,
-      confirmPassword: formData.passwords.confirmPassword
+      password: formData.password,
+      confirmPassword: formData.confirmPassword
     };
     this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
         // if error : alert error
         // if success : alert success + send mail
+        const resData = response;
+        console.log(resData);
       });
   }
 
