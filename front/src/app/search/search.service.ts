@@ -6,6 +6,7 @@ import { ResultModel } from './result.model';
 @Injectable()
 export class SearchService
 {
+  /*
   private allResults: ResultModel[] = [];
   private allResultsIndex = 0;
 
@@ -59,5 +60,36 @@ export class SearchService
     await this.getMovies();
     await this.getTVShows();
     return this.allResults;
+  }
+  */
+
+  private allResults: ResultModel[] = [];
+  private allResultsIndex = 0;
+
+  constructor(private http: HttpClient) {}
+
+  addToResults(imdb_id, title)
+  {
+    this.allResults[this.allResultsIndex] =
+    {
+      imdb_id: imdb_id,
+      title: title
+    };
+    this.allResultsIndex++;
+  }
+
+  getResults()
+  {
+    return new Promise((resolve, reject) =>
+    {
+      this.http.get<{}>('http://localhost:3000/api/search/')
+        .toPromise()
+        .then(response =>
+              {
+                Object.entries(response).forEach(values => this.addToResults(values[0], values[1]));
+                resolve(this.allResults);
+              },
+              error => { reject(error); });
+    });
   }
 }

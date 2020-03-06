@@ -12,9 +12,9 @@ const router = express.Router();
     2) Calls the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
 
-router.get('/movies', SearchController.searchMovies);
-router.get('/tvshows', SearchController.searchTVShows);
-router.get('/', SearchController.searchAll);
+//router.get('/movies', SearchController.searchMovies);
+//router.get('/tvshows', SearchController.searchTVShows);
+router.get('/', SearchController.search);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

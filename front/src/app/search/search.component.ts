@@ -21,7 +21,7 @@ Content:
 
 import { Component, OnInit } from '@angular/core';
 import { SearchService } from './search.service';
-import { ResultModel } from './result.model';
+//import { ResultModel } from './result.model';
 
 @Component({
   selector: 'app-search',
@@ -31,7 +31,7 @@ import { ResultModel } from './result.model';
 })
 export class SearchComponent implements OnInit
 {
-  public results: ResultModel[] = [];
+  public results;
 
   constructor(private searchService: SearchService) {}
 

@@ -8,7 +8,6 @@ let hypertubeResults = {};
 /*
 let hypertubeResults = [ResultModel];
 let hypertubeResultsIndex = 0;
-
 function addToHypertubeResults(imdb_id, title)
 {
   hypertubeResults[hypertubeResultsIndex] =
@@ -20,7 +19,8 @@ function addToHypertubeResults(imdb_id, title)
 }
 */
 
-exports.searchMovies = (req, res, next) =>
+//exports.searchMovies = (req, res) =>
+function searchMovies()
 {
   axios.get('https://yts.mx/api/v2/list_movies.json?query_term=lord')
     .then(results =>
@@ -28,24 +28,29 @@ exports.searchMovies = (req, res, next) =>
       const ytsResults = new YtsResultsModel(results.data);
       //ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title));
       ytsResults.data.movies.forEach(movie => { hypertubeResults[movie.imdb_code] = movie.title; });
-      res.status(200).send(hypertubeResults);
+      //res.status(200).send(hypertubeResults);
     })
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.searchTVShows = (req, res, next) =>
+//exports.searchTVShows = (req, res) =>
+function searchTVShows()
 {
   axios.get('https://eztv.io/api/get-torrents')
     .then(results =>
     {
       const eztvResults = new EztvResultsModel(results.data);
       eztvResults.torrents.forEach(tvshow => { hypertubeResults['tt'+tvshow.imdb_id] = tvshow.title; });
-      res.status(200).send(hypertubeResults);
+      //res.status(200).send(hypertubeResults);
     })
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.searchAll = (req, res, next) =>
+async function search(req, res)
 {
-  res.send('Bad request to /api/search (all)');
+  await searchMovies();
+  await searchTVShows();
+  res.status(200).send(hypertubeResults);
 };
+
+module.exports.search = search;
