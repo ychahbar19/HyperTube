@@ -2,6 +2,10 @@
 const mongoose = require('mongoose');
 
 // 2) Define
+var VideoTorrentsSchema = new mongoose.Schema(
+{
+});
+
 var VideoSchema = new mongoose.Schema(
 {
   imdbID: String,
@@ -17,7 +21,8 @@ var VideoSchema = new mongoose.Schema(
   Director: String,
   Writer: String,
   Production: String,
-  Actors: String
+  Actors: String,
+  Torrents: [VideoTorrentsSchema]
 });
 
 // 3) Export

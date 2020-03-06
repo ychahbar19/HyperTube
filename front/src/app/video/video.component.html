@@ -1,11 +1,11 @@
 <div class="container-fluid">
 
   <div class="row justify-content-center">
-    <div class="col-sm-2">
-      <img src="{{ video['Poster'] }}">
+    <div class="col-md-3 text-center">
+      <img src="{{ video['Poster'] }}" class="img-fluid">
     </div>
 
-    <div class="col-sm-8">
+    <div class="col-md-8">
       <h1>{{ video['Title'] }}</h1>
       <p>
         <span class="star-rating">
@@ -13,13 +13,12 @@
             <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
             <span class="front-stars" [style.width]="video['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
           </span>
-          {{ video['imdbRating'] / 2 }}/5 ({{ video['imdbVotes'] }} votes)
+          {{ video['imdbRating'] / 2 }}/5 ({{ video['imdbVotes'] }} votes) | {{ video['Year'] }} | {{ video['Runtime'] }} | {{ video['Genre'] }}
         </span>
       </p>
-      <p>{{ video['Year'] }} | {{ video['Runtime'] }} | {{ video['Genre'] }}</p>
       <p>{{ video['Plot'] }}</p>
-      <p>With {{ video['Actors'] }}</p>
-      <p>By {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }}</p>
+      <p class="small">With {{ video['Actors'] }}.</p>
+      <p class="small">By {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }}.</p>
     </div>
   </div>
 

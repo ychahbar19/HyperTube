@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { ResultModel } from './result.model';
+//import { ResultModel } from './result.model';
 
 @Injectable()
 export class SearchService
@@ -63,17 +63,19 @@ export class SearchService
   }
   */
 
-  private allResults: ResultModel[] = [];
+  private allResults = [];
   private allResultsIndex = 0;
 
   constructor(private http: HttpClient) {}
 
-  addToResults(imdb_id, title)
+  addToResults(imdb_id, contents)
   {
     this.allResults[this.allResultsIndex] =
     {
       imdb_id: imdb_id,
-      title: title
+      title: contents.title,
+      yts_id: contents.yts_id,
+      eztv_id: contents.eztv_id
     };
     this.allResultsIndex++;
   }

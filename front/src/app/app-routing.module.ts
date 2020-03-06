@@ -19,7 +19,7 @@ const routes: Routes = [
   {path: 'signup', component: SignupComponent},
   {path: 'signin', component: SigninComponent},
   {path: 'search', component: SearchComponent},
-  {path: 'video/:imdb_id', component: VideoComponent}
+  {path: 'video/:imdb_id-:yts_id', component: VideoComponent}
 ];
 
 @NgModule({
