@@ -8,8 +8,9 @@ Content:
   - User comments
 */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+// import { Component, OnInit, OnDestroy } from '@angular/core';
+// import { Subscription } from 'rxjs';
 import { VideoModel } from './video.model';
 import { VideoService } from './video.service';
 
@@ -19,6 +20,7 @@ import { VideoService } from './video.service';
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss']
 })
+/*
 export class VideoComponent implements OnInit, OnDestroy
 {
   public video: VideoModel = {
@@ -43,5 +45,17 @@ export class VideoComponent implements OnInit, OnDestroy
   ngOnDestroy()
   {
     this.videoSubscription.unsubscribe();
+  }
+}
+*/
+export class VideoComponent implements OnInit
+{
+  public video = {};
+
+  constructor(private videoService: VideoService) {}
+
+  async ngOnInit()
+  {
+    this.video = await this.videoService.getVideoInfo();
   }
 }

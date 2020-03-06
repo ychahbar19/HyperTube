@@ -18,11 +18,13 @@ const router = express.Router();
 
 
 /* ----- CRUD functions ----- */
-router.post('/create', VideoController.create);
-router.get('/read', VideoController.readAll);
-router.get('/read/:id', VideoController.readOne);
-router.put('/update/:id', VideoController.update);
-router.delete('/delete/:id', VideoController.delete);
+// router.post('/create', VideoController.create);
+// router.get('/read', VideoController.readAll);
+// router.get('/read/:id', VideoController.readOne);
+// router.put('/update/:id', VideoController.update);
+// router.delete('/delete/:id', VideoController.delete);
+
+router.get('/:id', VideoController.getVideoInfo);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

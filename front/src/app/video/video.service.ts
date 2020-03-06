@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { VideoModel } from './video.model';
+//import { VideoModel } from './video.model';
 
 @Injectable()
 export class VideoService
 {
+  /*
   private video: VideoModel = {
                     _id: '',
                     name: '',
@@ -28,5 +29,19 @@ export class VideoService
   getVideoUpdateListener()
   {
     return this.videoUpdated.asObservable();
+  }
+  */
+
+  constructor(private http: HttpClient) {}
+
+  getVideoInfo()
+  {
+    return new Promise((resolve, reject) =>
+    {
+      this.http.get<{}>('http://localhost:3000/api/video/tt3896198')
+        .toPromise()
+        .then(response => { resolve(response); },
+              error => { reject(error); });
+    });
   }
 }

@@ -2,21 +2,24 @@
 
   <div class="row justify-content-center">
     <div class="col-sm-2">
-      <img src="">pic
+      <img src="{{ video['Poster'] }}">
     </div>
 
     <div class="col-sm-8">
-      <h1 class="text-center">{{ video['name'] }}</h1>
-      <p class="text-center">
+      <h1>{{ video['Title'] }}</h1>
+      <p>
         <span class="star-rating">
           <span class="back-stars">
             <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-            <span class="front-stars" style="width: 50%"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+            <span class="front-stars" [style.width]="video['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
           </span>
+          {{ video['imdbRating'] / 2 }}/5 ({{ video['imdbVotes'] }} votes)
         </span>
       </p>
-      <p>{{ video['summary'] }}</p>
-      <p>list, of, genres | productionYear | duration</p>
+      <p>{{ video['Year'] }} | {{ video['Runtime'] }} | {{ video['Genre'] }}</p>
+      <p>{{ video['Plot'] }}</p>
+      <p>With {{ video['Actors'] }}</p>
+      <p>By {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }}</p>
     </div>
   </div>
 
@@ -48,6 +51,6 @@
       <p><b>Diablo25</b> 30.10.2017 12:13</p>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non lorem elementum, accumsan magna sed, faucibus mauris. Nulla pellentesque ante nibh, ac hendrerit ante fermentum sed. Nunc in libero dictum, porta nibh pellentesque, ultrices dolor. Curabitur nunc ipsum, blandit vel aliquam id, aliquam vel velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed sit amet mi dignissim, pretium justo non, lacinia libero. Nulla facilisi. Donec id sem velit.</p>
     </div>
-    
+
   </div>
 </div>

@@ -4,9 +4,20 @@ const mongoose = require('mongoose');
 // 2) Define
 var VideoSchema = new mongoose.Schema(
 {
-  field_1: String,
-  field_2: String,
-  field_3: String
+  imdbID: String,
+  Type: String,
+  Title: String,
+  Poster: String,
+  imdbRating: Number,
+  imdbVotes: String,
+  Genre: String,
+  Year: String,
+  Runtime: String,
+  Plot: String,
+  Director: String,
+  Writer: String,
+  Production: String,
+  Actors: String
 });
 
 // 3) Export
