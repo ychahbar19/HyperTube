@@ -9,6 +9,7 @@ Content:
 */
 
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 // import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { Subscription } from 'rxjs';
 import { VideoService } from './video.service';
@@ -49,12 +50,22 @@ export class VideoComponent implements OnInit, OnDestroy
 */
 export class VideoComponent implements OnInit
 {
+  private imdb_id;
+  private yts_id;
   public video = {};
 
-  constructor(private videoService: VideoService) {}
+  constructor(private videoService: VideoService,
+              private route: ActivatedRoute)
+  {
+    this.route.params.subscribe(params =>
+    {
+      this.imdb_id = params['imdb_id'];
+      this.yts_id = params['yts_id'];
+    });
+  }
 
   async ngOnInit()
   {
-    this.video = await this.videoService.getVideoInfo();
+    this.video = await this.videoService.getVideoInfo(this.imdb_id, this.yts_id);
   }
 }

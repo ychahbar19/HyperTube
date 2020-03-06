@@ -1,10 +1,15 @@
+/* -------------------------------------------------------------------------- *\
+    1) Imports and variable definitions.
+\* -------------------------------------------------------------------------- */
+
 const CommentModel = require('../models/CommentModel');
 
-/* ------------------------------------------------------------------------ *\
-    CRUD functions
-\* ------------------------------------------------------------------------ */
+/* -------------------------------------------------------------------------- *\
+    2) CRUD functions.
+\* -------------------------------------------------------------------------- */
 
 /* ------------------------ CREATE ------------------------ */
+
 exports.create = (req, res) =>
 {
   // Gets the data from POST.
@@ -29,6 +34,7 @@ exports.create = (req, res) =>
 };
 
 /* ------------------------ READ ------------------------ */
+
 exports.read = (req, res) =>
 {
   CommentModel.find
@@ -40,6 +46,7 @@ exports.read = (req, res) =>
 };
 
 /* ------------------------ UPDATE ------------------------ */
+
 exports.update = (req, res) =>
 {
   //Updates the object that matches the id given as route parameter (:id),
@@ -54,6 +61,7 @@ exports.update = (req, res) =>
 };
 
 /* ------------------------ DELETE ------------------------ */
+
 exports.delete = (req, res) =>
 {
   CommentModel.deleteOne

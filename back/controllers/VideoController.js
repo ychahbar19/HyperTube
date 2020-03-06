@@ -1,11 +1,20 @@
-const axios = require('axios');
+/* -------------------------------------------------------------------------- *\
+    1) Imports and variable definitions.
+\* -------------------------------------------------------------------------- */
 
+const axios = require('axios');
 const VideoModel = require('../models/VideoModel');
+
 let videoInfo = {};
 
-function getInfo()
+/* -------------------------------------------------------------------------- *\
+    2) Private functions.
+\* -------------------------------------------------------------------------- */
+
+//Gets the video's info from The Open Movie Database (OMDb)'s API.
+function getInfo(imdb_id)
 {
-  axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=tt0077869')
+  axios.get('http://www.omdbapi.com/?apikey=82d3568e&i='+imdb_id)
     .then(results =>
     {
       videoInfo = new VideoModel(results.data);
@@ -13,9 +22,10 @@ function getInfo()
     .catch(error => res.status(400).json({ error }));
 };
 
-function getTorrents()
+//Gets the video's torrents from YTS' API.
+function getTorrents(yts_id)
 {
-  axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=4956')
+  axios.get('https://yts.mx/api/v2/movie_details.json?movie_id='+yts_id)
     .then(results =>
     {
       videoInfo.Torrents = results.data.data.movie.torrents;
@@ -23,10 +33,15 @@ function getTorrents()
     .catch(error => res.status(400).json({ error }));
 };
 
+/* -------------------------------------------------------------------------- *\
+    3) Public function and export.
+\* -------------------------------------------------------------------------- */
+
+//Calls the different sources and returns their combined results.
 async function getVideoInfo(req, res)
 {
-  await getInfo();
-  await getTorrents();
+  await getInfo(req.params.imdb_id);
+  await getTorrents(req.params.yts_id);
   res.status(200).send(videoInfo);
 };
 

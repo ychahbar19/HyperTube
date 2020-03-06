@@ -1,19 +1,17 @@
-// EXPRESS ROUTER for Search
-
-/* ------------------------------------------------------------------------ *\
-    1) Imports the required elements and creates express' Router object.
-\* ------------------------------------------------------------------------ */
+/* -------------------------------------------------------------------------- *\
+    1) Imports and variable definitions.
+\* -------------------------------------------------------------------------- */
 
 const express = require('express');
 const SearchController = require('../controllers/SearchController');
+
 const router = express.Router();
 
 /* ------------------------------------------------------------------------ *\
-    2) Calls the controller's functions based on the request type/route.
+    2) Calls to the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
 
-//router.get('/movies', SearchController.searchMovies);
-//router.get('/tvshows', SearchController.searchTVShows);
+/* ----- Search function ----- */
 router.get('/', SearchController.search);
 
 /* ----- Fallback function ----- */

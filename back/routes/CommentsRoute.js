@@ -1,15 +1,14 @@
-// EXPRESS ROUTER for Comments
-
-/* ------------------------------------------------------------------------ *\
-    1) Imports the required elements and creates express' Router object.
-\* ------------------------------------------------------------------------ */
+/* -------------------------------------------------------------------------- *\
+    1) Imports and variable definitions.
+\* -------------------------------------------------------------------------- */
 
 const express = require('express');
 const CommentsController = require('../controllers/CommentsController');
+
 const router = express.Router();
 
 /* ------------------------------------------------------------------------ *\
-    2) Calls the controller's functions based on the request type/route.
+    2) Calls to the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
 
 /* ----- CRUD functions ----- */

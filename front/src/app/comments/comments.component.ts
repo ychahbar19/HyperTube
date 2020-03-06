@@ -3,6 +3,7 @@ COMMENTS (from video page only, so members only)
 */
 
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommentsService } from './comments.service';
 
 @Component({
@@ -13,13 +14,20 @@ import { CommentsService } from './comments.service';
 })
 export class CommentsComponent implements OnInit
 {
+  private imdb_id;
   public comments = {};
 
-  constructor(private commentsService: CommentsService) {}
+  constructor(private commentsService: CommentsService,
+              private route: ActivatedRoute)
+  {
+    this.route.params.subscribe(params =>
+    {
+      this.imdb_id = params['imdb_id'];
+    });
+  }
 
   async ngOnInit()
   {
-    console.log('entering app-comments');
-    this.comments = await this.commentsService.getComments();
+    this.comments = await this.commentsService.getComments(this.imdb_id);
   }
 }

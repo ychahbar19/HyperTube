@@ -34,11 +34,11 @@ export class VideoService
 
   constructor(private http: HttpClient) {}
 
-  getVideoInfo()
+  getVideoInfo(imdb_id, yts_id)
   {
     return new Promise((resolve, reject) =>
     {
-      this.http.get<{}>('http://localhost:3000/api/video/tt0077869-4956')
+      this.http.get<{}>('http://localhost:3000/api/video/'+imdb_id+'/'+yts_id)
         .toPromise()
         .then(response => { resolve(response); },
               error => { reject(error); });
