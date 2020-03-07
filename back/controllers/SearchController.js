@@ -26,9 +26,9 @@ function addToHypertubeResults(imdb_id, title, yts_id, eztv_id)
 }
 
 //Fetches results from YTS' API.
-function searchMovies()
+async function searchMovies()
 {
-  axios.get('https://yts.mx/api/v2/list_movies.json?query_term=lord')
+  await axios.get('https://yts.mx/api/v2/list_movies.json?query_term=lord')
     .then(results =>
     {
       const ytsResults = new YtsResultsModel(results.data);
@@ -39,9 +39,9 @@ function searchMovies()
 
 /*
 //Fetches results from ETZV' API.
-function searchTVShows()
+async function searchTVShows()
 {
-  axios.get('https://eztv.io/api/get-torrents')
+  await axios.get('https://eztv.io/api/get-torrents')
     .then(results =>
     {
       const eztvResults = new EztvResultsModel(results.data);

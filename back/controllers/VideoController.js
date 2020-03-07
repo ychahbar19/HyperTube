@@ -12,9 +12,9 @@ let videoInfo = {};
 \* -------------------------------------------------------------------------- */
 
 //Gets the video's info from The Open Movie Database (OMDb)'s API.
-function getInfo(imdb_id)
+async function getInfo(imdb_id)
 {
-  axios.get('http://www.omdbapi.com/?apikey=82d3568e&i='+imdb_id)
+  await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i='+imdb_id)
     .then(results =>
     {
       videoInfo = new VideoModel(results.data);
@@ -23,9 +23,9 @@ function getInfo(imdb_id)
 };
 
 //Gets the video's torrents from YTS' API.
-function getTorrents(yts_id)
+async function getTorrents(yts_id)
 {
-  axios.get('https://yts.mx/api/v2/movie_details.json?movie_id='+yts_id)
+  await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id='+yts_id)
     .then(results =>
     {
       videoInfo.Torrents = results.data.data.movie.torrents;
