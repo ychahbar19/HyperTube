@@ -1,3 +1,4 @@
+// VIDEO INFO
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
@@ -20,4 +21,16 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
     top: 0;
     overflow: hidden;
     color: gold;
+}
+
+// VIDEO TORRENTS
+td
+{
+  width: auto;
+}
+
+td.min
+{
+  width: 1%;
+  white-space: nowrap;
 }

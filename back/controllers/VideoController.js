@@ -29,6 +29,11 @@ async function getTorrents(yts_id)
     .then(results =>
     {
       videoInfo.Torrents = results.data.data.movie.torrents;
+      Object.entries(videoInfo.Torrents).forEach(item =>
+      {
+        let date = new Date(item[1].date_uploaded_unix * 1000);
+        item[1].year_uploaded = date.getFullYear();
+      });
     })
     .catch(error => res.status(400).json({ error }));
 };

@@ -13,7 +13,8 @@ var VideoTorrentsSchema = new mongoose.Schema(
   size: String,
   size_bytes: Number,
   date_uploaded: String,
-  date_uploaded_unix: Number
+  date_uploaded_unix: Number,
+  year_uploaded: Number
 });
 
 var VideoSchema = new mongoose.Schema(

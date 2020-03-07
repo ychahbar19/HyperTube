@@ -1,8 +1,23 @@
 <h2>Comments</h2>
 
-<form>
-  <textarea class="form-control" placeholder="Comment content..."></textarea>
-  <button class="btn btn-primary">Send</button>
+<form [formGroup]="formGroup" (validSubmit)="onSubmit()">
+  <div class="form-row">
+    <div class="col form-group">
+      <label class="d-none">Comment</label>
+      <textarea name="content" id="content" formControlName="Comment" class="form-control" placeholder="Write a comment"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-8 form-group">
+      <label class="d-none">Name</label>
+      <input type="text" name="author_name" formControlName="Name" class="form-control" placeholder="Your name">
+    </div>
+
+    <div class="col-4 form-group">
+      <button class="btn btn-primary btn-block">Send</button>
+    </div>
+  </div>
 </form>
 
 <div *ngFor="let comment of comments">

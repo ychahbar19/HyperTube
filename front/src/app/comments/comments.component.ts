@@ -4,6 +4,7 @@ COMMENTS (from video page only, so members only)
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommentsService } from './comments.service';
 
 @Component({
@@ -15,7 +16,8 @@ import { CommentsService } from './comments.service';
 export class CommentsComponent implements OnInit
 {
   private imdb_id;
-  public comments = {};
+  public comments;
+  public formGroup: FormGroup;
 
   constructor(private commentsService: CommentsService,
               private route: ActivatedRoute)
@@ -29,5 +31,21 @@ export class CommentsComponent implements OnInit
   async ngOnInit()
   {
     this.comments = await this.commentsService.getComments(this.imdb_id);
+    this.formGroup = new FormGroup(
+    {
+      Comment: new FormControl('', [
+        Validators.required,
+        Validators.minLength(10)
+      ]),
+      Name: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2)
+      ]),
+    });
+  }
+
+  onSubmit()
+  {
+    console.log(this.formGroup);
   }
 }

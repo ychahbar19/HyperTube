@@ -1,7 +1,9 @@
 <div class="container-fluid">
 
-  <div class="row justify-content-center">
-    <div class="col-md-3 text-center">
+  <!-- VIDEO INFO -->
+  <div class="row justify-content-center mt-2">
+
+    <div class="col-md-3 text-center mb-2">
       <img src="{{ video['Poster'] }}" class="img-fluid">
     </div>
 
@@ -18,23 +20,46 @@
       </p>
       <p>{{ video['Plot'] }}</p>
       <p class="small">With {{ video['Actors'] }}.</p>
-      <p class="small">By {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }}.</p>
+      <p class="small">By {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }} (producer).</p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-12">
-      <table class="table table-dark">
-        <tr *ngFor="let torrent of video['Torrents']">
-          <td>{{ torrent.url }}</td>
-          <td><button type="button" class="btn btn-primary">Play now / Load and play</button></td>
+  <!-- VIDEO TORRENTS -->
+  <div class="table-responsive mt-2">
+    <table class="table table-striped table-dark" id="accordion">
+      <thead>
+        <tr>
+          <th> </th>
+          <th>Upload date</th>
+          <th>Size</th>
+          <th>Seeds</th>
+          <th>Peers</th>
+          <th> </th>
         </tr>
-      </table>
-      Buttons open tab with the streamer
+      </thead>
+
+      <tbody *ngFor="let torrent of video['Torrents']; let i = index;">
+        <tr class="bg-dark">
+          <td>YIFY {{ torrent.quality }} {{ torrent.type }}</td>
+          <td>{{ torrent.year_uploaded }}</td>
+          <td>{{ torrent.size }}</td>
+          <td>{{ torrent.seeds }}</td>
+          <td>{{ torrent.peers }}</td>
+          <td class="min"><button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">Play now / Load and play</button></td>
+        </tr>
+        <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
+          <td colspan="6">STREAM WINDOW</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <!-- VIDEO COMMENTS -->
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <app-comments></app-comments>
     </div>
   </div>
 
-  <div class="row">
-    <app-comments></app-comments>
-  </div>
 </div>
