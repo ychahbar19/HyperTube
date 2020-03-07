@@ -7,7 +7,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const passportSetup = require('./config/passport-setup');
 
 const homeRoutes = require('./routes/home');
 const stuffRoutes = require('./routes/stuff');

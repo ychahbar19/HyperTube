@@ -15,6 +15,20 @@ function validPattern(str, pattern) {
   return false;
 }
 
+exports.userExists = async (req, res, next) => {
+  console.log(req.body);
+  // try {
+  //   const user = await UserModel.findOne({ email: req.body.profile.getEmail() });
+  //   if (!user) {
+  //     return res.status(200).send('nonexistant');
+  //   }
+  //   res.status(200).send('existant');
+  // } catch (err) {
+  //   console.log(err);
+  //   res.status(500).send(err)
+  // }
+}
+
 // sign in
 
 exports.loginValidation = (req, res, next) => {
