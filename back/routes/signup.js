@@ -22,15 +22,17 @@ const storage = multer.diskStorage({
     callback(error, "assets/pictures");
   },
   filename: (req, file, callback) => {
-    const name = file.originalname.toLocaleLowerCase().split(' ').join('-');
+    const name = file.originalname.replace("." + MIME_TYPE_MAP[file.mimetype], "").toLocaleLowerCase().split(' ').join('-');
     const ext = MIME_TYPE_MAP[file.mimetype];
+    req.body.avatar = name + '-' + Date.now() + '.' + ext;
+    
     callback(null, name + '-' + Date.now() + '.' + ext);
   }
 });
 
 
 // router.post('/', UserController.utils);
-router.post('/', multer({storage: storage}).single('image'),  UserController.signupValidation, UserController.createUser);
+router.post('', multer({storage: storage}).single('image'), UserController.signupValidation, UserController.createUser);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

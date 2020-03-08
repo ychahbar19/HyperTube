@@ -80,7 +80,7 @@ export class SignupComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  samePwd(password1, password2) {
+  samePwd(password1 :string, password2 :string) :boolean{
     return password1 === password2;
   }
 }

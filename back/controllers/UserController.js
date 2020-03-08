@@ -95,7 +95,9 @@ exports.signupValidation = (req, res, next) => {
 exports.createUser = async (req, res, next) => {
   try {
     const hashPwd = await bcrypt.hash(req.body.password, 10);
+    
     const user = new UserModel({
+      avatar: req.body.avatar,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
