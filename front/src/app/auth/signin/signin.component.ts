@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthService } from '../auth.service';
 
@@ -10,24 +10,32 @@ import { AuthService } from '../auth.service';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false }) signInForm: NgForm;
   response: Observable<any>;
   errors = [];
-  isLoading: boolean;
+  isLoading = false;
+  private authStatusSub: Subscription;
 
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.authService.getisLoading().subscribe(isLoading => {
-      this.isLoading = isLoading;
-    });
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isLoading = false;
+      }
+    );
   }
 
   onLogin() {
     if (this.signInForm.invalid) {
       return;
     }
+    this.isLoading = true;
     this.authService.login(this.signInForm.value);
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }
