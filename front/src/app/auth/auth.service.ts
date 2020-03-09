@@ -37,23 +37,14 @@ export class AuthService {
       confirmPassword: string
     }
   ) {
-    // const authData: AuthData = {
-    //   avatar: formData.avatar,
-    //   firstName: formData.firstName,
-    //   lastName: formData.lastName,
-    //   username: formData.username,
-    //   email: formData.email,
-    //   password: formData.password,
-    //   confirmPassword: formData.confirmPassword
-    // };
     const authData = new FormData();
-    authData.append("image", formData.avatar);
-    authData.append("firstName", formData.firstName);
-    authData.append("lastName", formData.lastName);
-    authData.append("username", formData.username);
-    authData.append("email", formData.email);
-    authData.append("password", formData.password);
-    authData.append("confirmPassword", formData.confirmPassword);
+    authData.append('photoUrl', formData.avatar);
+    authData.append('firstName', formData.firstName);
+    authData.append('lastName', formData.lastName);
+    authData.append('username', formData.username);
+    authData.append('email', formData.email);
+    authData.append('password', formData.password);
+    authData.append('confirmPassword', formData.confirmPassword);
     this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
         // if error : alert error

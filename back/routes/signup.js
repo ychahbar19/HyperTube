@@ -15,24 +15,24 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
 
-    let error = new Error("invalid mimetype");
-    if (isValid) {
-      error = null;
+    let error = null;
+    if (!isValid) {
+      error = new Error("invalid mimetype");
     }
     callback(error, "assets/pictures");
   },
   filename: (req, file, callback) => {
-    const name = file.originalname.replace("." + MIME_TYPE_MAP[file.mimetype], "").toLocaleLowerCase().split(' ').join('-');
+    const name = file.originalname.replace("." + MIME_TYPE_MAP[file.mimetype], "").toLocaleLowerCase().replace(' ', '-');
     const ext = MIME_TYPE_MAP[file.mimetype];
     req.body.avatar = name + '-' + Date.now() + '.' + ext;
     
-    callback(null, name + '-' + Date.now() + '.' + ext);
+    callback(null, req.body.avatar);
   }
 });
 
 
 // router.post('/', UserController.utils);
-router.post('', multer({storage: storage}).single('image'), UserController.signupValidation, UserController.createUser);
+router.post('', multer({storage: storage}).single('photoUrl'), UserController.signupValidation, UserController.createUser);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

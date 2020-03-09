@@ -18,47 +18,47 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = new FormGroup({
-      'avatar': new FormControl(
+      avatar: new FormControl(
         null, {
           validators: [Validators.required],
           asyncValidators: [mimeType]
         }),
-      'firstName': new FormControl(
+      firstName: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('[a-zA-Z]+$')
-        ]}),
-      'lastName': new FormControl(
+          validators: [
+            Validators.required,
+            Validators.pattern('[a-zA-Z]+$')
+          ]}),
+      lastName: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('[a-zA-Z]+$')
-        ]}),
-      'username': new FormControl(
+          validators: [
+            Validators.required,
+            Validators.pattern('[a-zA-Z]+$')
+          ]}),
+      username: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9]{6,33}$')
-        ]}),
-      'email': new FormControl(
+          validators: [
+            Validators.required,
+            Validators.pattern('^[a-zA-Z0-9]{6,33}$')
+          ]}),
+      email: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$')
-        ]}),
-      'password': new FormControl(
+          validators: [
+            Validators.required,
+            Validators.pattern('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$')
+          ]}),
+      password: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
-        ]}),
-      'confirmPassword': new FormControl(
+          validators: [
+            Validators.required,
+            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+          ]}),
+      confirmPassword: new FormControl(
         null, {
-        validators: [
-          Validators.required,
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
-        ]})
+          validators: [
+            Validators.required,
+            Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
+          ]})
       });
   }
 
@@ -80,7 +80,7 @@ export class SignupComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  samePwd(password1 :string, password2 :string) :boolean{
+  samePwd(password1: string, password2: string): boolean {
     return password1 === password2;
   }
 }
