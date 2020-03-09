@@ -30,11 +30,10 @@ export class CommentsService
         content: comment.Comment
       });
 
-      this.http.post('http://localhost:3000/api/comments/create', postedData);
-      /*
+      this.http.post('http://localhost:3000/api/comments/create', postedData)
         .toPromise()
         .then(response => { console.log(response);resolve(response); },
-              error => { reject(error); });*/
+              error => { reject(error); });
     });
   }
 }

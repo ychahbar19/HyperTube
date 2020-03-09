@@ -12,14 +12,8 @@ const CommentModel = require('../models/CommentModel');
 
 exports.create = (req, res) =>
 {
-
-res.json(req.body);
-  /*
   // Gets the data from POST.
-  const commentPosted = JSON.parse(req.body.thing);
-
-  //Deletes the id from the request body (since mongodb will generate another).
-  delete commentPosted._id;
+  const commentPosted = req.query;
 
   //Creates a new object based on the model and from the posted data.
   const comment = new CommentModel(
@@ -35,7 +29,6 @@ res.json(req.body);
   comment.save()
     .then(() => res.status(201).json({ message: 'Comment created.' }))
     .catch(error => res.status(400).json({ error }))
-    */
 };
 
 /* ------------------------ READ ------------------------ */
