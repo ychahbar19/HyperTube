@@ -12,6 +12,9 @@ const CommentModel = require('../models/CommentModel');
 
 exports.create = (req, res) =>
 {
+
+res.json(req.body);
+  /*
   // Gets the data from POST.
   const commentPosted = JSON.parse(req.body.thing);
 
@@ -22,8 +25,9 @@ exports.create = (req, res) =>
   const comment = new CommentModel(
   {
     //Copies all the fields from the posted data and uses them to fill the model.
-    //Alternative: { name: commentPosted.author_name, etc. }
     ...commentPosted,
+    //Add the time
+    posted_datetime: Date.now()
   });
 
   //Uses mongoose's .save method to save the new object in the database
@@ -31,6 +35,7 @@ exports.create = (req, res) =>
   comment.save()
     .then(() => res.status(201).json({ message: 'Comment created.' }))
     .catch(error => res.status(400).json({ error }))
+    */
 };
 
 /* ------------------------ READ ------------------------ */

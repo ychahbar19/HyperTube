@@ -36,7 +36,7 @@ app.use((req, res, next) =>
 });
 
 app.use(bodyParser.json()); //Processes ALL requests to tranforms it's body into a Json object (usable in JS).
-//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /* -------------------------------------------------------------------------- *\
     4) Imports and calls the required routes.

@@ -6,7 +6,7 @@ var CommentSchema = new mongoose.Schema(
 {
   imdb_id: String,
   author_name: String,
-  posted_datetime: String,
+  posted_datetime: Date,
   content: String
 });
 

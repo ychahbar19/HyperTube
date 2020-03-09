@@ -12,7 +12,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- CRUD functions ----- */
-router.post('/create', CommentsController.create);
+router.get('/create', CommentsController.create);
 router.get('/read/:video_imdb_id', CommentsController.read);
 router.put('/update/:comment_id', CommentsController.update);
 router.delete('/delete/:comment_id', CommentsController.delete);

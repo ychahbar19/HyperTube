@@ -17,7 +17,12 @@ export class CommentsComponent implements OnInit
 {
   private imdb_id;
   public comments;
-  public formGroup: FormGroup;
+  public formGroup = new FormGroup(
+  {
+    Comment: new FormControl('', [ Validators.required, Validators.minLength(10) ]),
+    Name: new FormControl('', [ Validators.required, Validators.minLength(2) ]),
+  });
+  public postResponse;
 
   constructor(private commentsService: CommentsService,
               private route: ActivatedRoute)
@@ -30,22 +35,12 @@ export class CommentsComponent implements OnInit
 
   async ngOnInit()
   {
-    this.comments = await this.commentsService.getComments(this.imdb_id);
-    this.formGroup = new FormGroup(
-    {
-      Comment: new FormControl('', [
-        Validators.required,
-        Validators.minLength(10)
-      ]),
-      Name: new FormControl('', [
-        Validators.required,
-        Validators.minLength(2)
-      ]),
-    });
+    this.comments = await this.commentsService.readComments(this.imdb_id);
   }
 
   onSubmit()
   {
-    console.log(this.formGroup);
+    this.postResponse = this.commentsService.postComment(this.imdb_id, this.formGroup.value);
+    console.log(this.postResponse);
   }
 }
