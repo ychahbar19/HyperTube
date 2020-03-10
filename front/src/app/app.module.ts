@@ -13,6 +13,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     HomeComponent,
     SignupComponent,
     GalleryComponent,
-    OmniauthComponent
+    OmniauthComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

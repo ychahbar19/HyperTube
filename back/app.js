@@ -7,12 +7,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const homeRoutes = require('./routes/home');
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 const signinRoutes = require('./routes/signin');
 const signUpRoutes = require('./routes/signup');
+const profileRoutes = require('./routes/profile');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).
@@ -58,7 +60,8 @@ app.use(bodyParser.json());
 // }
 
 // set this folder as static folder we want to serve
-app.use(express.static(__dirname + '/assets'));
+// app.use(express.static(__dirname + '/assets'));
+app.use('/pictures', express.static(path.join('./back/assets/pictures')));
 
 
 
@@ -68,6 +71,7 @@ app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);
 app.use('/signup', signUpRoutes);
+app.use('/profile', profileRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

@@ -60,7 +60,6 @@ exports.login = async (req, res, next) => {
     );
     res.status(200).json({ token: token, expiresIn: 36000 });
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   }
 };
@@ -95,9 +94,10 @@ exports.signupValidation = (req, res, next) => {
 exports.createUser = async (req, res, next) => {
   try {
     const hashPwd = await bcrypt.hash(req.body.password, 10);
+    const url = req.protocol + "://" + req.get("host");
     
     const user = new UserModel({
-      avatar: req.body.avatar,
+      avatar: url + "/assets/pictures/" + req.file.filename,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -110,11 +110,25 @@ exports.createUser = async (req, res, next) => {
       result: savedUser
     })
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   }
   
 };
+
+// exports.getById = async (req, res, next) => {
+//   try {
+//     const foundUser = UserModel.findOne({ _id = req.body.id });
+
+//     if (!foundUser)
+//     {
+//       inputErrors.push('USR_NOT_EXISTS');
+//       return res.status(401).json(inputErrors);
+//     }
+//     res.status(200).json(foundUser);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// }
 
 
 
