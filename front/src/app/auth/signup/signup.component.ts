@@ -1,20 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { mimeType } from './mime-type.validator';
 
 import { AuthService } from '../auth.service';
+import { ErrorService } from 'src/app/error/error.service';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['../signin/signin.component.scss', './signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
   form: FormGroup;
   avatarPreview: string;
+  errorMessage: string;
+  isLoading = false;
+  private authStatusSub: Subscription;
+  private errorStatusSub: Subscription;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private errorService: ErrorService) { }
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -60,12 +66,23 @@ export class SignupComponent implements OnInit {
             Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$')
           ]})
       });
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isLoading = false;
+      }
+    );
+    this.errorStatusSub = this.errorService.errorObs.subscribe(
+      error => {
+        this.errorMessage = error;
+      }
+    );
   }
 
   onSignup() {
     if (this.form.invalid) {
       return;
     }
+    this.isLoading = true;
     this.authService.createUser(this.form.value);
   }
 
@@ -82,5 +99,10 @@ export class SignupComponent implements OnInit {
 
   samePwd(password1: string, password2: string): boolean {
     return password1 === password2;
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
+    this.errorStatusSub.unsubscribe();
   }
 }

@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
 
 
 // router.post('/', UserController.utils);
-router.post('', multer({storage: storage}).single('photoUrl'), UserController.signupValidation, UserController.createUser);
+router.post('', multer({storage: storage}).single('photoUrl'), UserController.signupInputsValidation, UserController.createUser);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

@@ -27,7 +27,7 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  getisLoading() {
+  getIsLoading() {
     return this.isLoading.asObservable();
   }
 
@@ -50,12 +50,13 @@ export class AuthService {
     authData.append('email', formData.email);
     authData.append('password', formData.password);
     authData.append('confirmPassword', formData.confirmPassword);
-    this.http.post('http://localhost:3000/signup', authData)
+    return this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
-        // if error : alert error (pareil pour login)
-        // if success : alert success + send mail
-        const resData = response;
-        console.log(resData);
+        console.log(response);
+        // if success : alert success + send mail avec l'id ?
+        // garder l'id quelque part ou aller le rechercher au login pour le mettre en cookie
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
@@ -79,6 +80,8 @@ export class AuthService {
           this.saveAuthData(token, expirationDate);
           this.router.navigate(['/gallery']);
         }
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
