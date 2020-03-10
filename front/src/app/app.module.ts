@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -13,6 +13,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -23,12 +24,14 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     HomeComponent,
     SignupComponent,
     GalleryComponent,
-    OmniauthComponent
+    OmniauthComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule
   ],
   providers: [

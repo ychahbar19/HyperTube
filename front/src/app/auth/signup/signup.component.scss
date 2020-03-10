@@ -1,3 +1,30 @@
 .info-error--div {
   margin-left: 5px;
 }
+
+input[type="file"]
+{
+ display: none;
+}
+
+.file--button {
+  color: #7a7a7a;
+  border-color: #7a7a7a;
+  padding: 0;
+}
+
+.file--button i{
+  line-height: 40px;
+}
+
+.avatar-preview{
+  text-align: center;
+  margin-bottom: 5px;
+  height: 5rem;
+}
+
+.avatar-preview img{
+  height: 100%;
+  max-width: 100%;
+  min-width: 100px;
+}

@@ -33,28 +33,29 @@ export class AuthService {
 
   createUser(
     formData: {
+      avatar: File,
       firstName: string,
       lastName: string,
       username: string,
       email: string,
-      passwords: {
-        password: string,
-        confirmPassword: string
-      }
+      password: string,
+      confirmPassword: string
     }
   ) {
-    const authData: AuthData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      username: formData.username,
-      email: formData.email,
-      password: formData.passwords.password,
-      confirmPassword: formData.passwords.confirmPassword
-    };
+    const authData = new FormData();
+    authData.append('photoUrl', formData.avatar);
+    authData.append('firstName', formData.firstName);
+    authData.append('lastName', formData.lastName);
+    authData.append('username', formData.username);
+    authData.append('email', formData.email);
+    authData.append('password', formData.password);
+    authData.append('confirmPassword', formData.confirmPassword);
     this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
         // if error : alert error (pareil pour login)
         // if success : alert success + send mail
+        const resData = response;
+        console.log(resData);
       });
   }
 
