@@ -4,6 +4,12 @@
     <div class="row justify-content-center">
       <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onLogin()">
         <h4 class="mb-4 form-yellow-title">Log In</h4>
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ errorMessage }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-group">
           <input
           type="text"
@@ -22,14 +28,6 @@
             Username is required
           </div>
           <div *ngIf="username.errors.pattern">
-            Username must have between 6 and 33 alphabetical and/or numeric characters
-          </div>
-        </div>
-        <div class="error--msg" *ngIf="errors.length">
-          <div *ngIf="errors.includes('USR_REQ')">
-            Username is required
-          </div>
-          <div *ngIf="errors.includes('USR_PATTERN')">
             Username must have between 6 and 33 alphabetical and/or numeric characters
           </div>
         </div>
@@ -52,17 +50,6 @@
           <div *ngIf="password.errors.pattern">
             Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special
             chars : @$!%*?&
-          </div>
-        </div>
-        <div class="error--msg" *ngIf="errors.length">
-          <div *ngIf="errors.includes('PWD_REQ')">
-            Password is required
-          </div>
-          <div *ngIf="errors.includes('PWD_PATTERN')">
-            Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&
-          </div>
-          <div *ngIf="errors.includes('USR_NOT_EXISTS')">
-            Username and/or Password invalid
           </div>
         </div>
         <div class="checkbox--div">

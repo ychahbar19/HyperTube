@@ -4,6 +4,12 @@
     <div class="row justify-content-center">
       <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onSignup()">
         <h4 class="mb-4 form-yellow-title">Sign Up</h4>
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ errorMessage }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
         <div class="form-row">
           <!-- <div class="form-group col-12">
             <input

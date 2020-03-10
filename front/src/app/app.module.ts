@@ -13,8 +13,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
-import { ErrorInterceptor } from './error-interceptor';
-import { ErrorComponent } from './error/error.component';
+import { ErrorInterceptor } from './error/error-interceptor';
 
 @NgModule({
   declarations: [
@@ -26,7 +25,6 @@ import { ErrorComponent } from './error/error.component';
     SignupComponent,
     GalleryComponent,
     OmniauthComponent,
-    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +36,6 @@ import { ErrorComponent } from './error/error.component';
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent],
-  entryComponents: [ErrorComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../auth.service';
+import { ErrorService } from 'src/app/error/error.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,15 +12,22 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false }) signUpForm: NgForm;
+  errorMessage: string;
   isLoading = false;
   private authStatusSub: Subscription;
+  private errorStatusSub: Subscription;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private errorService: ErrorService) { }
 
   ngOnInit(): void {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
         this.isLoading = false;
+      }
+    );
+    this.errorStatusSub = this.errorService.errorObs.subscribe(
+      error => {
+        this.errorMessage = error;
       }
     );
   }
@@ -38,5 +46,6 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
+    this.errorStatusSub.unsubscribe();
   }
 }
