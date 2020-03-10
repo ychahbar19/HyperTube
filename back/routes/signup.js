@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 // router.post('/', UserController.utils);
-router.post('/', UserController.signupValidation, UserController.createUser);
+router.post('/', UserController.signupInputsValidation, UserController.createUser);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {
