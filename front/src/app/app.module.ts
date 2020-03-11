@@ -4,6 +4,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -15,6 +17,7 @@ import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './error/error-interceptor';
+import { RatingComponent } from './rating/rating.component';
 
 @NgModule({
   declarations: [
@@ -26,14 +29,16 @@ import { ErrorInterceptor } from './error/error-interceptor';
     SignupComponent,
     GalleryComponent,
     OmniauthComponent,
-    ProfileComponent
+    ProfileComponent,
+    RatingComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

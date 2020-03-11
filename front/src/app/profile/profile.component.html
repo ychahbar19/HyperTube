@@ -1,14 +1,66 @@
-<div>
-  <div>
-    <img src="http://localhost:3000/assets/pictures/vippng.com-demon-face-png-1981503-1583751871213.png" alt="">
-  </div>
-  <div>
-    <div>
-        <p></p>
-        <p></p>
-    </div>
-    <div>
-      <p></p>
+<!-- <div class="spinner" *ngIf="isLoading"></div> -->
+<div class="container">
+  <div class="row justify-content-center profile--main">
+    <div class="col-12 col-md-10 col-lg-6 mt-5">
+      <div clas="justify-content-center">
+        <img class="avatar-img"src="http://localhost:3000/assets/pictures/vippng.com-demon-face-png-1981503-1583751871213.png" alt="profile-pic" width="100px">
+      </div>
+      <div>
+        <p class="name--p">firstName lastName</p>
+        <p class="username--p">username</p>
+      </div>
+      <div>
+        <!-- historique des actions (commentaires des films, notes ) -->
+          <div class="card mb-3 historic--card" style="max-width: 540px;">
+              <div class="row no-gutters" style="height: 100%;">
+                <div class="col-md-1 no-gutters">
+                  <img src="../../assets/img/download.jpeg"  alt="...">
+                </div>
+                <div class="col-md-11">
+                  <div class="card-body">
+                    <h5 class="card-title">gived a note :</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-3 historic--card" style="max-width: 540px;">
+                <div class="row no-gutters" style="height: 100%;">
+                  <div class="col-md-4">
+                    <img src="../../assets/img/download.jpeg"  alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">gived a note :</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mb-3 historic--card" style="max-width: 540px;">
+                <div class="row no-gutters" style="height: 100%;">
+                  <div class="col-md-4">
+                    <img src="../../assets/img/download.jpeg"  alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">comment :</h5>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="card mb-3 historic--card" style="max-width: 540px;">
+                  <div class="row no-gutters" style="height: 100%;">
+                    <div class="col-md-4">
+                      <img src="../../assets/img/download.jpeg"  alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">comment :</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      </div>
     </div>
   </div>
 </div>
+

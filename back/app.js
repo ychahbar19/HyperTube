@@ -60,8 +60,8 @@ app.use(bodyParser.json());
 // }
 
 // set this folder as static folder we want to serve
-// app.use(express.static(__dirname + '/assets'));
-app.use('/pictures', express.static(path.join('./back/assets/pictures')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
 
 
 
