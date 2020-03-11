@@ -1,5 +1,6 @@
 const express = require('express');
 const UserController = require('../controllers/UserController');
+const MailController = require('../controllers/MailController');
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ const storage = multer.diskStorage({
 
 
 // router.post('/', UserController.utils);
-router.post('', multer({storage: storage}).single('photoUrl'), UserController.signupInputsValidation, UserController.createUser);
+router.post('/', multer({storage: storage}).single('photoUrl'), UserController.signupInputsValidation, UserController.createUser, MailController.sendConfirmMail);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

@@ -5,7 +5,7 @@
 \* -------------------------------------------------------------------------- */
 
 const express = require('express');
-const userCtrl = require('../controllers/user');
+const UserController = require('../controllers/UserController');
 
 /* -------------------------------------------------------------------------- *\
     2) Creates the Router object.
@@ -22,8 +22,9 @@ router.get('/', (req, res) => {
    res.json({ message: 'Req to /api/auth' });
 });
 
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
+// router.post('/signup', UserController.signup);
+// router.post('/login', UserController.login);
+router.post('/activateAccount', UserController.activateAccount);
 
 /* -------------------------------------------------------------------------- *\
     4) Exports the router.

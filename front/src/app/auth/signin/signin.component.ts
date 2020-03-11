@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
 import { AuthService } from '../auth.service';
@@ -16,10 +16,11 @@ export class SigninComponent implements OnInit, OnDestroy {
   response: Observable<any>;
   errorMessage: string;
   isLoading = false;
+  successSignup = false;
   private authStatusSub: Subscription;
   private errorStatusSub: Subscription;
 
-  constructor(private authService: AuthService, private errorService: ErrorService) { }
+  constructor(private authService: AuthService, private errorService: ErrorService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
@@ -32,6 +33,11 @@ export class SigninComponent implements OnInit, OnDestroy {
         this.errorMessage = error;
       }
     );
+    if (this.route.snapshot.queryParams.id) {
+      this.authService.activateAccount(this.route.snapshot.queryParams.id);
+      this.successSignup = true;
+      // console.log(this.route.snapshot.queryParams);
+    }
   }
 
   onLogin() {

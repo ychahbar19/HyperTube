@@ -50,13 +50,20 @@ export class AuthService {
     authData.append('email', formData.email);
     authData.append('password', formData.password);
     authData.append('confirmPassword', formData.confirmPassword);
-    return this.http.post('http://localhost:3000/signup', authData)
+    this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
         console.log(response);
         // if success : alert success + send mail avec l'id ?
         // garder l'id quelque part ou aller le rechercher au login pour le mettre en cookie
       }, error => {
         this.authStatusListener.next(false);
+      });
+  }
+
+  activateAccount(id: string) {
+    this.http.post('http://localhost:3000/api/auth/activateAccount', { id })
+      .subscribe(response => {
+        console.log('arrive ici');
       });
   }
 
