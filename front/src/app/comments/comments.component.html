@@ -1,6 +1,6 @@
 <h2>Comments</h2>
 
-<form [formGroup]="formGroup" (validSubmit)="onSubmit()">
+<form [formGroup]="formGroup" (validSubmit)="postComment()">
   <div class="form-row">
     <div class="col form-group">
       <label class="d-none">Comment</label>
@@ -20,7 +20,17 @@
   </div>
 </form>
 
-<div *ngFor="let comment of comments">
-  <p><b>{{ comment.author_name }}</b> {{ comment.posted_datetime }}</p>
-  <p>{{ comment.content }}</p>
+<div class="row my-2" *ngFor="let comment of comments">
+  <div class="col-3 col-sm-2">
+      <img class="img-fluid" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+  </div>
+  <div class="col">
+      <div class="card bg-dark text-white">
+          <p class="card-header">
+            <b>{{ comment.author_name }}</b>
+            <span class="text-muted"> {{ comment.posted_datetime }}</span>
+          </p>
+          <p class="card-body">{{ comment.content }}</p>
+      </div>
+  </div>
 </div>

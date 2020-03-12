@@ -12,7 +12,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- Search function ----- */
-router.get('/', SearchController.search);
+router.get('', SearchController.search);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

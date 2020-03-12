@@ -1,12 +1,44 @@
 <div class="container-fluid">
 
-  <form class="row">
-    <div class="col">
-      <p>- Search box
-      <p>- Order filters (popularity [?], name [A>Z], date [0>9])
-      <p>- Sort filters (date [range], genre [list])
+  <div class="row justify-content-center">
+    <div class="col col-md-6">
+
+      <form class="search" #searchParams="ngForm" (ngSubmit)="onSearch(searchParams)" novalidate>
+        <input type="text" ngModel name="query_term" class="form-control bg-dark" autocomplete="off" placeholder="Search...">
+        <button type="submit" class="btn btn-warning"><i class="fa fa-search"></i></button>
+        
+        <div class="form-group">
+          <label for="sel1">Order by:</label>
+          <select class="form-control" id="sort">
+            <option>Popularity (0-9)</option>
+            <option>Title (A-Z)</option>
+            <option>Year (0-9)</option>
+          </select>
+        </div>
+
+
+        <!-- https://www.npmjs.com/package/bootstrap-multiselect --
+        <div class="form-group">
+          <label for="sel1">Genre:</label>
+          <select id="example-multiple-selected" multiple="multiple">
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3" selected="selected">Option 3</option>
+              <option value="4">Option 4</option>
+              <option value="5">Option 5</option>
+              <option value="6">Option 6</option>
+          </select>
+        </div>
+        <script type="text/javascript">
+          $(document).ready(function() {
+              $('#example-multiple-selected').multiselect();
+          });
+        </script>
+      -->
+      </form>
+
     </div>
-  </form>
+  </div>
 
   <div class="row">
 

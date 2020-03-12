@@ -23,17 +23,15 @@ export class CommentsService
   {
     return new Promise((resolve, reject) =>
     {
-      let postedData = JSON.stringify(
+      let postedData =
       {
         imdb_id: imdb_id,
         author_name: comment.Name,
         content: comment.Comment
-      });
-
-/////////////this doesn't send any data
+      };
       this.http.post('http://localhost:3000/api/comments/create', postedData)
         .toPromise()
-        .then(response => { console.log(response);resolve(response); },
+        .then(response => { resolve(response); },
               error => { reject(error); });
     });
   }

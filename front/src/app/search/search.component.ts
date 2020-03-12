@@ -21,6 +21,7 @@ Content:
 
 import { Component, OnInit } from '@angular/core';
 import { SearchService } from './search.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-search',
@@ -36,7 +37,22 @@ export class SearchComponent implements OnInit
 
   async ngOnInit()
   {
-    this.results = await this.searchService.getResults();
-    console.log(this.results);
+    await this.searchResults('');
+  }
+
+  async searchResults(encodedSearchParams)
+  {
+    this.results = await this.searchService.getResults(encodedSearchParams);
+  }
+
+  async onSearch(searchParams: NgForm)
+  {
+    let encodedSearchParams = '?';
+    if (searchParams.value.query_term)
+    {
+      encodedSearchParams = encodedSearchParams + 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
+    };
+    encodedSearchParams = encodedSearchParams.substring(0, encodedSearchParams.length - 1);
+    await this.searchResults(encodedSearchParams);
   }
 }

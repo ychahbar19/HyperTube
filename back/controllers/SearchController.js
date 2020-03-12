@@ -26,12 +26,25 @@ function addToHypertubeResults(imdb_id, title, yts_id, eztv_id)
 }
 
 //Fetches results from YTS' API.
-async function searchMovies()
+async function searchMovies(query_term)
 {
-  await axios.get('https://yts.mx/api/v2/list_movies.json?query_term=lord')
+  let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=50';
+  if (query_term)
+  {
+    yts_url = yts_url + '&query_term=' + query_term;
+  }
+  /*
+  genre=
+  page=1
+  
+  sort_by=(rating/peers/seeds/download_count/like_count, title, year)
+  order_by=(desc, asc)
+*/
+  await axios.get(yts_url)
     .then(results =>
     {
       const ytsResults = new YtsResultsModel(results.data);
+      hypertubeResults = {};
       ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title, movie.id, ''));
     })
     .catch(error => res.status(400).json({ error }));
@@ -59,7 +72,7 @@ async function searchTVShows()
 //Calls the different sources and returns their combined results.
 async function search(req, res)
 {
-  await searchMovies();
+  await searchMovies(req.query.query_term);
   //await searchTVShows();
   res.status(200).send(hypertubeResults);
 };

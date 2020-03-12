@@ -12,8 +12,7 @@ const CommentModel = require('../models/CommentModel');
 
 exports.create = (req, res) =>
 {
-  // Gets the data from POST.
-  const commentPosted = req.query;
+  const commentPosted = req.body;
 
   //Creates a new object based on the model and from the posted data.
   const comment = new CommentModel(
@@ -27,7 +26,7 @@ exports.create = (req, res) =>
   //Uses mongoose's .save method to save the new object in the database
   //(this uses the .then .catch structure because it's asynchronous).
   comment.save()
-    .then(() => res.status(201).json({ message: 'Comment created.' }))
+    .then(() => res.status(201).json({ message: 'OK' }))
     .catch(error => res.status(400).json({ error }))
 };
 
@@ -39,6 +38,7 @@ exports.read = (req, res) =>
   (
     { imdb_id: req.params.video_imdb_id }
   )
+    .sort( { posted_datetime: -1 } )
     .then(comments => res.status(200).json(comments))
     .catch(error => res.status(400).json({ error }));
 };

@@ -35,12 +35,21 @@ export class CommentsComponent implements OnInit
 
   async ngOnInit()
   {
+    await this.readComments();
+  }
+
+  async readComments()
+  {
     this.comments = await this.commentsService.readComments(this.imdb_id);
   }
 
-  onSubmit()
+  async postComment()
   {
-    this.postResponse = this.commentsService.postComment(this.imdb_id, this.formGroup.value);
-    console.log(this.postResponse);
+    this.postResponse = await this.commentsService.postComment(this.imdb_id, this.formGroup.value);
+    if (this.postResponse.message == 'OK')
+    {
+      await this.readComments();
+      this.formGroup.reset();
+    }
   }
 }

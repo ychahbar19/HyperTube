@@ -1,0 +1,21 @@
+.search
+{
+    position: relative;
+}
+.search input[type=text]
+{
+    padding: 1.8rem 1.5rem;
+    border-radius: 2rem;
+    border: none;
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+    color: white;
+}
+.search .btn
+{
+    position: absolute;
+    top: 0.6rem;
+    right: 0.9rem;
+    border-radius: 3rem;
+}
