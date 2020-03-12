@@ -11,7 +11,7 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
-  private isLoading = new Subject<boolean>();
+  private creationStatusListener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -27,8 +27,8 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  getIsLoading() {
-    return this.isLoading.asObservable();
+  getCreationStatusListener() {
+    return this.creationStatusListener.asObservable();
   }
 
   createUser(
@@ -52,8 +52,8 @@ export class AuthService {
     authData.append('confirmPassword', formData.confirmPassword);
     this.http.post('http://localhost:3000/signup', authData)
       .subscribe(response => {
-        console.log(response);
-        // if success : alert success + send mail avec l'id ?
+        this.authStatusListener.next(false);
+        this.creationStatusListener.next(true);
         // garder l'id quelque part ou aller le rechercher au login pour le mettre en cookie
       }, error => {
         this.authStatusListener.next(false);
@@ -61,23 +61,16 @@ export class AuthService {
   }
 
   activateAccount(id: string) {
-    this.http.post('http://localhost:3000/api/auth/activateAccount', { id })
-      .subscribe(response => {
-        console.log('arrive ici');
-      });
+    return this.http.post('http://localhost:3000/api/auth/activateAccount', { id });
   }
 
   login(formData: { username: string, password: string }) {
     const authData: AuthData = { username: formData.username, password: formData.password };
-    this.isLoading.next(true);
     this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/signin', authData)
       .subscribe(response => {
-        this.isLoading.next(false);
-        console.log('arrive ici');
         const token = response.token;
         this.token = token;
         if (token) {
-          console.log(token);
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;

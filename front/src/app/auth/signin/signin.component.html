@@ -3,14 +3,15 @@
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
       <form #f="ngForm" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onLogin()">
+        <h4 class="mb-4 form-yellow-title">Log In</h4>
         <div *ngIf="successSignup" class="alert alert-success alert-dismissible fade show" role="alert">
-          Your account has been activated. <br />
-          You may log in !
+            Welcome to HyperTube.<br />
+            Your account has been activated !<br />
+            You may now log in and enjoy.
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <h4 class="mb-4 form-yellow-title">Log In</h4>
         <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
           {{ errorMessage }}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -19,6 +19,7 @@ export class SigninComponent implements OnInit, OnDestroy {
   successSignup = false;
   private authStatusSub: Subscription;
   private errorStatusSub: Subscription;
+  private accountStatusSub: Subscription;
 
   constructor(private authService: AuthService, private errorService: ErrorService, private route: ActivatedRoute) { }
 
@@ -34,9 +35,16 @@ export class SigninComponent implements OnInit, OnDestroy {
       }
     );
     if (this.route.snapshot.queryParams.id) {
-      this.authService.activateAccount(this.route.snapshot.queryParams.id);
-      this.successSignup = true;
-      // console.log(this.route.snapshot.queryParams);
+      this.isLoading = true;
+      this.accountStatusSub = this.authService.activateAccount(this.route.snapshot.queryParams.id).subscribe(
+        success => {
+          this.isLoading = false;
+          this.successSignup = true;
+        }, error => {
+          this.isLoading = false;
+          this.errorMessage = error.error.message;
+        }
+      );
     }
   }
 
@@ -51,5 +59,6 @@ export class SigninComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
     this.errorStatusSub.unsubscribe();
+    this.accountStatusSub.unsubscribe();
   }
 }

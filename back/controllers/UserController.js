@@ -14,10 +14,6 @@ function validPattern(str, pattern) {
   return false;
 }
 
-function getById(id) {
-
-}
-
 // sign in
 
 exports.loginInputsValidation = (req, res, next) => {
@@ -99,23 +95,26 @@ exports.createUser = async (req, res, next) => {
     res.savedUser = await user.save();
     return next();
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: err.message });
   }
 };
 
+// Activate account after clicking on confirmation email
+
 exports.activateAccount = async (req, res, next) => {
   try {
-    // const foundUser = await UserModel.findOne({ _id: ObjectId(req.body.id) });
-    // if (!foundUser) {
-    //   return res.status(401).json({ message: 'Oops ! Something went wrong !' });
-    // }
-    const updatedUser = await UserModel.update(
-      { '_id': ObjectId(req.body.id) },
-      { $set : {'active' : true} }
-    );
-    if (!updatedUser) {
+    const oUserId = ObjectId(req.body.id);
+    const foundUser = await UserModel.findOne({
+      _id: oUserId,
+      active: false
+    });
+    if (!foundUser) {
       return res.status(401).json({ message: 'Oops ! Something went wrong !' });
     }
+    await UserModel.update(
+      { '_id': oUserId },
+      { $set : {'active' : true} }
+    );
     return res.status(200).json({ message: 'Account activated' });
   } catch (err) {
     res.status(500).json({ message: err });
