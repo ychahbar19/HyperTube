@@ -15,6 +15,7 @@ const userRoutes = require('./routes/user');
 const signinRoutes = require('./routes/signin');
 const signUpRoutes = require('./routes/signup');
 const profileRoutes = require('./routes/profile');
+const editProfileRoutes = require('./routes/edit-profile');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).
@@ -72,6 +73,7 @@ app.use('/api/auth', userRoutes);
 app.use('/signin', signinRoutes);
 app.use('/signup', signUpRoutes);
 app.use('/profile', profileRoutes);
+app.use('/editProfile', editProfileRoutes);
 
 //Exports the app to make it accessible from the other files (incl. server.js).
 module.exports = app;

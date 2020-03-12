@@ -1,0 +1,17 @@
+.star {
+  font-size: 1.5rem;
+  color: lightgrey;
+}
+.filled {
+  color: grey;
+}
+.bad {
+  color: #deb0b0;
+}
+.filled.bad {
+  color:yellow;
+}
+
+.rating--component:focus {
+  outline: none;
+}

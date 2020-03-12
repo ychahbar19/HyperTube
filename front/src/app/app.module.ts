@@ -18,6 +18,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './error/error-interceptor';
 import { RatingComponent } from './rating/rating.component';
+import { StaticRateComponent } from './static-rate/static-rate.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { RatingComponent } from './rating/rating.component';
     GalleryComponent,
     OmniauthComponent,
     ProfileComponent,
-    RatingComponent
+    RatingComponent,
+    StaticRateComponent,
+    EditProfileComponent
   ],
   imports: [
     BrowserModule,

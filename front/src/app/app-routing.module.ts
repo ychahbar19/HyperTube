@@ -5,6 +5,8 @@ import { HomeComponent } from './home/home.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { AuthGuard } from './auth/auth.guard';
+import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
 
 const routes: Routes = [
@@ -12,7 +14,9 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'signin', component: SigninComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'gallery', component: GalleryComponent, canActivate: [AuthGuard] }
+  { path: 'gallery', component: GalleryComponent, canActivate: [AuthGuard] },
+  { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'edit-profile', component:  EditProfileComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

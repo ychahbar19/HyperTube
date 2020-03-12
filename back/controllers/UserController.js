@@ -103,5 +103,15 @@ exports.createUser = async (req, res, next) => {
   } catch (err) {
     res.status(500).send(err);
   }
-  
+};
+
+// update user
+
+exports.updateUser() = async (req, res, next) => {
+  try {
+    //JE SUIS ICI
+    // FAIRE UN MIDDLEWARE A PART POUR CHECK LES PASSWORDS
+  } catch (err) {
+    res.status(500).send(err);
+  }
 };
