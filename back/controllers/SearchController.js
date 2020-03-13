@@ -26,20 +26,28 @@ function addToHypertubeResults(imdb_id, title, yts_id, eztv_id)
 }
 
 //Fetches results from YTS' API.
-async function searchMovies(query_term)
+async function searchMovies(query)
 {
   let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=50';
-  if (query_term)
-  {
-    yts_url = yts_url + '&query_term=' + query_term;
-  }
-  /*
-  genre=
-  page=1
+  let query_term = ((query.query_term != undefined) ? query.query_term : '');
+  let genre = ((query.genre != undefined) ? query.genre : '');
+  let sort_by = ((query.sort_by != undefined) ? query.sort_by : '');
+  let page = ((query.page != undefined) ? query.page : '');
   
-  sort_by=(rating/peers/seeds/download_count/like_count, title, year)
-  order_by=(desc, asc)
-*/
+  if (query_term)
+    yts_url += '&query_term=' + query_term;
+
+  if (genre)
+    yts_url += '&genre=' + genre;
+
+  if (sort_by)
+    yts_url += '&sort_by=' + sort_by + '&order_by=asc';
+  else
+    yts_url += '&sort_by=download_count'; //popularity --> rating/peers/seeds/download_count/like_count'
+
+  if (page)
+    yts_url += '&page' + page;
+  
   await axios.get(yts_url)
     .then(results =>
     {
@@ -72,9 +80,13 @@ async function searchTVShows()
 //Calls the different sources and returns their combined results.
 async function search(req, res)
 {
-  await searchMovies(req.query.query_term);
+  await searchMovies(req.query)
+    .then(() =>
+    {
+      res.status(200).send(hypertubeResults);
+    })
+  .catch(error => res.status(400).json({ error }));
   //await searchTVShows();
-  res.status(200).send(hypertubeResults);
 };
 
 module.exports.search = search;

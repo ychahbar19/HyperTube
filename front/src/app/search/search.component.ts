@@ -31,28 +31,33 @@ import { NgForm } from '@angular/forms';
 })
 export class SearchComponent implements OnInit
 {
+  public genres = [ 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
+                    'Documentary', 'Drama', 'Family', 'Fantasy', 'Film Noir', 'History',
+                    'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
+                    'Short Film', 'Sport', 'Superhero', 'Thriller', 'War', 'Western' ];
   public results;
 
   constructor(private searchService: SearchService) {}
 
   async ngOnInit()
   {
-    await this.searchResults('');
+    this.results = await this.searchService.getResults('');
   }
 
-  async searchResults(encodedSearchParams)
-  {
-    this.results = await this.searchService.getResults(encodedSearchParams);
-  }
-
-  async onSearch(searchParams: NgForm)
+  async getSearchResults(searchParams: NgForm)
   {
     let encodedSearchParams = '?';
+
     if (searchParams.value.query_term)
-    {
-      encodedSearchParams = encodedSearchParams + 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
-    };
+      encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
+    if (searchParams.value.genre)
+      encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre) + '&';
+    if (searchParams.value.sort_by)
+      encodedSearchParams += 'sort_by=' + encodeURIComponent(searchParams.value.sort_by) + '&';
+    if (searchParams.value.page)
+      encodedSearchParams += 'page=' + encodeURIComponent(searchParams.value.page) + '&';
+
     encodedSearchParams = encodedSearchParams.substring(0, encodedSearchParams.length - 1);
-    await this.searchResults(encodedSearchParams);
+    this.results = await this.searchService.getResults(encodedSearchParams);
   }
 }

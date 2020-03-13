@@ -10,12 +10,30 @@ export class SearchService
 
   constructor(private http: HttpClient) {}
 
-  addToResults(imdb_id, contents)
+  getVideoInfo(imdb_id)
   {
+    return new Promise((resolve, reject) =>
+    {
+      this.http.get<{}>('http://localhost:3000/api/video/'+imdb_id)
+        .toPromise()
+        .then(response => { resolve(response); },
+              error => { reject(error); });
+    });
+  }
+
+  async addToResults(imdb_id, contents)
+  {
+    let videoInfo = await this.getVideoInfo(imdb_id);
     this.allResults[this.allResultsIndex] =
     {
       imdb_id: imdb_id,
-      title: contents.title,
+      Poster: videoInfo['Poster'],
+      Title: videoInfo['Title'],
+      Year: videoInfo['Year'],
+      imdbRating: videoInfo['imdbRating'],
+      imdbVotes: videoInfo['imdbVotes'],
+      Genre: videoInfo['Genre'],
+      //title: contents.title,
       yts_id: contents.yts_id,
       eztv_id: contents.eztv_id
     };
@@ -26,6 +44,7 @@ export class SearchService
   {
     this.allResults = [];
     this.allResultsIndex = 0;
+    //---> dont reset results if calling page 2+ (for infinite loading to push more results)
     
     return new Promise((resolve, reject) =>
     {

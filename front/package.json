@@ -22,7 +22,6 @@
     "@angular/router": "~9.0.2",
     "@fortawesome/fontawesome-free": "^5.12.1",
     "bootstrap": "^4.4.1",
-    "bootstrap-multiselect": "^0.9.15",
     "jquery": "^3.4.1",
     "ng-bootstrap-form-validation": "^5.0.0",
     "popper.js": "^1.16.1",

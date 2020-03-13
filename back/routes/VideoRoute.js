@@ -15,7 +15,7 @@ const router = express.Router();
 
 
 /* ----- Get info function ----- */
-router.get('/:imdb_id/:yts_id', VideoController.getVideoInfo);
+router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

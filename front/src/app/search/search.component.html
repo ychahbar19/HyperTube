@@ -1,52 +1,61 @@
 <div class="container-fluid">
 
-  <div class="row justify-content-center">
-    <div class="col col-md-6">
+  <!-- SEARCH FORM -->
+  <form #searchParams="ngForm" (ngSubmit)="getSearchResults(searchParams)" novalidate>
 
-      <form class="search" #searchParams="ngForm" (ngSubmit)="onSearch(searchParams)" novalidate>
+    <div class="row justify-content-center">
+      <div class="col-sm-8 col-md-6 search">
         <input type="text" ngModel name="query_term" class="form-control bg-dark" autocomplete="off" placeholder="Search...">
         <button type="submit" class="btn btn-warning"><i class="fa fa-search"></i></button>
-        
-        <div class="form-group">
-          <label for="sel1">Order by:</label>
-          <select class="form-control" id="sort">
-            <option>Popularity (0-9)</option>
-            <option>Title (A-Z)</option>
-            <option>Year (0-9)</option>
-          </select>
-        </div>
-
-
-        <!-- https://www.npmjs.com/package/bootstrap-multiselect --
-        <div class="form-group">
-          <label for="sel1">Genre:</label>
-          <select id="example-multiple-selected" multiple="multiple">
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-              <option value="3" selected="selected">Option 3</option>
-              <option value="4">Option 4</option>
-              <option value="5">Option 5</option>
-              <option value="6">Option 6</option>
-          </select>
-        </div>
-        <script type="text/javascript">
-          $(document).ready(function() {
-              $('#example-multiple-selected').multiselect();
-          });
-        </script>
-      -->
-      </form>
-
+      </div>
     </div>
-  </div>
 
+    <div class="row justify-content-center">
+      <div class="col-sm-4 col-md-3 form-group dropdw">
+        <label>Genre</label>
+        <select class="form-control bg-dark" ngModel name="genre" (change)="getSearchResults(searchParams)">
+          <option value="" selected>All</option>
+          <option *ngFor="let genre of genres" value="{{ genre }}">{{ genre }}</option>
+        </select>
+        <i class="fas fa-sort-down text-warning"></i>
+      </div>
+      <div class="col-sm-4 col-md-3 form-group dropdw">
+        <label>Sort by</label>
+        <select class="form-control bg-dark" ngModel name="sort_by" (change)="getSearchResults(searchParams)">
+          <option value="" selected>Popularity (0-9)</option>
+          <option value="title">Title (A-Z)</option>
+          <option value="year">Year (0-9)</option>
+        </select>
+        <i class="fas fa-sort-down text-warning"></i>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- SEARCH RESULTS -->
   <div class="row">
 
-    <div class="col-sm-3" *ngFor="let result of results">
-      <div class="card">
-        <img class="card-img-top" src="">
+    <div class="col-sm-6 col-md-4 col-lg-3 my-2" *ngFor="let result of results">
+      <div class="card bg-dark">
+        <img class="card-img-top" src="{{ result['Poster'] }}">
         <div class="card-body">
-          <p class="card-title"><a href="/video/{{ result.imdb_id }}/{{ result.yts_id }}" class="stretched-link">{{ result.title }}</a></p>
+          <h6 class="card-title">
+            <a href="/video/{{ result.imdb_id }}/{{ result.yts_id }}" class="stretched-link">
+              {{ result.Title }} ({{ result['Year'] }})
+            </a>
+          </h6>
+          <p>
+            <span class="star-rating">
+              <span class="back-stars">
+                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+              </span>
+              <span class="small">
+                {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
+              </span>
+            </span>
+          </p>
+          <p>{{ result['Genre'] }}</p>
         </div>
       </div>
     </div>
