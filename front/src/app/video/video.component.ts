@@ -1,11 +1,18 @@
 /*
 VIDEO (members only)
-Content:
+  ==> ? | Check restriction
+
+Page content:
   - Video info:
-    .mandatory: name
+    .mandatory: name, torrent links
     .if available: summary, pic, production date, rating, duration, cast
-  - Streaming player with subtitles (in user's preferred languag, if audio not in that language)
+    ==> :D | OK
+
+  - Streaming player with subtitles (in user's preferred language, if audio not in that language)
+    ==> :( | To do
+
   - User comments
+    ==> :S | Missing backend data validation and user info from session (id, name, avatar)
 */
 
 import { Component, OnInit } from '@angular/core';

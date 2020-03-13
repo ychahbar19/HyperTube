@@ -1,22 +1,37 @@
 /*
-GALLERY (members only)
-Content:
-  - Search field:
-    Takes data from at least 2 sources (e.g. http://www.legittorrents.info, https://archive.org)
+SEARCH GALLERY (members only)
+  ==> ? | Check restriction
 
-  - Before search:
-    Thumbnail list* sorted by popularity
+Page content:
+  1) SEARCH
+    - Search bar:
+      Takes data from at least 2 sources (e.g. http://www.legittorrents.info, https://archive.org)
+      ==> :) | Missing 2nd source if we don't count OMDb
 
-  - After search (= results):
-    Thumbnail list* sorted by name
+    - Sort filters
+      (date [range], genre [list])
+      ==> :) | Missing date range because unavailable in YTS API (do it custom?)
 
-* Thumbnail list content:
-  - Thumbnail info:
-      .mandatory: name, (un)seen status
-      .if available: pic, production date, rating
-  - Pagination (async infinite)
-  - Order filters (popularity [?], name [A>Z], date [0>9])
-  - Sort filters (date [range], genre [list])
+    - Order filters
+      (popularity [?], name [A>Z], date [0>9])
+      ==> :) | OK let's just agree on what "popularity" should be (currently #downloads)
+
+  2) RESULTS
+    - Before search:
+      Thumbnail list* sorted by popularity
+      ==> :D | OK
+
+    - After search (= results):
+      Thumbnail list* sorted by name
+      ==> :) | Missing overwrite of sort=name
+
+      * Thumbnail info:
+        .mandatory: name, (un)seen status
+        .if available: pic, production date, rating
+        ==> :) | Missing (un)seen status
+
+    - Pagination (async infinite)
+    ==> :( | To do
 */
 
 import { Component, OnInit } from '@angular/core';

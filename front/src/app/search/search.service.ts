@@ -33,7 +33,7 @@ export class SearchService
       imdbRating: videoInfo['imdbRating'],
       imdbVotes: videoInfo['imdbVotes'],
       Genre: videoInfo['Genre'],
-      //title: contents.title,
+      yts_title: contents.title,
       yts_id: contents.yts_id,
       eztv_id: contents.eztv_id
     };
