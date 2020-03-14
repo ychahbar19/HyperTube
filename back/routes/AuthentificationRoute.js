@@ -15,7 +15,7 @@ const router = express.Router();
 /* ----- Auth 42 ----- */
 router.get('/42', passport.authenticate('42'));
 router.get('/42/callback', passport.authenticate('42',
-   //Redirect if failure:
+   //Redirect if failure: 
    { failureRedirect: 'http://localhost:4200/signin' }),
    //Function if success:
    function(req, res)
