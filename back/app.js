@@ -1,13 +1,16 @@
 // EXPRESS APPLICATION
 
 /* -------------------------------------------------------------------------- *\
-    1) Imports required node packages.
+    1) Imports required node packages & config elements.
 \* -------------------------------------------------------------------------- */
 
 const express = require('express');
 const expressSession = require('express-session');//npm install express-session --save
 const bodyParser = require('body-parser');
 const passport = require('passport');
+
+require('./config/database');
+require('./config/authentification');
 
 /* -------------------------------------------------------------------------- *\
     2) Creates the express application.
@@ -16,14 +19,7 @@ const passport = require('passport');
 const app = express();
 
 /* -------------------------------------------------------------------------- *\
-    3) Imports required config elements.
-\* -------------------------------------------------------------------------- */
-
-require('./config/database');
-require('./config/authentification');
-
-/* -------------------------------------------------------------------------- *\
-    4) Imports and calls the required routes.
+    3) Imports and calls the required routes.
     - Everytime the server is requested (from server.js), it calls 'app'.
       Then the different app.<method> (= middlewares) are called in turn
       with 'next/next()', until a response is defined.
@@ -32,7 +28,8 @@ require('./config/authentification');
     - The response 'res' is sent when its content is defined.
 \* -------------------------------------------------------------------------- */
 
-// Common routes
+/* ------------------------ Common routes ------------------------ */
+
 app.use(expressSession(
 {
     secret: 'ssshhhhh',
@@ -59,7 +56,8 @@ app.use(bodyParser.urlencoded({ extended: true })); //??
 app.use(passport.initialize()); //Initialises the authentication module.
 app.use(passport.session()); //Alters 'req' to transform the user value (from the client cookie), which is the session id, into a UserModel object.
 
-// API routes
+/* ------------------------ API routes ------------------------ */
+
 const UserRoute = require('./routes/UserRoute');
 const authentificationRoute = require('./routes/AuthentificationRoute');
 const searchRoute = require('./routes/SearchRoute');
