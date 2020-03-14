@@ -45,13 +45,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
     - The response 'res' is sent when it's content is defined.
 \* -------------------------------------------------------------------------- */
 
+const passport = require('passport');
 const userRoutes = require('./routes/user');
+const authentificationRoute = require('./routes/AuthentificationRoute');
 const searchRoute = require('./routes/SearchRoute');
 const videoRoute = require('./routes/VideoRoute');
 const commentsRoute = require('./routes/commentsRoute');
 const homeRoute = require('./routes/HomeRoute');
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/api/auth', userRoutes);
+app.use('/api/authentification', authentificationRoute);
 app.use('/api/search', searchRoute);
 app.use('/api/video', videoRoute);
 app.use('/api/comments', commentsRoute);
