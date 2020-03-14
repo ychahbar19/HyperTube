@@ -10,20 +10,29 @@ Content:
 */
 
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+//import { NgForm } from '@angular/forms';
+import { SigninService } from './signin.service';
 
 @Component({
   selector: 'app-signin',
+  providers: [SigninService],
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit
+{
 
-  constructor() { }
+  constructor(private signinService: SigninService) { }
 
-  ngOnInit(): void {
+  ngOnInit()
+  {
   }
 
+  onSigninWith42()
+  {
+    this.signinService.signinWith42();
+  }
+  /*
   onSubmit(f: NgForm) {
     console.log(f);
   }
@@ -32,4 +41,5 @@ export class SigninComponent implements OnInit {
   {
     console.log(username);
   }
+  */
 }

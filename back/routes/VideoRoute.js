@@ -18,8 +18,9 @@ const router = express.Router();
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
 /* ----- Fallback function ----- */
-router.use((req, res) => {
-   res.send('Bad request to /api/video');
+router.use((req, res) =>
+{
+  res.send('Bad request to /api/video');
 });
 
 /* ------------------------------------------------------------------------ *\

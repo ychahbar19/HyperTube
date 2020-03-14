@@ -6,6 +6,7 @@ import { Home } from './home.model';
 @Injectable()
 export class HomeService
 {
+  /*
   private layout: Home = {
                     field_1: '',
                     field_2: '',
@@ -29,4 +30,5 @@ export class HomeService
   {
     return this.layoutUpdated.asObservable();
   }
+  */
 }

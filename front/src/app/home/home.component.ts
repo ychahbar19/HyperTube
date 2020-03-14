@@ -29,16 +29,18 @@ export class HomeComponent implements OnInit, OnDestroy
 
   ngOnInit()
   {
+      /*
     this.homeService.getLayout();
     this.layoutSubscription = this.homeService.getLayoutUpdateListener()
       .subscribe((layoutHome: Home) =>
       {
         this.layout = layoutHome;
       });
+      */
   }
 
   ngOnDestroy()
   {
-    this.layoutSubscription.unsubscribe();
+    //this.layoutSubscription.unsubscribe();
   }
 }

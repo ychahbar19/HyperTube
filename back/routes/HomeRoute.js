@@ -13,6 +13,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- check ----- */
+/*
 router.use('/', (req, res) =>
 {
   const layout_elements =
@@ -26,10 +27,11 @@ router.use('/', (req, res) =>
     layout_elements: layout_elements['en']
   });
 });
+*/
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {
-   res.send('Bad request to /api/video');
+   res.send('Bad request to /');
 });
 
 /* ------------------------------------------------------------------------ *\

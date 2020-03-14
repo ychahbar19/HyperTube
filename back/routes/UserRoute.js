@@ -3,35 +3,46 @@
 \* -------------------------------------------------------------------------- */
 
 const express = require('express');
-const passport = require('passport');
+const UserController = require('../controllers/UserController');
 
 const router = express.Router();
 
 /* ------------------------------------------------------------------------ *\
-    2) Defines the routes for each authentification strategy,
-    and their custom callback function.
+    2) Calls to the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
 
-/* ----- Auth 42 ----- */
-router.get('/42', passport.authenticate('42'));
-router.get('/42/callback', passport.authenticate('42',
-   //Redirect if failure:
-   { failureRedirect: 'http://localhost:4200/signin' }),
-   //Function if success:
-   function(req, res)
-   {
-       //Save user info in the session
-       let sessionContents = req.session;
-       sessionContents.authStrategy = '42';
-       sessionContents.authUserId = req.user.fortytwoId;
-       res.redirect('http://localhost:4200/');
-   }
+/* ----- Signup, signin, logout ----- */
+router.post('/signup', UserController.signup);
+router.post('/signin', UserController.signin);
+router.get('/logout', UserController.logout);
+
+/*
+router.get('/logout',(req,res) => {
+    req.session.destroy((err) => {
+        if(err) {
+            return console.log(err);
+        }
+        res.redirect('/');
+    });
+
+});
+*/
+
+
+router.get('/', 
+//UserController.getCurrentUser
+(req, res) =>
+{
+    const sessionContents = req.session;
+    console.log(sessionContents);
+    res.send('ok')
+}
 );
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>
 {
-   res.send('Bad request to /api/authentification');
+  res.send('Bad request to /api/user');
 });
 
 /* ------------------------------------------------------------------------ *\

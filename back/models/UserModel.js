@@ -1,6 +1,6 @@
 // 1) Import
 const mongoose = require('mongoose');
-//const uniqueValidator = require('mongoose-unique-validator');
+//const uniqueValidator = require('mongoose-unique-validator'); //Supports 'unique: true' property.
 const findOrCreate = require('mongoose-findorcreate');
 
 // 2) Define
@@ -17,10 +17,9 @@ const userSchema = mongoose.Schema(
   fortytwoId: String
 });
 
-//Adds mongoose's uniqueValidator plugin to support 'unique: true' property.
+// 3) Add the plugins
 //userSchema.plugin(uniqueValidator);
-
 userSchema.plugin(findOrCreate);
 
-// 3) Export
+// 4) Export
 module.exports = mongoose.model('UserModel', userSchema);
