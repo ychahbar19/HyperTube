@@ -139,4 +139,13 @@ export class AuthService {
     };
   }
 
+  forgotPassword(formData: { username: string }) {
+    this.http.post('http://localhost:3000/api/auth/activateAccount', formData)
+      .subscribe(response => {
+        console.log(response);
+      }, error => {
+        console.log(error);
+      });
+  }
+
 }

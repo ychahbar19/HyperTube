@@ -15,6 +15,7 @@ import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './error/error-interceptor';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ErrorInterceptor } from './error/error-interceptor';
     SignupComponent,
     GalleryComponent,
     OmniauthComponent,
-    ProfileComponent
+    ProfileComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
