@@ -15,15 +15,16 @@ import { HttpClient } from '@angular/common/http';
 export class EditProfileComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
-  avatarPreview: string;
+  avatarPreview: string | File;
   errorMessage: string;
   isLoading = false;
   private errorStatusSub: Subscription;
+  user: Object;
+  userData: any;
 
   constructor(private http: HttpClient, private errorService: ErrorService) { }
 
   ngOnInit(): void {
-
     this.form = new FormGroup({
       avatar: new FormControl(
         null, {
@@ -68,6 +69,20 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         this.errorMessage = error;
       }
     );
+
+    this.http.get('http://localhost:3000/editProfile')
+    .subscribe(response => {
+        this.userData = response;
+        this.form.patchValue({
+          firstName: this.userData.firstName,
+          lastName: this.userData.lastName,
+          username: this.userData.username,
+          email: this.userData.email,
+        });
+        this.avatarPreview = this.userData.avatar;
+    }, error => {
+    });
+    console.log(this.form);
   }
 
   onEdit() {
@@ -82,7 +97,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     userData.append('email', this.form.value.email);
     userData.append('password', this.form.value.password);
     userData.append('confirmPassword', this.form.value.confirmPassword);
-    this.http.post('http://localhost:3000/edit-profile', userData)
+    this.http.post('http://localhost:3000/editProfile', userData)
       .subscribe(response => {
         console.log(response);
       }, error => {
@@ -93,13 +108,16 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   onAvatarPicked(event: Event) {
     const file = (event.target as HTMLInputElement).files[0];
+    // console.log(file);
+    
     this.form.patchValue({ avatar: file });
     this.form.get('avatar').updateValueAndValidity();
     const reader = new FileReader();
     reader.onload = () => {
       this.avatarPreview = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    
+    reader.readAsArrayBuffer(file);
   }
 
   samePwd(password1: string, password2: string): boolean {

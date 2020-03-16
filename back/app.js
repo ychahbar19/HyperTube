@@ -15,7 +15,7 @@ const userRoutes = require('./routes/user');
 const signinRoutes = require('./routes/signin');
 const signUpRoutes = require('./routes/signup');
 const profileRoutes = require('./routes/profile');
-const editProfileRoutes = require('./routes/edit-profile');
+const editProfileRoutes = require('./routes/editProfile');
 
 /* -------------------------------------------------------------------------- *\
     2) Connects to MongoDB (https://cloud.mongodb.com/).

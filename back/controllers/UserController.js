@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
+const ObjectId = require('mongodb').ObjectId;
 
 const UserModel = require('../models/UserModel');
 
@@ -105,12 +105,39 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
+// get user informations (HYDRATATION)
+
+exports.getUserInfo = async (req, res, next) => {
+  let error = false;
+
+  try {
+    const userToken = req.userToken;
+    const oUserId = ObjectId(userToken.userId);
+    const userInfo = await UserModel.findOne({_id: oUserId});
+    if (!userInfo)
+      return res.status(401).json({
+        message: "Oops ! User not found !"
+      });
+    return res.status(200).json({
+      avatar: userInfo.avatar,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      username: userInfo.username,
+      email: userInfo.email,
+      message: 'get user succesfully !'
+    });
+  } catch(err) {
+    res.status(500).send(err);
+  }
+}
 // update user
 
-exports.updateUser() = async (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
+  let error = false;
+
   try {
-    //JE SUIS ICI
-    // FAIRE UN MIDDLEWARE A PART POUR CHECK LES PASSWORDS
+    console.log(req);
+
   } catch (err) {
     res.status(500).send(err);
   }

@@ -12,7 +12,7 @@
         </div>
         <div class="form-row">
           <div class="form-group col-12">
-            <div class="avatar-preview col-12 mx-auto" *ngIf="avatarPreview && (avatarPreview !== '') && form.get('avatar').valid">
+            <div class="avatar-preview col-12 mx-auto" *ngIf="avatarPreview && (avatarPreview !== '')">
               <img class="mx-auto" [src]="avatarPreview" [alt]="form.value.avatar">
             </div>
             <button class="file--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-2"
@@ -24,6 +24,7 @@
             type="file"
             accept="image/*"
             #avatar
+            formControlName="avatar"
             class="form-control"
             id="inputUpload4"
             placeholder="upload a picture"
@@ -148,5 +149,4 @@
         <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
       </form>
     </div>
-    <app-omniauth *ngIf="!isLoading"></app-omniauth>
   </div>
