@@ -142,8 +142,8 @@
             Password is required
           </div>
           <div *ngIf="form.get('confirmPassword').errors.pattern">
-              Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&
-            </div>
+            Password must have 8 to 33 characters, including at least 1 digit, 1 lowercase, 1 uppercase and exactly 1 of special chars : @$!%*?&
+          </div>
         </div>
         <!-- ERROR HANDLER -->
         <div class="error--msg" *ngIf="form.get('password').touched && form.get('confirmPassword').touched && !samePwd(form.get('password').value, form.get('confirmPassword').value)">
@@ -151,7 +151,7 @@
             Passwords are not the same
           </div>
         </div>
-        <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
+        <button type="submit" [disabled]="form.invalid || !samePwd(form.get('password').value, form.get('confirmPassword').value)" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
       </form>
     </div>
     <app-omniauth *ngIf="!isLoading"></app-omniauth>
