@@ -171,6 +171,7 @@ export class AuthService {
         error => {
           // check if error then success if only one alert at once
           console.log(error);
+          this.authStatusListener.next(false);
         }
       );
   }
@@ -195,6 +196,7 @@ export class AuthService {
         error => {
           // check if error then success if only one alert at once
           console.log(error);
+          this.authStatusListener.next(false);
         }
       );
   }
