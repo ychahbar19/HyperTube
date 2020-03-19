@@ -20,6 +20,7 @@ import { ErrorInterceptor } from './error/error-interceptor';
 import { RatingComponent } from './rating/rating.component';
 import { StaticRateComponent } from './static-rate/static-rate.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { EditComponent } from './edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
     ProfileComponent,
     RatingComponent,
     StaticRateComponent,
-    EditProfileComponent
+    EditProfileComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

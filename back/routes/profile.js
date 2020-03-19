@@ -5,7 +5,7 @@ const authCheck = require('../middleware/auth');
 const router = express.Router();
 
 
-router.post('/', authCheck);
+router.post('/', authCheck, UserController.getUserInfo);
 // , UserController.checkPassword(), UserController.updateUser());
 // , authCheck, UserController.getInfoById
 

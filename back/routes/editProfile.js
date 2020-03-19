@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
 
 // router.all('/', authCheck);
 router.get('/', authCheck, UserController.getUserInfo);
-router.post('/', authCheck, multer({storage: storage}).single('photoUrl'), UserController.updateUser);
+router.post('/', authCheck, multer({storage: storage}).single('photoUrl'), UserController.updateUser, UserController.updateToken);
 // , authCheck, UserController.getInfoById
 
 router.use((req, res) => {

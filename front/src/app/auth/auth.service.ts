@@ -30,7 +30,44 @@ export class AuthService {
   getIsLoading() {
     return this.isLoading.asObservable();
   }
+  // update a user informations such as firstname, lastname, username and email
+  updateUser(
+    formData: {
+      avatar: File | string,
+      firstName: string,
+      lastName: string,
+      username: string,
+      email: string
+    }
+  ) {
+    const updateData = new FormData();
+    updateData.append('photoUrl', formData.avatar);
+    updateData.append('firstName', formData.firstName);
+    updateData.append('lastName', formData.lastName);
+    updateData.append('username', formData.username);
+    updateData.append('email', formData.email);
+    this.isLoading.next(true);
+    return this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/editProfile', updateData)
+      .subscribe(response => {
+        // update du cookie dans le localStorage pour une duree set en back
+        this.isLoading.next(false);
+        const token = response.token;
+        this.token = token;
+        if (token) {
+          const expiresInDuration = response.expiresIn;
+          this.setAuthTimer(expiresInDuration);
+          this.isAuthenticated = true;
+          this.authStatusListener.next(true);
+          const now = new Date();
+          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          this.saveAuthData(token, expirationDate);
+        }
+      }, error => {
+        this.authStatusListener.next(false);
+      });
+  }
 
+  // create a user
   createUser(
     formData: {
       avatar: File,
@@ -66,11 +103,9 @@ export class AuthService {
     this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/signin', authData)
       .subscribe(response => {
         this.isLoading.next(false);
-        console.log('arrive ici');
         const token = response.token;
         this.token = token;
         if (token) {
-          console.log(token);
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;

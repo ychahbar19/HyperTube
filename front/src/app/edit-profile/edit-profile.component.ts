@@ -106,18 +106,25 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     this.isLoading = true;
   }
 
-  onAvatarPicked(event: Event) {
-    const file = (event.target as HTMLInputElement).files[0];
-    // console.log(file);
+  onAvatarPicked(event) {
+    // const file = (event.target as HTMLInputElement).files[0];
     
-    this.form.patchValue({ avatar: file });
-    this.form.get('avatar').updateValueAndValidity();
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.avatarPreview = reader.result as string;
-    };
-    
-    reader.readAsArrayBuffer(file);
+    // this.form.patchValue({ avatar: file });
+    // this.form.get('avatar').updateValueAndValidity();
+    // const reader = new FileReader();
+    // reader.onload = () => {
+    //   this.avatarPreview = reader.result as string;
+    // };
+    // reader.readAsArrayBuffer(file);
+
+    console.log(event);
+    if (event.target.files.length > 0)
+    {
+        let ftu: File = null;
+        ftu = event.target.files[0];
+        this.form.controls['avatar'].setValue(ftu);
+        // this.model.content = event.target.files[0];
+    }
   }
 
   samePwd(password1: string, password2: string): boolean {
