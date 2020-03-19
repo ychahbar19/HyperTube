@@ -5,6 +5,7 @@ export const mimeType = (control: AbstractControl): Promise<{[key: string]: any}
   const file = control.value as File;
   
   const fileReader = new FileReader();
+  
   const frObs = new Observable((observer: Observer<{[key: string]: any}>) => {
     fileReader.addEventListener('loadend', () => {
       const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(0, 4);
@@ -35,8 +36,7 @@ export const mimeType = (control: AbstractControl): Promise<{[key: string]: any}
         }
       observer.complete();
     });
-    if (file)
-      fileReader.readAsArrayBuffer(file);
+    fileReader.readAsArrayBuffer(file);
   });
   return frObs;
 };

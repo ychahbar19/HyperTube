@@ -4,6 +4,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -16,6 +18,10 @@ import { AuthInterceptor } from './auth/auth-interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { ErrorInterceptor } from './error/error-interceptor';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { RatingComponent } from './rating/rating.component';
+import { StaticRateComponent } from './static-rate/static-rate.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { EditComponent } from './edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +34,19 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     GalleryComponent,
     OmniauthComponent,
     ProfileComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    RatingComponent,
+    StaticRateComponent,
+    EditProfileComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

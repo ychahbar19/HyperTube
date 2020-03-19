@@ -1,0 +1,49 @@
+.profile--main{
+  background-color: rgba(77, 77, 77, 0.3);
+  // background: linear-gradient(0deg, rgba(1,1,1,1) 0%, rgba(17,17,17,1) 35%, rgba(19,19,19,0.8911939775910365) 100%);
+}
+
+.profile--main p{
+  text-align: center;
+  // font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
+.name--p{
+  color: grey;
+}
+
+.username--p{
+  color: #f3dc00;
+}
+
+.avatar-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 100%;
+}
+
+.historic--card{
+  background-color: rgba(77, 77, 77, 0.3);
+  height: 100px;
+}
+
+.historic--card div div {
+  height: 100px;
+}
+
+.historic--card img {
+  // object-fit: scale-down;
+  max-height: 100%;
+  width: auto;
+}
+
+.card-body{
+  padding: 1px 30px;
+}
+
+.card-body h5 {
+  font-size: 0.9rem;
+}
