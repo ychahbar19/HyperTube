@@ -41,7 +41,6 @@ export class ForgotPasswordComponent implements OnInit {
       });
     this.errorStatusSub = this.errorService.errorObs.subscribe(error => {
       this.errorMessage = error;
-      this.successMessage = null;
     });
     if (
       this.route.snapshot.queryParams.id &&
