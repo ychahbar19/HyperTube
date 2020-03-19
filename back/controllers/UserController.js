@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const ObjectId = require('mongodb').ObjectId;
 
 const UserModel = require('../models/UserModel');
@@ -13,6 +14,10 @@ function validPattern(str, pattern) {
     return true;
   return false;
 }
+
+// async function findByUsername(username) {
+//   return foundUser = await UserModel.findOne({ username: username });
+// }
 
 // sign in
 
@@ -51,16 +56,15 @@ exports.login = async (req, res, next) => {
       'secret_this_should_be_longer',
       { expiresIn: '10h' }
     );
-    res.status(200).json({ token: token, expiresIn: 36000 });
+    return res.status(200).json({ token: token, expiresIn: 36000 });
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
 // sign up
 
 exports.signupInputsValidation = (req, res, next) => {
-  let error = false;
   const username = req.body.username;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -72,7 +76,6 @@ exports.signupInputsValidation = (req, res, next) => {
       !validPattern(email, emailPattern)) {
         return res.status(403).json({ message: 'An error occured !' });
       }
-
   if (password !== confirmPassword)
     return res.status(403).json({ message: 'Passwords do not match' });
 
@@ -95,7 +98,7 @@ exports.createUser = async (req, res, next) => {
     res.savedUser = await user.save();
     return next();
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -113,10 +116,75 @@ exports.activateAccount = async (req, res, next) => {
     }
     await UserModel.update(
       { '_id': oUserId },
-      { $set : {'active' : true} }
+      { $set: { 'active': true } }
     );
     return res.status(200).json({ message: 'Account activated' });
   } catch (err) {
     res.status(500).json({ message: err });
+  }
+};
+
+// Random string to reset password
+
+exports.createRandomStr = async (req, res, next) => {
+  try {
+    req.user = await UserModel.findOne({
+      username: req.body.username
+    });
+    if (!req.user)
+      return res.status(401).json({ message: 'User not found in database !'});
+      // check status code
+    crypto.randomBytes(20, async (err, buffer) => {
+      if (err)
+        return res.status(400).json({ message: 'Couldn\'t create a reset hash !'});
+      res.locals.randomStr = buffer.toString('hex');
+      await UserModel.update(
+        { username: req.user.username },
+        { $set: { randomStr: res.locals.randomStr } }
+      );
+      next();
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+};
+
+exports.checkIdAndHash = async (req, res, next) => {
+  try {
+    const foundUser = await UserModel.findOne({
+      _id: req.body.id,
+      randomStr: req.body.hash
+    });
+    if (!foundUser)
+      return res.status(401).json({ message: 'Oops! Something went wrong' });
+      // check status code
+    next();
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+};
+
+exports.checkPassword = (req, res, next) => {
+  const password = req.body.formData.password;
+  const confirmPassword = req.body.formData.confirmPassword;
+
+  if (password == null || !validPattern(password, passwordPattern))
+    return res.status(403).json({ message: "An error occured !" });
+  if (password !== confirmPassword)
+    return res.status(403).json({ message: "Passwords do not match" });
+
+  next();
+};
+
+exports.resetPwd = async (req, res, next) => {
+  try {
+    const hashPwd = await bcrypt.hash(req.body.formData.password, 10);
+    await UserModel.update(
+      { _id: req.body.id },
+      { $set: { 'password': hashPwd } }
+    );
+    return res.status(200).json({ message: 'Password has been changed successfully!' });
+  } catch (err) {
+    return res.status(500).json({ message: err });
   }
 };

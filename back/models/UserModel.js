@@ -12,13 +12,14 @@ const uniqueValidator = require('mongoose-unique-validator');
 \* -------------------------------------------------------------------------- */
 
 const userSchema = mongoose.Schema({
-    avatar: {type: String, required: true},
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    active: { type: Boolean, default: false }
+  avatar: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  active: { type: Boolean, default: false },
+  randomStr: { type: String }
 });
 
 //Adds mongoose's uniqueValidator plugin to support 'unique: true' property.

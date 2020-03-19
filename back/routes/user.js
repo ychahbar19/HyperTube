@@ -6,6 +6,7 @@
 
 const express = require('express');
 const UserController = require('../controllers/UserController');
+const MailController = require('../controllers/MailController');
 
 /* -------------------------------------------------------------------------- *\
     2) Creates the Router object.
@@ -25,6 +26,17 @@ router.get('/', (req, res) => {
 // router.post('/signup', UserController.signup);
 // router.post('/login', UserController.login);
 router.post('/activateAccount', UserController.activateAccount);
+router.post(
+  '/forgotPassword',
+  UserController.createRandomStr,
+  MailController.sendResetPwd
+);
+router.post(
+  '/resetPassword',
+  UserController.checkIdAndHash,
+  UserController.checkPassword,
+  UserController.resetPwd
+);
 
 /* -------------------------------------------------------------------------- *\
     4) Exports the router.
