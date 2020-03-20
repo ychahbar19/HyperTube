@@ -5,7 +5,7 @@
 \* -------------------------------------------------------------------------- */
 
 const express = require('express');
-const expressSession = require('express-session');//npm install express-session --save
+const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
