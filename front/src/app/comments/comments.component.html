@@ -1,0 +1,36 @@
+<h2>Comments</h2>
+
+<form [formGroup]="formGroup" (validSubmit)="postComment()">
+  <div class="form-row">
+    <div class="col form-group">
+      <label class="d-none">Comment</label>
+      <textarea name="content" id="content" formControlName="Comment" class="form-control" placeholder="Write a comment"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-8 form-group">
+      <label class="d-none">Name</label>
+      <input type="text" name="author_name" formControlName="Name" class="form-control" placeholder="Your name">
+    </div>
+
+    <div class="col-4 form-group">
+      <button class="btn btn-primary btn-block">Send</button>
+    </div>
+  </div>
+</form>
+
+<div class="row my-2" *ngFor="let comment of comments">
+  <div class="col-3 col-sm-2">
+      <img class="img-fluid" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+  </div>
+  <div class="col">
+      <div class="card bg-dark text-white">
+          <p class="card-header">
+            <b>{{ comment.author_name }}</b>
+            <span class="text-muted"> {{ comment.posted_datetime }}</span>
+          </p>
+          <p class="card-body">{{ comment.content }}</p>
+      </div>
+  </div>
+</div>

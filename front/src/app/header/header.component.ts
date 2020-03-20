@@ -1,7 +1,13 @@
+/*
+HEADER
+Content (= nav links):
+- If guest: Home (= logo), register, login
+- If member: Gallery (= logo), my profile, logout
+- Both: language selector
+*/
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
 import { AuthService } from '../auth/auth.service';
 
 @Component({

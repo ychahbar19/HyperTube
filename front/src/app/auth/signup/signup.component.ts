@@ -13,12 +13,14 @@ import { ErrorService } from 'src/app/error/error.service';
   styleUrls: ['../signin/signin.component.scss', './signup.component.scss']
 })
 export class SignupComponent implements OnInit, OnDestroy {
+  private authStatusSub: Subscription;
+  private errorStatusSub: Subscription;
+  private creationStatusSub: Subscription;
   form: FormGroup;
   avatarPreview: string;
   errorMessage: string;
   isLoading = false;
-  private authStatusSub: Subscription;
-  private errorStatusSub: Subscription;
+  creationStatus = false;
 
   constructor(private authService: AuthService, private errorService: ErrorService) { }
 
@@ -74,6 +76,12 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.errorStatusSub = this.errorService.errorObs.subscribe(
       error => {
         this.errorMessage = error;
+      }
+    );
+    this.creationStatusSub = this.authService.getCreationStatusListener().subscribe(
+      creationStatus => {
+        this.creationStatus = true;
+        this.errorMessage = null;
       }
     );
   }

@@ -1,0 +1,56 @@
+form input,
+form select
+{
+    border: none;
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+    color: white;
+}
+.search,
+.dropdw
+{
+    position: relative;
+}
+
+//Search bar
+.search input[type="text"]
+{
+    padding: 1.8rem 1.5rem;
+    border-radius: 2rem;
+}
+.search .btn
+{
+    position: absolute;
+    top: 0.6rem;
+    right: 1.8rem;
+    border-radius: 3rem;
+}
+
+//Dropdown selects
+.dropdw .fas
+{
+    position: absolute;
+    bottom: 0.8rem;
+    right: 1.8rem;
+}
+
+//Video thumbnails
+.star-rating
+{
+    display: flex;
+}
+.back-stars
+{
+    display: flex;
+    position: relative;
+    color: LightGray;
+}
+.front-stars
+{
+    display: flex;
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    color: gold;
+}

@@ -1,0 +1,35 @@
+.card
+{
+	position:relative;
+}
+.card-header:after,
+.card-header:before
+{
+	position:absolute;
+	top:8px;
+	left:-16px;
+	right:100%;
+	width:0;
+	height:0;
+	display:block;
+	content:" ";
+	border-color:transparent;
+	border-style:solid solid outset;
+	pointer-events:none;
+}
+.card-header:after
+{
+	border-width:7px;
+	border-right-color: var(--gray-dark);
+	margin-top:1px;
+	margin-left:2px;
+}
+.card-header:before
+{
+	border-right-color: var(--dark);
+	border-width:8px;
+}
+.card-body
+{
+    margin: 0;
+}
