@@ -1,28 +1,37 @@
+// Modules
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
 import { AppRoutingModule } from './app-routing.module';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+// Base components
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { SigninComponent } from './auth/signin/signin.component';
 import { HomeComponent } from './home/home.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { GalleryComponent } from './gallery/gallery.component';
+
+// User components
 import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
-import { ProfileComponent } from './profile/profile.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { SigninComponent } from './auth/signin/signin.component';
 import { ErrorInterceptor } from './error/error-interceptor';
+import { ProfileComponent } from './profile/profile.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { RatingComponent } from './rating/rating.component';
 import { StaticRateComponent } from './static-rate/static-rate.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { EditComponent } from './edit/edit.component';
 
+// Video components
+import { SearchComponent } from './search/search.component';
+  // import { GalleryComponent } from './gallery/gallery.component';
+import { VideoComponent } from './video/video.component';
+import { CommentsComponent } from './comments/comments.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,20 +40,25 @@ import { EditComponent } from './edit/edit.component';
     SigninComponent,
     HomeComponent,
     SignupComponent,
-    GalleryComponent,
+    // GalleryComponent,
     OmniauthComponent,
     ProfileComponent,
     ForgotPasswordComponent,
     RatingComponent,
     StaticRateComponent,
     EditProfileComponent,
-    EditComponent
+    EditComponent,
+    SearchComponent,
+    VideoComponent,
+    CommentsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgBootstrapFormValidationModule.forRoot(),
+    NgBootstrapFormValidationModule,
     AppRoutingModule,
     NgbModule
   ],
@@ -54,4 +68,5 @@ import { EditComponent } from './edit/edit.component';
   ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

@@ -1,16 +1,13 @@
-// MODEL for User
-
-/* -------------------------------------------------------------------------- *\
-    1) Imports the required elements (node packages)
-\* -------------------------------------------------------------------------- */
-
+// 1) Import
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator'); // Supports 'unique: true' property.
+//const findOrCreate = require('mongoose-findorcreate');
 
 /* -------------------------------------------------------------------------- *\
     2) Creates the model (schema) for objects of this class.
 \* -------------------------------------------------------------------------- */
 
+// 2) Define
 const userSchema = mongoose.Schema({
   avatar: { type: String, required: true },
   firstName: { type: String, required: true },
@@ -22,19 +19,9 @@ const userSchema = mongoose.Schema({
   randomStr: { type: String }
 });
 
-//Adds mongoose's uniqueValidator plugin to support 'unique: true' property.
+// 3) Add the plugins
 userSchema.plugin(uniqueValidator);
+//userSchema.plugin(findOrCreate);
 
-/* -------------------------------------------------------------------------- *\
-    3) Exports the model (schema).
-\* -------------------------------------------------------------------------- */
-
-module.exports = mongoose.model('User', userSchema);
-
-
-
-
-// userExists(user) {
-//     connection db -> check if user exists in db
-//     return true or false;
-// }
+// 4) Export
+module.exports = mongoose.model('UserModel', userSchema);

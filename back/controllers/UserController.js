@@ -1,3 +1,9 @@
+// EXPRESS CONTROLLER for User
+
+/* -------------------------------------------------------------------------- *\
+    1) Imports the required elements (model + node package).
+\* -------------------------------------------------------------------------- */
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -20,8 +26,102 @@ function validPattern(str, pattern) {
 // }
 
 // sign in
+/* -------------------------------------------------------------------------- *\
+    2) Defines the signup, signin & logout functions.
+\* -------------------------------------------------------------------------- */
 
-exports.loginInputsValidation = (req, res, next) => {
+/* ------------------------ SIGNUP ------------------------ */
+
+exports.signupInputsValidation = (req, res, next) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+  const email = req.body.email;
+
+  // checker les inputs firstName, lastName, ..
+  if (username == null || !validPattern(username, usernamePattern) ||
+      password == null || !validPattern(password, passwordPattern) ||
+      !validPattern(email, emailPattern)) {
+        return res.status(403).json({ message: 'An error occured !' });
+      }
+  if (password !== confirmPassword)
+    return res.status(403).json({ message: 'Passwords do not match' });
+
+  return next();
+};
+
+exports.createUser = async (req, res, next) =>
+{
+  try {
+    const hashPwd = await bcrypt.hash(req.body.password, 10);
+    const url = req.protocol + "://" + req.get("host");
+
+    const user = new UserModel({
+      avatar: url + "/assets/pictures/" + req.file.filename,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      username: req.body.username,
+      password: hashPwd
+    });
+    res.savedUser = await user.save();
+    return next();
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+// Activate account after clicking on confirmation email
+exports.activateAccount = async (req, res, next) =>
+{
+  try {
+    const oUserId = ObjectId(req.body.id);
+    const foundUser = await UserModel.findOne({
+      _id: oUserId,
+      active: false
+    });
+    if (!foundUser) {
+      return res.status(401).json({ message: 'Oops ! Something went wrong !' });
+    }
+    await UserModel.update(
+      { '_id': oUserId },
+      { $set: { 'active': true } }
+    );
+    return res.status(200).json({ message: 'Account activated' });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+/*
+exports.signup = (req, res) =>
+{
+  //Applies bcrypt's hash on the password in 10 steps (= lvl of security),
+  //then creates a new instance of UserModel and saves it in the DB.
+  bcrypt.hash(req.body.password, 10)
+    .then(hash =>
+    {
+      const newUser = new UserModel(
+      {
+        email: req.body.email,
+        username: req.body.username,
+        avatar: req.body.avatar,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        password: hash
+      });
+      newUser.save()
+        .then(() => res.status(201).json({ message: 'User cree' }))
+        .catch(error => res.status(400).json({ error }))
+    })
+    .catch(error => res.status(500).json({ error }));
+};
+*/
+
+/* ------------------------ SIGNIN ------------------------ */
+
+exports.loginInputsValidation = (req, res, next) =>
+{
   const username = req.body.username;
   const password = req.body.password;
   let error = false;
@@ -62,71 +162,74 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// sign up
-
-exports.signupInputsValidation = (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
-  const email = req.body.email;
-
-  // checker les inputs firstName, lastName, ..
-  if (username == null || !validPattern(username, usernamePattern) ||
-      password == null || !validPattern(password, passwordPattern) ||
-      !validPattern(email, emailPattern)) {
-        return res.status(403).json({ message: 'An error occured !' });
+/*
+exports.signin = (req, res) =>
+{
+  //Finds the user matching the given username and, if there is one,
+  //compares the password entered with the user's hashed password.
+  //If the comparison returns TRUE, defines a user token.
+  UserModel.findOne({ email: req.body.username })
+    .then(user =>
+    {
+      if (!user)
+      {
+        return res.status(401).json({ error: 'User not found' });
       }
-  if (password !== confirmPassword)
-    return res.status(403).json({ message: 'Passwords do not match' });
+      bcrypt.compare(req.body.password, user.password)
+        .then(valid =>
+        {
+          if (!valid)
+          {
+            return res.status(401).json({ error: 'Bad password' });
+          }
+          res.status(200).json(
+          {
+            //.sign de jsonwebtoken permet de créer un token sur base de l'id user en payload
+            //(= données encodées dans le token au moyen de la chaîne secrète)
+            userId: user._id,
+            token: jwt.sign(
+              { userId: user._id },
+              'RANDOM_TOKEN_SECRET',
+              { expiresIn: '24h' })
+          });
+        })
+        .catch(error => res.status(500).json({ error }))
+    })
+    .catch(error => res.status(500).json({ error }))
+};
+*/
 
-  return next();
+/* ------------------------ LOGOUT ------------------------ */
+
+/*
+exports.logout = (req, res) =>
+{
+  req.logout();
+  req.session.destroy();
+  res.redirect('http://localhost:4200/');
+};
+*/
+
+/* -------------------------------------------------------------------------- *\
+    3) 
+\* -------------------------------------------------------------------------- */
+
+/*
+exports.getCurrentUser = (req, res) =>
+{
+  console.log(req);
+  res.send('ok');
 };
 
-exports.createUser = async (req, res, next) => {
-  try {
-    const hashPwd = await bcrypt.hash(req.body.password, 10);
-    const url = req.protocol + "://" + req.get("host");
-
-    const user = new UserModel({
-      avatar: url + "/assets/pictures/" + req.file.filename,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      username: req.body.username,
-      password: hashPwd
-    });
-    res.savedUser = await user.save();
-    return next();
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
+exports.getUserInfo = (req, res, next) =>
+{
+  res.send('user info');
 };
-
-// Activate account after clicking on confirmation email
-
-exports.activateAccount = async (req, res, next) => {
-  try {
-    const oUserId = ObjectId(req.body.id);
-    const foundUser = await UserModel.findOne({
-      _id: oUserId,
-      active: false
-    });
-    if (!foundUser) {
-      return res.status(401).json({ message: 'Oops ! Something went wrong !' });
-    }
-    await UserModel.update(
-      { '_id': oUserId },
-      { $set: { 'active': true } }
-    );
-    return res.status(200).json({ message: 'Account activated' });
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-};
+*/
 
 // Random string to reset password
-
-exports.createRandomStr = async (req, res, next) => {
+exports.createRandomStr = async (req, res, next) =>
+{
   try {
     req.user = await UserModel.findOne({
       username: req.body.username
@@ -188,8 +291,8 @@ exports.resetPwd = async (req, res, next) => {
     return res.status(500).json({ message: err });
   }
 };
-// get user informations (HYDRATATION)
 
+// get user informations (HYDRATATION)
 exports.getUserInfo = async (req, res, next) => {
   let error = false;
   let id;
@@ -223,7 +326,6 @@ exports.getUserInfo = async (req, res, next) => {
 }
 
 // update user : 
-
 exports.updateUser = async (req, res, next) => {
   let error = false;
 
@@ -275,4 +377,4 @@ exports.updateToken = async (req, res, next) => {
   } catch (err) {
       return res.status(500).send(err);
   }
-}
+};

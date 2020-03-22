@@ -1,7 +1,13 @@
+/*
+HOME (guests only)
+Content:
+  https://files.slack.com/files-pri/T039P7U66-FT8DT63L4/image_d___ios.jpg
+  https://files.slack.com/files-pri/T039P7U66-FTBCVP3K8/screenshot_2020-01-29_at_15.04.56.png
+*/
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Home } from './home.model';
-import { HomeService } from '../shared/services/home.service';
+import { HomeService } from './home.service';
 
 @Component({
   selector: 'app-home',
@@ -9,21 +15,31 @@ import { HomeService } from '../shared/services/home.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  public layout: Home[] = [];
+export class HomeComponent implements OnInit, OnDestroy
+{
+  public layout: Home = {
+                    field_1: '',
+                    field_2: '',
+                    field_3: ''
+                  };
   private layoutSubscription: Subscription;
 
   constructor(private homeService: HomeService) {}
 
-  ngOnInit() {
+  ngOnInit()
+  {
+      /*
     this.homeService.getLayout();
     this.layoutSubscription = this.homeService.getLayoutUpdateListener()
-      .subscribe((layoutHome: Home[]) => {
+      .subscribe((layoutHome: Home) =>
+      {
         this.layout = layoutHome;
       });
+      */
   }
 
-  ngOnDestroy() {
-    this.layoutSubscription.unsubscribe();
+  ngOnDestroy()
+  {
+    //this.layoutSubscription.unsubscribe();
   }
 }
