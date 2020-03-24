@@ -2,14 +2,14 @@
 <div class="container">
   <div class="row justify-content-center profile--main">
     <div class="col-12 col-md-10 col-lg-6 mt-5">
-      <div clas="justify-content-center">
-        <img class="avatar-img"src="http://localhost:3000/assets/pictures/vippng.com-demon-face-png-1981503-1583751871213.png" alt="profile-pic" width="100px">
+      <div *ngIf="data" clas="justify-content-center">
+        <img class="avatar-img" [src]="data.avatar" alt="profile-pic" width="100px">
       </div>
-      <div>
-        <p class="name--p">firstName lastName</p>
-        <p class="username--p">username</p>
-        <a routerLink="/edit">Edit Profile</a>
+      <div *ngIf="data">
+        <p class="name--p">{{ data.humanReadName }}</p>
+        <p class="username--p">{{ data.username }}</p>
       </div>
+      <a routerLink="/edit">Edit Profile</a>
       <div class="">
         <!-- TEMPLATE historique des actions (commentaires des films, notes ) -->
         <div class="card mb-3 historic--card" style="max-width: 540px;">

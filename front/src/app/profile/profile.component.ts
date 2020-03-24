@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ProfileComponent implements OnInit {
   user: {};
+  data: any;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
@@ -19,9 +20,7 @@ export class ProfileComponent implements OnInit {
       }
     });
     this.http.post('http://localhost:3000/profile', this.user).subscribe(response => {
-    console.log(response);
-      
-    this.user = response;
+    this.data = response;
     }, error => {
       // if an error occured we redirect to gallery
       this.router.navigate(['/gallery']);
