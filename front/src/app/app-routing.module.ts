@@ -24,15 +24,14 @@ import { VideoComponent } from './video/video.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'signin', component: SigninComponent },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'forgotPassword', component: ForgotPasswordComponent },
+  { path: 'signin', component: SigninComponent },
+  { path: 'profile/:id?', component: ProfileComponent/*, canActivate: [AuthGuard]*/ },
+  { path: 'profile', component: ProfileComponent/*, canActivate: [AuthGuard]*/ },
+  { path: 'edit', component:  EditComponent/*, canActivate: [AuthGuard]*/ },
   { path: 'search', component: SearchComponent },
-  // { path: 'gallery', component: GalleryComponent, canActivate: [AuthGuard] },
-  { path: 'video/:imdb_id/:yts_id', component: VideoComponent, canActivate: [AuthGuard] },
-  { path: 'profile/:id?', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'edit', component:  EditComponent, canActivate: [AuthGuard] }
+  { path: 'video/:imdb_id/:yts_id', component: VideoComponent/*, canActivate: [AuthGuard]*/ }
 ];
 
 @NgModule({
