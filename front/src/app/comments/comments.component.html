@@ -28,7 +28,7 @@
       <div class="card bg-dark text-white">
           <p class="card-header">
             <b>{{ comment.author_name }}</b>
-            <span class="text-muted"> {{ comment.posted_datetime | date }}</span>
+            <small class="text-muted"> {{ comment.posted_datetime | date: 'MMM dd, yyyy - hh:mma' }}</small>
           </p>
           <p class="card-body">{{ comment.content }}</p>
       </div>
