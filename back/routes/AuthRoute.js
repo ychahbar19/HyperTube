@@ -4,36 +4,10 @@
 
 const express = require('express');
 const multer = require('multer');
-//const UserCtlr = require('../controllers/UserController');
+const ImageController = require('../controllers/ImageController');
 const AuthCtlr = require('../controllers/AuthController');
 const MailCtlr = require('../controllers/MailController');
 const passport = require('passport');
-
-const MIME_TYPE_MAP =
-  {
-    'image/png': 'png',
-    'image/jpg': 'jpg',
-    'image/jpeg': 'jpg'
-  };
-const storage = multer.diskStorage(
-  {
-    destination: (req, file, callback) =>
-    {
-      // Checks the given file's type is valid.
-      let error = null;
-      if (!MIME_TYPE_MAP[file.mimetype])
-        error = new Error("invalid mimetype");
-      callback(error, "assets/pictures");
-    },
-    filename: (req, file, callback) =>
-    {
-      // Redefines the given file's name.
-      const name = file.originalname.replace("." + MIME_TYPE_MAP[file.mimetype], "").toLocaleLowerCase().replace(' ', '-');
-      const ext = MIME_TYPE_MAP[file.mimetype];
-      req.body.avatar = name + '-' + Date.now() + '.' + ext;
-      callback(null, req.body.avatar);
-    }
-  });
 
 const router = express.Router();
 
@@ -43,7 +17,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- Hypertube authentification ----- */
-router.post('/signup', multer({storage: storage}).single('photoUrl'), AuthCtlr.signupInputsValidation, AuthCtlr.createUser, MailCtlr.sendConfirmMail);
+router.post('/signup', multer({storage: ImageController.storage}).single('photoUrl'), AuthCtlr.signupInputsValidation, AuthCtlr.createUser, MailCtlr.sendConfirmMail);
 router.post('/activateAccount', AuthCtlr.activateAccount);
 router.post('/signin', AuthCtlr.loginInputsValidation, AuthCtlr.login);
 router.post('/forgotPassword', AuthCtlr.createRandomStr, MailCtlr.sendResetPwd);
