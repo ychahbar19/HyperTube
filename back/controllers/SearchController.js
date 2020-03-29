@@ -85,10 +85,10 @@ async function search(req, res)
   await searchMovies(req.query)
     .then(() =>
     {
+      //await searchTVShows();
       res.status(200).send(hypertubeResults);
     })
-  .catch(error => res.status(400).json({ error }));
-  //await searchTVShows();
+    .catch(error => res.status(400).json({ error }));
 };
 
 module.exports.search = search;
