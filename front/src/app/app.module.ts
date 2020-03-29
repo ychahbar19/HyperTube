@@ -4,63 +4,53 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
-import { AppRoutingModule } from './app-routing.module';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppRoutingModule } from './app-routing.module';
 
 // Base components
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
-import { HomeComponent } from './home/home.component';
+import { HeaderComponent } from './A-template/header/header.component';
+import { FooterComponent } from './A-template/footer/footer.component';
+import { HomeComponent } from './B-home/home.component';
+
+// Interceptor components
+import { AuthInterceptor } from './C-auth/auth-interceptor';
+import { ErrorInterceptor } from './error/error-interceptor';
+
+// Authentification components
+import { SignupComponent } from './C-auth/signup/signup.component';
+import { SigninComponent } from './C-auth/signin/signin.component';
+import { OmniauthComponent } from './C-auth/omniauth/omniauth.component';
+import { ForgotPasswordComponent } from './C-auth/forgot-password/forgot-password.component';
 
 // User components
-import { OmniauthComponent } from './auth/omniauth/omniauth.component';
-import { AuthInterceptor } from './auth/auth-interceptor';
-import { SignupComponent } from './auth/signup/signup.component';
-import { SigninComponent } from './auth/signin/signin.component';
-import { ErrorInterceptor } from './error/error-interceptor';
-import { ProfileComponent } from './profile/profile.component';
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { ProfileComponent } from './D-user/profile/profile.component';
+import { EditComponent } from './D-user/edit/edit.component';
+
+// ????? components
 import { RatingComponent } from './rating/rating.component';
 import { StaticRateComponent } from './static-rate/static-rate.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
-import { EditComponent } from './edit/edit.component';
 
 // Video components
-import { SearchComponent } from './search/search.component';
-  // import { GalleryComponent } from './gallery/gallery.component';
-import { VideoComponent } from './video/video.component';
-import { CommentsComponent } from './comments/comments.component';
+import { SearchComponent } from './E-video/search/search.component';
+import { VideoCardComponent } from './E-video/card/card.component';
+import { CommentsComponent } from './E-video/comments/comments.component';
+
 @NgModule({
   declarations: [
-    AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    SigninComponent,
-    HomeComponent,
-    SignupComponent,
-    // GalleryComponent,
-    OmniauthComponent,
-    ProfileComponent,
-    ForgotPasswordComponent,
-    RatingComponent,
-    StaticRateComponent,
-    EditProfileComponent,
-    EditComponent,
-    SearchComponent,
-    VideoComponent,
-    CommentsComponent
+    AppComponent, HeaderComponent, FooterComponent, HomeComponent,
+    SignupComponent, SigninComponent, OmniauthComponent, ForgotPasswordComponent,
+    ProfileComponent, EditComponent,
+    RatingComponent, StaticRateComponent,
+    SearchComponent, VideoCardComponent, CommentsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgBootstrapFormValidationModule.forRoot(),
-    NgBootstrapFormValidationModule,
-    AppRoutingModule,
-    NgbModule
+    FormsModule, ReactiveFormsModule,
+    NgBootstrapFormValidationModule.forRoot(), NgBootstrapFormValidationModule,
+    NgbModule,
+    AppRoutingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

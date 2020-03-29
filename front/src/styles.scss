@@ -1,15 +1,22 @@
+/* ---------------------------------------------- *\
+    Imports
+\* ---------------------------------------------- */
+
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
-
 // @import '~bootstrap/dist/css/bootstrap.min.css';
 
-* {
+/* ---------------------------------------------- *\
+    Structure
+\* ---------------------------------------------- */
+
+*
+{
   margin: 0;
   padding: 0;
 }
-
 html, body
 {
   height: 100%;
@@ -21,36 +28,17 @@ body
   margin: 0 auto;
   color: white;
 }
-
-.btn-outline-warning {
-  border-color: rgb(243,220,0);
-  color: rgb(243,220,0);
-}
-
-.btn-outline-warning:hover {
-  border-color: rgb(243,220,0);
-  background-color: rgb(243,220,0);
-  color: black;
-}
-
-.btn-outline-warning:disabled {
-  border-color: initial;
-  background-color: initial;
-  color: initial;
-}
-
-.container {
+.container
+{
   overflow: auto;
-  padding-bottom: 80px;
 }
 
-.form-yellow-title {
-  color: rgb(243,220,0);
-  margin-top: 2vh;
-  text-align: center;
-}
+/* ---------------------------------------------- *\
+    Loading
+\* ---------------------------------------------- */
 
-.spinner {
+.spinner
+{
   content: '';
   box-sizing: border-box;
   position: absolute;
@@ -66,8 +54,35 @@ body
   animation: spinner 1s linear infinite;
 }
 
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes spinner
+{
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------- *\
+    Button & form colours
+\* ---------------------------------------------- */
+
+.btn-outline-warning,
+.btn-outline-warning:hover
+{
+  border-color: rgb(243,220,0);
+  color: rgb(243,220,0);
+}
+.btn-outline-warning:hover
+{
+  color: black;
+}
+.btn-outline-warning:disabled
+{
+  border-color: initial;
+  background-color: initial;
+  color: initial;
+}
+
+.form-yellow-title
+{
+  color: rgb(243,220,0);
+  margin-top: 2vh;
+  text-align: center;
 }

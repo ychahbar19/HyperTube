@@ -1,0 +1,78 @@
+<div *ngIf="isLoading" class="spinner"></div>
+
+<div *ngIf="!isLoading" class="container">
+  <div class="justify-content-center sign-in--main">
+    <div class="row justify-content-center">
+
+      <div class="col-md-9 col-lg-7">
+        <form #f="ngForm" (ngSubmit)="onLogin()">
+          <h4 class="form-yellow-title">{{ txt['Sign in'][lg] }}<br/><small>{{ txt['with'][lg] }} HyperTube</small></h4>
+
+          <p *ngIf="successSignup" class="alert alert-success alert-dismissible fade show" role="alert">
+            Welcome to HyperTube.<br />
+            Your account has been activated !<br />
+            You may now log in and enjoy.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </p>
+          
+          <p *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ errorMessage }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </p>
+          
+          <div class="form-group">
+            <input
+              type="text" name="username" placeholder="{{ txt['Username'][lg] }}"
+              class="form-control" id="exampleInputUsername1" aria-describedby="usernameHelp"
+              ngModel #username="ngModel" pattern="[a-zA-Z0-9]+$" autocomplete="off" required
+            >
+            <p *ngIf="username.touched && !username.valid" class="error--msg" >
+              {{ txt['Username error'][lg] }}
+            </p>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password" name="password" placeholder="{{ txt['Password'][lg] }}"
+              class="form-control" id="exampleInputPassword1"
+              ngModel #password="ngModel" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" required
+            >
+            <p *ngIf="password.touched && !password.valid" class="error--msg" >
+              {{ txt['Password error'][lg] }}
+            </p>
+          </div>
+
+          <div class="checkbox--div">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">{{ txt['Remember me'][lg] }}</label>
+            </div>
+            <div class="form-group hovering_effect">
+              <a class="small_grey_text hover hover-4" routerLink="/forgotPassword">{{ txt['Forgotten password'][lg] }}</a>
+            </div>
+          </div>
+
+          <button type="submit" [disabled]="!f.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+            {{ txt['Submit'][lg] }}
+          </button>
+
+          <p class="small_grey_text mb-0 mt-4" style="text-align: center;">
+            {{ txt['No account yet'][lg] }}
+            <span class="hovering_effect">
+              <a class="small_grey_text hover hover-4" routerLink="/signup">{{ txt['Sign up'][lg] }}</a>
+            </span>
+          </p>
+        </form>
+      </div>
+
+      <div class="col-md-3 col-lg-5">
+        <app-omniauth></app-omniauth>
+      </div>
+
+    </div>
+  </div>
+</div>
