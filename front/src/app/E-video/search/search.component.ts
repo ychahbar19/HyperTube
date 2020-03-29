@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { SearchService } from './search.service';
 import { NgForm } from '@angular/forms';
 
@@ -11,10 +12,11 @@ import { NgForm } from '@angular/forms';
 export class SearchComponent implements OnInit
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Search':     { en: 'Search...', fr: 'Rechercher...' },
     'Genre':      { en: 'Genre', fr: 'Genre' },
-    'Sort by':    { en: 'Sort by', fr: 'Ordonner par' },
+    'Sort by':    { en: 'Sort by', fr: 'Ordre' },
     'Popularity': { en: 'Popularity (best > worst)', fr: 'Popularité (top > pire)' },
     'Title':      { en: 'Title (A > Z)', fr: 'Titre (A > Z)' },
     'Year':       { en: 'Year (most > least recent)', fr: 'Année (plus > moins récent)' },
@@ -28,7 +30,6 @@ export class SearchComponent implements OnInit
                           'Horreur', 'Musique', 'Comédie musicale', 'Mystère', 'Romance', 'Sci-Fi',
                           'Court-métrage', 'Sport', 'Super-héro', 'Thriller', 'Guerre', 'Western' ]}
   };
-  public lg = 'fr';
 
   public results;
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -14,6 +15,7 @@ import { ErrorService } from 'src/app/error/error.service';
 export class SigninComponent implements OnInit, OnDestroy
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Sign in':            { en: 'Sign in', fr: 'Connexion' },
     'with':               { en: 'with', fr: 'avec' },
@@ -27,8 +29,6 @@ export class SigninComponent implements OnInit, OnDestroy
     'No account yet':     { en: 'Don\'t have an account?', fr: 'Pas encore de compte ?' },
     'Sign up':            { en: 'Sign up', fr: 'Inscription' }
   };
-  public lg = 'fr';
-
 
   @ViewChild('f', { static: false }) signInForm: NgForm;
   response: Observable<any>;

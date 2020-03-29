@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { mimeType } from '../../mime-type.validator';
@@ -10,11 +11,12 @@ import { AuthService } from '../../C-auth/auth.service';
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
-  styleUrls: [/*'../C-auth/signin/signin.component.scss', */'./edit.component.scss']
+  styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Edit profile':           { en: 'Edit profile', fr: 'Modifier mon profil' },
     'First name':             { en: 'First name', fr: 'Prénom' },
@@ -31,7 +33,6 @@ export class EditComponent implements OnInit
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
     'Submit':                 { en: 'Submit', fr: 'Envoyer' }
   };
-  public lg = 'fr';
 
   public form: FormGroup;
   public avatarPreview: string;

@@ -1,11 +1,11 @@
 <div *ngIf="isLoading" class="spinner"></div>
 
 <div *ngIf="!isLoading" class="container">
-  <div class="justify-content-center sign-in--main">
+  <div class="justify-content-center">
     <div class="row justify-content-center">
 
       <div class="col-md-9 col-lg-7">
-        <form #f="ngForm" (ngSubmit)="onLogin()">
+        <form #f="ngForm" (ngSubmit)="onLogin()" class="user-form">
           <h4 class="form-yellow-title">{{ txt['Sign in'][lg] }}<br/><small>{{ txt['with'][lg] }} HyperTube</small></h4>
 
           <p *ngIf="successSignup" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -28,7 +28,7 @@
             <input
               type="text" name="username" placeholder="{{ txt['Username'][lg] }}"
               class="form-control" id="exampleInputUsername1" aria-describedby="usernameHelp"
-              ngModel #username="ngModel" pattern="[a-zA-Z0-9]+$" autocomplete="off" required
+              ngModel #username="ngModel" pattern="[a-zA-Z0-9]+$" required
             >
             <p *ngIf="username.touched && !username.valid" class="error--msg" >
               {{ txt['Username error'][lg] }}
@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <button type="submit" [disabled]="!f.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+          <button type="submit" [disabled]="!f.valid" class="btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
             {{ txt['Submit'][lg] }}
           </button>
 

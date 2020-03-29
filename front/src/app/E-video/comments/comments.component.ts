@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommentsService } from './comments.service';
@@ -22,13 +23,13 @@ export class CommentsComponent implements OnInit
   public postResponse;
 
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Comments':         { en: 'Comments', fr: 'Commentaires' },
     'Write a comment':  { en: 'Write a comment', fr: 'Ecrivez un commentaire' },
     'Your name':        { en: 'Your name', fr: 'Entrez votre nom' },
     'Send':             { en: 'Send', fr: 'Envoyer' }
   };
-  public lg = 'fr';
 
   // 2) Defines the variable imdb_id by taking the value in the URL.
   constructor(private commentsService: CommentsService,

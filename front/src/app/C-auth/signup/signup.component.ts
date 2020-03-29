@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { mimeType } from '../../mime-type.validator';
@@ -8,11 +9,12 @@ import { ErrorService } from '../../error/error.service';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['../signin/signin.component.scss', './signup.component.scss']
+  styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit, OnDestroy
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Sign up':                { en: 'Sign up', fr: 'Inscription' },
     'with':                   { en: 'with', fr: 'avec' },
@@ -39,7 +41,6 @@ export class SignupComponent implements OnInit, OnDestroy
     'Have account':           { en: 'Already have an account?', fr: 'Déjà inscrit ?' },
     'Sign in':                { en: 'Sign in', fr: 'Connexion' }
   };
-  public lg = 'fr';
 
   public form: FormGroup;
   public avatarPreview: string;

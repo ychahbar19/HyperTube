@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoCardService } from './card.service';
 
@@ -16,6 +17,7 @@ export class VideoCardComponent implements OnInit
   public video = {};
 
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'With':           { en: 'With', fr: 'Avec' },
     'By':             { en: 'By', fr: 'Par' },
@@ -26,7 +28,6 @@ export class VideoCardComponent implements OnInit
     'Play now':       { en: 'Play now', fr: 'Regarder maintenant' },
     'Load and play':  { en: 'Load and play', fr: 'Charger et regarder' }
   };
-  public lg = 'fr';
 
   // 2) Defines the variables imdb_id and yts_id by taking the values in the URL.
   constructor(private videoCardService: VideoCardService,

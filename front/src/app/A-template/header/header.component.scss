@@ -2,6 +2,10 @@
     Navigation bar
 \* ------------------------------------------ */
 
+.navbar
+{
+  margin-bottom: 5vh;
+}
 .navbar-expand
 {
   justify-content: space-between;
@@ -29,6 +33,8 @@
   flex-grow: 0;
   margin-right: 3vw;
 }
+
+/* ------ User dropdown ------ */
 
 #navbar-dropdown
 {
@@ -59,4 +65,11 @@
 .dropdown-divider
 {
   border-top-color: rgb(59, 59, 59);
+}
+
+/* ------ Language buttons ------ */
+
+.navbar-collapse > button
+{
+  margin-left: 5px;
 }

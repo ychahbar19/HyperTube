@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -9,14 +10,12 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
-  styleUrls: [
-    './forgot-password.component.scss',
-    '../signin/signin.component.scss'
-  ]
+  styleUrls: ['./forgot-password.component.scss']
 })
 export class ForgotPasswordComponent implements OnInit
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Forgotten password':     { en: 'Forgotten password', fr: 'Mot de passe oublié' },
     'Username':               { en: 'Username', fr: 'Pseudo' },
@@ -30,7 +29,6 @@ export class ForgotPasswordComponent implements OnInit
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
     'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
   };
-  public lg = 'fr';
   
   @ViewChild('f', { static: false }) forgotForm: NgForm;
   @ViewChild('f2', { static: false }) resetForm: NgForm;

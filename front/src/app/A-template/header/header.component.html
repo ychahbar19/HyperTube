@@ -9,8 +9,8 @@
   </a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav">
 
+    <ul class="navbar-nav">
       <ng-template #mainNavbar [ngIf]="userIsAuthenticated">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,11 +30,10 @@
           </div>
         </li>
       </ng-template>
-
-      <li class="nav-item">
-        <a href="#">EN</a> / <a href="#">FR</a>
-      </li>
-
     </ul>
+
+    <button (click)="onLanguageChange('en')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'en', 'btn-outline-warning' : lg != 'en'}">EN</button>
+    <button (click)="onLanguageChange('fr')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'fr', 'btn-outline-warning' : lg != 'fr'}">FR</button>
+
   </div>
 </nav>

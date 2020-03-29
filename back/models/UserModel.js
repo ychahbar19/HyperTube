@@ -9,7 +9,6 @@ const findOrCreate = require('mongoose-findorcreate');
 
 // 2) Define
 const userSchema = mongoose.Schema({
-  /*
   active: { type: Boolean, default: false },
   avatar: { type: String, required: true },
   firstName: { type: String, required: true },
@@ -17,17 +16,9 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  randomStr: { type: String }
-  */
- active: { type: Boolean, default: false },
- avatar: { type: String },
- firstName: { type: String },
- lastName: { type: String },
- email: { type: String, unique: true },
- username: { type: String, unique: true },
- password: { type: String },
- randomStr: { type: String },
- fortytwoId: String
+  language: { type: String, default: 'en' },
+  randomStr: { type: String },
+  fortytwoId: String
 });
 
 // 3) Add the plugins

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-omniauth',
@@ -8,10 +9,10 @@ import { Component } from '@angular/core';
 export class OmniauthComponent
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'Use account': { en: 'Or with...', fr: 'Ou avec...' }
   };
-  public lg = 'fr';
   
   constructor() { }
 }

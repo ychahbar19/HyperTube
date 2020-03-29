@@ -1,14 +1,5 @@
-/*
-PROFILE (members only)
-Content:
-  - User info:
-    - username
-    - pic
-    - last_name
-    - first_name
-  - Edit link
-*/
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,10 +11,10 @@ import { HttpClient } from '@angular/common/http';
 export class ProfileComponent implements OnInit
 {
   // 1) Defines the translations for the static text.
+  public lg = AppComponent.userLanguage;
   public txt = {
     'xxx': { en: 'xxx', fr: 'xxx' },
   };
-  public lg = 'fr';
   
   user: {};
 

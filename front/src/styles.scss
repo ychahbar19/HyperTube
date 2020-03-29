@@ -8,6 +8,8 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 // @import '~bootstrap/dist/css/bootstrap.min.css';
 
+$animate: all 0.2s ease-in-out;
+
 /* ---------------------------------------------- *\
     Structure
 \* ---------------------------------------------- */
@@ -84,22 +86,30 @@ body
     Form elements
 \* ----------------------------------------------- */
 
+/* ------------ Form structure ------------ */
+
+.user-form
+{
+  padding: 5vh;
+  border-radius: 10px;
+  background-color: rgba(77, 77, 77, 0.3);
+}
+
 /* ------------ Form title ------------ */
 
-form h4
+h4.form-yellow-title
 {
-  margin-top: 10px;
-  padding-bottom: 40px;
-}
-form .form-yellow-title
-{
-  color: rgb(243,220,0);
-  margin-top: 2vh;
   text-align: center;
+  color: rgb(243,220,0);
 }
 
 /* ------------ Form alerts ------------ */
 
+form .alert
+{
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
 form .alert-success
 {
   background-color: #d4edda;
@@ -113,15 +123,81 @@ form .error--msg
   font-weight: 500;
 }
 
+/* ------------ Form text and links ------------ */
+
+.small_grey_text
+{
+  color: grey;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.hovering_effect
+{
+  .hover
+  {
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    color: darken(rgb(243, 220, 0), 10%);
+    text-decoration: none;
+    transition: $animate;   
+    &:before, &:after
+    {
+      position: absolute;
+      bottom: -5px;
+      width: 0px;
+      height: 2px;
+      margin: 5px 0 0;
+      content: "";
+      transition: $animate;
+      transition-duration: 0.45s;
+      opacity: 0;
+      background-color: rgb(243,220,0);
+    }
+    &.hover-4
+    {
+      &:before { left: 0; }
+      &:after { right: 0; }
+    }
+  }
+
+  &:hover
+  {
+    cursor: pointer;
+    .hover
+    {
+      &:before, &:after { width: 100%; opacity: 1; }
+      &.hover-3, &.hover-4
+      {
+        &:before, &:after { width: 50%; }
+      }
+    }
+  }
+}
+
+/*
+.yellow_underline {
+  position: relative;
+  color: grey;
+  text-decoration: none;
+}
+*/
+
 /* ------------ Form controles ------------ */
 
-form .form-group
+.user-form .form-group
 {
   padding-top: 10px;
   margin: 0;
 }
+.user-form .form-group:first-of-type
+{
+  margin-top: 5vh;
+}
 
-form .form-control
+.user-form .form-control
 {
   background-color: transparent;
   border: 1px solid #7a7a7a;
@@ -129,44 +205,52 @@ form .form-control
   font-size: 0.9rem;
 }
 
-.checkbox--div
+.user-form .checkbox--div
 {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
-form .form-check
+.user-form .form-check
 {
   padding-top: 10px;
 }
 
+.user-form button[type="submit"]
+{
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  border-radius: 15px;
+}
+
 /* ------------ Avatar input ------------ */
 
-form input[type="file"]
+.user-form input[type="file"]
 {
  display: none;
 }
 
-.form file--button
+.user-form .file--button
 {
   color: #7a7a7a;
   border-color: #7a7a7a;
   padding: 0;
 }
-form .file--button i
+.user-form .file--button i
 {
   line-height: 40px;
 }
 
-form .avatar-preview
+.user-form .avatar-preview
 {
   text-align: center;
   margin-bottom: 5px;
   height: 5rem;
 }
-form .avatar-preview img
+.user-form .avatar-preview img
 {
   height: 100%;
   max-width: 100%;
   min-width: 100px;
+  border-radius: 10px;
 }

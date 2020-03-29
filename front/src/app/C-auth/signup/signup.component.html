@@ -1,12 +1,12 @@
 <div *ngIf="isLoading" class="spinner"></div>
 
 <div *ngIf="!isLoading" class="container">
-  <div class="justify-content-center sign-in--main">
+  <div class="justify-content-center">
     <div class="row justify-content-center">
 
       <div class="col-md-9 col-lg-7">
-        <form #f [formGroup]="form" (ngSubmit)="onSignup()" autocomplete="off">
-          <h4 class="mb-4 form-yellow-title">{{ txt['Sign up'][lg] }}<br/><small>{{ txt['with'][lg] }} HyperTube</small></h4>
+        <form #f [formGroup]="form" (ngSubmit)="onSignup()" class="user-form">
+          <h4 class="form-yellow-title">{{ txt['Sign up'][lg] }}<br/><small>{{ txt['with'][lg] }} HyperTube</small></h4>
 
           <p *ngIf="creationStatus" class="alert alert-success alert-dismissible fade show" role="alert">
             {{ txt['Creation success alert'][lg] }}
@@ -40,7 +40,7 @@
 
             <div class="form-group col-md-6">
               <input
-                type="text" placeholder="{{ txt['First name'][lg] }}" autocomplete="nope"
+                type="text" placeholder="{{ txt['First name'][lg] }}"
                 class="form-control" id="inputFirstname4"
                 #firstName formControlName="firstName"
               >
@@ -51,7 +51,7 @@
             </div>
             <div class="form-group col-md-6">
               <input
-                type="text" placeholder="{{ txt['Last name'][lg] }}" autocomplete="nope"
+                type="text" placeholder="{{ txt['Last name'][lg] }}"
                 class="form-control" id="inputName4"
                 #lastName formControlName="lastName"
               >
@@ -64,7 +64,7 @@
 
           <div class="form-group">
             <input
-              type="text" placeholder="{{ txt['Username'][lg] }}" autocomplete="nope"
+              type="text" placeholder="{{ txt['Username'][lg] }}"
               class="form-control" id="inputUsername"
               #username formControlName="username"
             >
@@ -109,7 +109,7 @@
             </p>
           </div>
           
-          <button type="submit" [disabled]="form.invalid || form.get('password').value != form.get('confirmPassword').value" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+          <button type="submit" [disabled]="form.invalid || form.get('password').value != form.get('confirmPassword').value" class="btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
             {{ txt['Submit'][lg] }}
           </button>
 
