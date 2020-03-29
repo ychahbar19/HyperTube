@@ -9,7 +9,12 @@ export class SearchService
 
   constructor(private http: HttpClient) {}
 
-  getVideoInfo(imdb_id)
+  /* --------------------------------------------------------- *\
+      Private functions
+  \* --------------------------------------------------------- */
+
+  // Fetches and returns the given film's info from IMDB's API (back).
+  private getVideoInfo(imdb_id)
   {
     return new Promise((resolve, reject) =>
     {
@@ -20,7 +25,11 @@ export class SearchService
     });
   }
 
-  async addToResults(imdb_id, contents)
+  // Takes an imdb_id and the contents returned by YTS API
+  // to fetch the info from IMDB (using getVideoInfo() above)
+  // and combine them with the data from YTS.
+  // Adds the complete video card to 'allResults'.
+  private async addToResults(imdb_id, contents)
   {
     let videoInfo = await this.getVideoInfo(imdb_id);
     this.allResults[this.allResultsIndex] =
@@ -39,6 +48,14 @@ export class SearchService
     this.allResultsIndex++;
   }
 
+  /* --------------------------------------------------------- *\
+      Public function
+  \* --------------------------------------------------------- */
+
+  // Fetches the search results from YTS' API (back), then loops
+  // through the object returned with the private function addToResults()
+  // to save the results as an array that also includes IMDB info.
+  // Returns that array.
   getResults(encodedSearchParams)
   {
     this.allResults = [];

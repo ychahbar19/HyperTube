@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { mimeType } from './mime-type.validator';
+import { mimeType } from '../../mime-type.validator';
 import { AuthService } from '../auth.service';
 import { ErrorService } from '../../error/error.service';
 
@@ -61,7 +61,7 @@ export class SignupComponent implements OnInit, OnDestroy
     const validNamePattern = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,30}$";
     const validUsernamePattern = '^[a-zA-Z0-9]{4,20}$';
     const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$';
-    const validpasswordPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[&@#!?,;.:+=*\-\/\\_$£<>%])[a-zA-Z0-9&@#!?,;.:+=*\-\/\\_$£<>%]{8,}$';
+    const validPasswordPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[&@#!?,;.:+=*\-\/\\_$£<>%])[a-zA-Z0-9&@#!?,;.:+=*\-\/\\_$£<>%]{8,}$';
     this.form = new FormGroup(
       {
         avatar: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType] }),
@@ -69,8 +69,8 @@ export class SignupComponent implements OnInit, OnDestroy
         lastName: new FormControl(null, { validators: [Validators.required, Validators.pattern(validNamePattern)]}),
         username: new FormControl(null, { validators: [Validators.required, Validators.pattern(validUsernamePattern)]}),
         email: new FormControl(null, { validators: [Validators.required, Validators.pattern(validEmailPattern)]}),
-        password: new FormControl(null, { validators: [Validators.required, Validators.pattern(validpasswordPattern)]}),
-        confirmPassword: new FormControl(null, { validators: [Validators.required, Validators.pattern(validpasswordPattern)]})
+        password: new FormControl(null, { validators: [Validators.required, Validators.pattern(validPasswordPattern)]}),
+        confirmPassword: new FormControl(null, { validators: [Validators.required, Validators.pattern(validPasswordPattern)]})
       });
 
     // Listens to ........
@@ -103,9 +103,7 @@ export class SignupComponent implements OnInit, OnDestroy
     this.form.patchValue({ avatar: file });
     this.form.get('avatar').updateValueAndValidity();
     const reader = new FileReader();
-    reader.onload = () => {
-      this.avatarPreview = reader.result as string;
-    };
+    reader.onload = () => { this.avatarPreview = reader.result as string; };
     reader.readAsDataURL(file);
   }
 

@@ -17,7 +17,14 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit
+{
+  // 1) Defines the translations for the static text.
+  public txt = {
+    'xxx': { en: 'xxx', fr: 'xxx' },
+  };
+  public lg = 'fr';
+  
   user: {};
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }

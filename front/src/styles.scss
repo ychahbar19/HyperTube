@@ -60,7 +60,7 @@ body
 }
 
 /* ---------------------------------------------- *\
-    Button & form colours
+    Buttons
 \* ---------------------------------------------- */
 
 .btn-outline-warning,
@@ -80,9 +80,93 @@ body
   color: initial;
 }
 
-.form-yellow-title
+/* ----------------------------------------------- *\
+    Form elements
+\* ----------------------------------------------- */
+
+/* ------------ Form title ------------ */
+
+form h4
+{
+  margin-top: 10px;
+  padding-bottom: 40px;
+}
+form .form-yellow-title
 {
   color: rgb(243,220,0);
   margin-top: 2vh;
   text-align: center;
+}
+
+/* ------------ Form alerts ------------ */
+
+form .alert-success
+{
+  background-color: #d4edda;
+  border-color: #d4edda;
+}
+form .error--msg
+{
+  margin-top: 2px;
+  color: #c33838;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ------------ Form controles ------------ */
+
+form .form-group
+{
+  padding-top: 10px;
+  margin: 0;
+}
+
+form .form-control
+{
+  background-color: transparent;
+  border: 1px solid #7a7a7a;
+  color: #7a7a7a;
+  font-size: 0.9rem;
+}
+
+.checkbox--div
+{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+form .form-check
+{
+  padding-top: 10px;
+}
+
+/* ------------ Avatar input ------------ */
+
+form input[type="file"]
+{
+ display: none;
+}
+
+.form file--button
+{
+  color: #7a7a7a;
+  border-color: #7a7a7a;
+  padding: 0;
+}
+form .file--button i
+{
+  line-height: 40px;
+}
+
+form .avatar-preview
+{
+  text-align: center;
+  margin-bottom: 5px;
+  height: 5rem;
+}
+form .avatar-preview img
+{
+  height: 100%;
+  max-width: 100%;
+  min-width: 100px;
 }

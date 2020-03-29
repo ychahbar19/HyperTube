@@ -14,7 +14,24 @@ import { HttpClient } from '@angular/common/http';
     '../signin/signin.component.scss'
   ]
 })
-export class ForgotPasswordComponent implements OnInit {
+export class ForgotPasswordComponent implements OnInit
+{
+  // 1) Defines the translations for the static text.
+  public txt = {
+    'Forgotten password':     { en: 'Forgotten password', fr: 'Mot de passe oublié' },
+    'Username':               { en: 'Username', fr: 'Pseudo' },
+    'Username error':         { en: 'Invalid username.', fr: 'Pseudo invalide.' },
+    'Reset password':         { en: 'Reset password', fr: 'Réinitialiser le mot de passe' },
+    'New password':           { en: 'New password', fr: 'Nouveau mot de passe' },
+    'Password':               { en: 'Password', fr: 'Mot de passe' },
+    'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
+    'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
+                                fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
+    'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
+    'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
+  };
+  public lg = 'fr';
+  
   @ViewChild('f', { static: false }) forgotForm: NgForm;
   @ViewChild('f2', { static: false }) resetForm: NgForm;
   private errorStatusSub: Subscription;

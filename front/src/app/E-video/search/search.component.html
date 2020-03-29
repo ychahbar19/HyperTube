@@ -5,29 +5,38 @@
 
     <div class="row justify-content-center">
       <div class="col-sm-8 col-md-6 search">
-        <input type="text" ngModel name="query_term" class="form-control bg-dark" autocomplete="off" placeholder="Search...">
-        <button type="submit" class="btn btn-warning"><i class="fa fa-search"></i></button>
+        <input
+          type="text" name="query_term" placeholder="{{ txt['Search'][lg] }}"
+          class="form-control bg-dark" autocomplete="off"
+          ngModel
+        >
+        <button type="submit" class="btn btn-warning">
+          <i class="fa fa-search"></i>
+        </button>
       </div>
     </div>
 
     <div class="row justify-content-center">
+
       <div class="col-sm-4 col-md-3 form-group dropdw">
-        <label>Genre</label>
-        <select class="form-control bg-dark" ngModel name="genre" (change)="getSearchResults(searchParams)">
-          <option value="" selected>All</option>
-          <option *ngFor="let genre of genres" value="{{ genre }}">{{ genre }}</option>
+        <label>{{ txt['Genre'][lg] }}</label>
+        <select ngModel name="genre" (change)="getSearchResults(searchParams)" class="form-control bg-dark">
+          <option value="" selected>{{ txt['All'][lg] }}</option>
+          <option *ngFor="let genre of txt['genres'][lg]; let i = index" value="{{ txt['genres']['en'][i] }}">{{ genre }}</option>
         </select>
         <i class="fas fa-sort-down text-warning"></i>
       </div>
+
       <div class="col-sm-4 col-md-3 form-group dropdw">
-        <label>Sort by</label>
+        <label>{{ txt['Sort by'][lg] }}</label>
         <select class="form-control bg-dark" ngModel name="sort_by" (change)="getSearchResults(searchParams)">
-          <option value="" selected>Popularity (0-9)</option>
-          <option value="title">Title (A-Z)</option>
-          <option value="year">Year (0-9)</option>
+          <option value="" selected>{{ txt['Popularity'][lg] }}</option>
+          <option value="title">{{ txt['Title'][lg] }}</option>
+          <option value="year">{{ txt['Year'][lg] }}</option>
         </select>
         <i class="fas fa-sort-down text-warning"></i>
       </div>
+
     </div>
 
   </form>

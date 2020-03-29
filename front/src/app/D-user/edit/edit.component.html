@@ -1,108 +1,91 @@
-<div class="spinner" *ngIf="isLoading"></div>
-<div class="container" *ngIf="!isLoading">
+<div *ngIf="isLoading" class="spinner"></div>
+
+<div *ngIf="!isLoading" class="container">
   <div class="justify-content-center sign-in--main">
     <div class="row justify-content-center">
-      <form #f [formGroup]="form" class="col-12 col-md-10 col-lg-6" (ngSubmit)="onEdit()">
-        <h4 class="mb-4 form-yellow-title">Edit Profile</h4>
-        <div *ngIf="" class="alert alert-danger alert-dismissible fade show" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-12">
-            <div class="avatar-preview col-12 mx-auto" *ngIf="avatarPreview">
-              <img class="mx-auto" [src]="avatarPreview" [alt]="avatarPreview">
-            </div>
-            <button class="file--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-2"
-            type="button"
-            (click)="avatar.click()">
-              <i class="large material-icons">photo_camera</i>
+      <div class="col-12 col-md-10 col-lg-6">
+
+        <form #f [formGroup]="form" (ngSubmit)="onEdit()" autocomplete="off">
+          <h4 class="mb-4 form-yellow-title">{{ txt['Edit profile'][lg] }}</h4>
+
+          <!--
+          <div *ngIf="" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
             </button>
-            <input
-            type="file"
-            accept="image/*"
-            #avatar
-            class="form-control"
-            id="inputUpload4"
-            placeholder="upload a picture"
-            (change)="onAvatarPicked($event)">
           </div>
-          <div class="form-group col-md-6">
-            <input
-            type="text"
-            #firstName
-            formControlName="firstName"
-            class="form-control"
-            id="inputFirstname4"
-            placeholder="First name">
-          </div>
-          <div class="form-group col-md-6">
-            <input
-            type="text"
-            #lastName
-            formControlName="lastName"
-            class="form-control"
-            id="inputName4"
-            placeholder="Last name">
-          </div>
-          <!-- ERROR HANDLER -->
-          <div class="row">
-            <div class="error--msg info-error--div col-12" *ngIf="form.get('firstName').touched && form.get('firstName').invalid">
-              <div *ngIf="form.get('firstName').errors.required">
-                First name is required
+          -->
+
+          <div class="form-row">
+
+            <div class="form-group col-12">
+              <div *ngIf="avatarPreview && (avatarPreview !== '') && form.get('avatar').valid" class="avatar-preview col-12 mx-auto">
+                <img [src]="avatarPreview" [alt]="avatarPreview" class="mx-auto">
               </div>
-              <div *ngIf="form.get('firstName').errors.pattern">
-                First name should be only alphabetical characters.
-              </div>
+              <button type="button" (click)="avatar.click()" class="file--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-2">
+                <i class="large material-icons">photo_camera</i>
+              </button>
+              <input
+                type="file" accept="image/*"
+                class="form-control" id="inputUpload4"
+                #avatar (change)="onAvatarPicked($event)"
+              >
             </div>
-            <div class="error--msg info-error--div col-12" *ngIf="form.get('lastName').touched && form.get('lastName').invalid">
-              <div *ngIf="form.get('lastName').errors.required">
-                Last name is required
-              </div>
-              <div *ngIf="form.get('lastName').errors.pattern">
-                Last name should be only alphabetical characters.
-              </div>
+
+            <div class="form-group col-md-6">
+              <input
+                type="text" placeholder="{{ txt['First name'][lg] }}" autocomplete="nope"
+                class="form-control" id="inputFirstname4"
+                #firstName formControlName="firstName"
+              >
+              <p *ngIf="form.get('firstName').touched && form.get('firstName').invalid" class="error--msg">
+                <span *ngIf="form.get('firstName').errors.required">{{ txt['Name required'][lg] }}</span>
+                <span *ngIf="form.get('firstName').errors.pattern">{{ txt['Name format'][lg] }}</span>
+              </p>
+            </div>
+            <div class="form-group col-md-6">
+              <input
+                type="text" placeholder="{{ txt['Last name'][lg] }}" autocomplete="nope"
+                class="form-control" id="inputName4"
+                #lastName formControlName="lastName"
+              >
+              <p *ngIf="form.get('lastName').touched && form.get('lastName').invalid" class="error--msg">
+                <span *ngIf="form.get('lastName').errors.required">{{ txt['Name required'][lg] }}</span>
+                <span *ngIf="form.get('lastName').errors.pattern">{{ txt['Name format'][lg] }}</span>
+              </p>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <input
-          type="text"
-          formControlName="username"
-          #username
-          class="form-control"
-          id="inputUsername"
-          placeholder="Username">
-        </div>
-        <!-- ERROR HANDLER -->
-        <div class="error--msg" *ngIf="form.get('username').touched && form.get('username').invalid">
-          <div *ngIf="form.get('username').errors.required">
-            Username is required
+
+          <div class="form-group">
+            <input
+              type="text" placeholder="{{ txt['Username'][lg] }}" autocomplete="nope"
+              class="form-control" id="inputUsername"
+              #username formControlName="username"
+            >
+            <p *ngIf="form.get('username').touched && form.get('username').invalid" class="error--msg">
+              <span *ngIf="form.get('username').errors.required">{{ txt['Username required'][lg] }}</span>
+              <span *ngIf="form.get('username').errors.pattern">{{ txt['Username format'][lg] }}</span>
+            </p>
           </div>
-          <div *ngIf="form.get('username').errors.pattern">
-            Username must have between 6 and 33 alphabetical and/or numeric characters
+
+          <div class="form-group">
+            <input
+              type="email" placeholder="{{ txt['Email'][lg] }}"
+              class="form-control" id="inputEmail"
+              #email formControlName="email"
+            >
+            <p *ngIf="form.get('email').touched && form.get('email').invalid" class="error--msg">
+              <span *ngIf="form.get('email').errors.required">{{ txt['Email required'][lg] }}</span>
+              <span *ngIf="form.get('email').errors.pattern">{{ txt['Email format'][lg] }}</span>
+            </p>
           </div>
-        </div>
-        <div class="form-group">
-          <input
-          type="email"
-          formControlName="email"
-          #email
-          class="form-control"
-          id="inputEmail"
-          placeholder="example@provider.com">
-        </div>
-        <!-- ERROR HANDLER -->
-        <div class="error--msg" *ngIf="form.get('email').touched && form.get('email').invalid">
-          <div *ngIf="form.get('email').errors.required">
-            Email is required
-          </div>
-          <div *ngIf="form.get('email').errors.pattern">
-            Please, enter a valid email
-          </div>
-        </div>
-        <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">Submit</button>
-      </form>
+
+          <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+            {{ txt['Submit'][lg] }}
+          </button>
+        </form>
+
+      </div>
     </div>
   </div>
+</div>

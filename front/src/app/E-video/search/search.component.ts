@@ -1,39 +1,3 @@
-/*
-SEARCH GALLERY (members only)
-  ==> ? | Check restriction
-
-Page content:
-  1) SEARCH
-    - Search bar:
-      Takes data from at least 2 sources (e.g. http://www.legittorrents.info, https://archive.org)
-      ==> :) | Missing 2nd source if we don't count OMDb
-
-    - Sort filters
-      (date [range], genre [list])
-      ==> :) | Missing date range because unavailable in YTS API (do it custom?)
-
-    - Order filters
-      (popularity [?], name [A>Z], date [0>9])
-      ==> :) | OK let's just agree on what "popularity" should be (currently #downloads)
-
-  2) RESULTS
-    - Before search:
-      Thumbnail list* sorted by popularity
-      ==> :D | OK
-
-    - After search (= results):
-      Thumbnail list* sorted by name
-      ==> :) | Missing overwrite of sort=name
-
-      * Thumbnail info:
-        .mandatory: name, (un)seen status
-        .if available: pic, production date, rating
-        ==> :) | Missing (un)seen status
-
-    - Pagination (async infinite)
-    ==> :( | To do
-*/
-
 import { Component, OnInit } from '@angular/core';
 import { SearchService } from './search.service';
 import { NgForm } from '@angular/forms';
@@ -46,19 +10,38 @@ import { NgForm } from '@angular/forms';
 })
 export class SearchComponent implements OnInit
 {
-  public genres = [ 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
-                    'Documentary', 'Drama', 'Family', 'Fantasy', 'Film Noir', 'History',
-                    'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
-                    'Short Film', 'Sport', 'Superhero', 'Thriller', 'War', 'Western' ];
+  // 1) Defines the translations for the static text.
+  public txt = {
+    'Search':     { en: 'Search...', fr: 'Rechercher...' },
+    'Genre':      { en: 'Genre', fr: 'Genre' },
+    'Sort by':    { en: 'Sort by', fr: 'Ordonner par' },
+    'Popularity': { en: 'Popularity (best > worst)', fr: 'Popularité (top > pire)' },
+    'Title':      { en: 'Title (A > Z)', fr: 'Titre (A > Z)' },
+    'Year':       { en: 'Year (most > least recent)', fr: 'Année (plus > moins récent)' },
+    'All':        { en: 'All', fr: 'Tous' },
+    'genres':     { en: [ 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
+                          'Documentary', 'Drama', 'Family', 'Fantasy', 'Film Noir', 'History',
+                          'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
+                          'Short Film', 'Sport', 'Superhero', 'Thriller', 'War', 'Western' ],
+                    fr: [ 'Action', 'Aventure', 'Animation', 'Biographie', 'Comedie', 'Crime',
+                          'Documentaire', 'Drame', 'Famille', 'Fantaisie', 'Film Noir', 'Histoire',
+                          'Horreur', 'Musique', 'Comédie musicale', 'Mystère', 'Romance', 'Sci-Fi',
+                          'Court-métrage', 'Sport', 'Super-héro', 'Thriller', 'Guerre', 'Western' ]}
+  };
+  public lg = 'fr';
+
   public results;
 
   constructor(private searchService: SearchService) {}
 
+  // 2) Triggers getSearchResults() on init.
   async ngOnInit()
   {
     this.results = await this.searchService.getResults('');
   }
 
+  // 3) Fetches the search results from the API (back) and saves them
+  // in the array 'results' for output.
   async getSearchResults(searchParams: NgForm)
   {
     let encodedSearchParams = '?';

@@ -1,6 +1,10 @@
 <nav class="navbar navbar-expand">
 
-  <a class="navbar-brand" routerLink='/'>
+  <a *ngIf="!userIsAuthenticated" routerLink='/' class="navbar-brand">
+    <img src="../../assets/img/ht-logo.png" alt="" width="120" height="44">
+  </a>
+
+  <a *ngIf="userIsAuthenticated" routerLink='/search' class="navbar-brand">
     <img src="../../assets/img/ht-logo.png" alt="" width="120" height="44">
   </a>
 
