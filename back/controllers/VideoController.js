@@ -61,20 +61,20 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
 { 
   var engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
 
-  engine.on('ready', function() {
-    engine.files.forEach(function(file) {
-      console.log('filename:', file.name);
-      var stream = file.createReadStream();
-      // stream is readable stream to containing the file content
-    });
+  engine.on("ready", function() {
 
-    for(const file of engine.files) {
-      file => {
-        console.log('filename:', file.name);
+    // console.log(engine.files);
+    for (const file of engine.files) {
+      if (
+        file.name.substr(file.name.length - 3) === 'mkv' ||
+        file.name.substr(file.name.length - 3) === 'mp4'
+      ) {
+        console.log(file.name);
         let stream = file.createReadStream();
         // stream is readable stream to containing the file content
-        return res.status(200).json({data: stream}); 
-      }};
-    });
-  // return res.status(201).send('error undefined BGBG');
+        // return res.status(200).json({ data:  });
+      }
+    }
+  });
+  // return res.status(404).json({ message: 'error undefined BGBG' });
 }
