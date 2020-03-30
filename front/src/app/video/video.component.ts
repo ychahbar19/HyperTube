@@ -22,10 +22,10 @@ import { ActivatedRoute } from '@angular/router';
 import { VideoService } from './video.service';
 
 @Component({
-  selector: 'app-video',
+  selector: "app-video",
   providers: [VideoService],
-  templateUrl: './video.component.html',
-  styleUrls: ['./video.component.scss']
+  templateUrl: "./video.component.html",
+  styleUrls: ["./video.component.scss"]
 })
 /*
 export class VideoComponent implements OnInit, OnDestroy
@@ -55,24 +55,31 @@ export class VideoComponent implements OnInit, OnDestroy
   }
 }
 */
-export class VideoComponent implements OnInit
-{
+export class VideoComponent implements OnInit {
   private imdb_id;
   private yts_id;
   public video = {};
 
-  constructor(private videoService: VideoService,
-              private route: ActivatedRoute)
-  {
-    this.route.params.subscribe(params =>
-    {
-      this.imdb_id = params['imdb_id'];
-      this.yts_id = params['yts_id'];
+  constructor(
+    private videoService: VideoService,
+    private route: ActivatedRoute
+  ) {
+    this.route.params.subscribe(params => {
+      this.imdb_id = params["imdb_id"];
+      this.yts_id = params["yts_id"];
     });
   }
 
-  async ngOnInit()
-  {
-    this.video = await this.videoService.getVideoInfo(this.imdb_id, this.yts_id);
+  async ngOnInit() {
+    this.video = await this.videoService.getVideoInfo(
+      this.imdb_id,
+      this.yts_id
+    );
+  }
+
+  streamVideo(index: number) {
+    const torrentHash = this.video['Torrents'][index].hash;
+    console.log(torrentHash);
+    this.videoService.streamVideo(torrentHash);
   }
 }

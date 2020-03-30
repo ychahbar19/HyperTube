@@ -45,7 +45,7 @@
           <td>{{ torrent.size }}</td>
           <td>{{ torrent.seeds }}</td>
           <td>{{ torrent.peers }}</td>
-          <td class="min"><button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">Play now / Load and play</button></td>
+          <td class="min"><button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">Play now / Load and play</button></td>
         </tr>
         <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
           <td colspan="6">STREAM WINDOW</td>

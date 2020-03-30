@@ -44,4 +44,11 @@ export class VideoService
               error => { reject(error); });
     });
   }
+
+  streamVideo(torrentHash: string) {
+    this.http.post<{}>('http://localhost:3000/api/video/stream/' + torrentHash, torrentHash)
+      .subscribe(response => {
+        console.log(response);
+      });
+  }
 }
