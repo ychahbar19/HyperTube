@@ -78,7 +78,7 @@ export class VideoComponent implements OnInit {
   }
 
   streamVideo(index: number) {
-    const torrentHash = this.video['Torrents'][index].hash;
+    const torrentHash = { hash: this.video['Torrents'][index].hash };
     console.log(torrentHash);
     this.videoService.streamVideo(torrentHash);
   }

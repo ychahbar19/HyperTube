@@ -45,8 +45,8 @@ export class VideoService
     });
   }
 
-  streamVideo(torrentHash: string) {
-    this.http.post<{}>('http://localhost:3000/api/video/stream/' + torrentHash, torrentHash)
+  streamVideo(torrentHash: object) {
+    this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
       .subscribe(response => {
         console.log(response);
       });

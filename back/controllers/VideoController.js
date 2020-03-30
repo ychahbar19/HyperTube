@@ -4,6 +4,8 @@
 
 const axios = require('axios');
 const VideoModel = require('../models/VideoModel');
+const torrentStream = require('torrent-stream');
+
 
 let videoInfo = {};
 
@@ -43,7 +45,7 @@ async function getTorrents(yts_id)
 \* -------------------------------------------------------------------------- */
 
 //Calls the different sources and returns their combined results.
-async function getVideoInfo(req, res)
+exports.getVideoInfo = async function getVideoInfo(req, res)
 {
   await getInfo(req.params.imdb_id);
   if (req.params.yts_id)
@@ -51,4 +53,21 @@ async function getVideoInfo(req, res)
   res.status(200).send(videoInfo);
 };
 
-module.exports.getVideoInfo = getVideoInfo;
+/* -------------------------------------------------------------------------- *\
+    4) download and stream torrent.
+\* -------------------------------------------------------------------------- */
+
+exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
+{ 
+  var engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
+
+  engine.on('ready', function() {
+    engine.files.for(const item of file){function(item) {
+      console.log('filename:', item.name);
+      let stream = item.createReadStream();
+      // stream is readable stream to containing the file content
+      return res.status(200).json({data: stream}); 
+    }};
+  });
+  // return res.status(201).send('error undefined BGBG');
+}

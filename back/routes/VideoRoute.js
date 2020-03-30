@@ -17,11 +17,7 @@ const router = express.Router();
 /* ----- Get info function ----- */
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
-router.get('/stream/:torrentHash', function(req, res, next) {
-    console.log(req.params);
-    res.status(200).json({ message: 'called torrent-stream' })
-    // console.log(req);
-});
+router.post('/stream', VideoController.StreamAndDownloadTorrent);
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>
