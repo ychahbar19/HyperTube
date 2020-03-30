@@ -68,10 +68,10 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
       // stream is readable stream to containing the file content
     });
 
-    for(const item of file) {
-      item => {
-        console.log('filename:', item.name);
-        let stream = item.createReadStream();
+    for(const file of engine.files) {
+      file => {
+        console.log('filename:', file.name);
+        let stream = file.createReadStream();
         // stream is readable stream to containing the file content
         return res.status(200).json({data: stream}); 
       }};
