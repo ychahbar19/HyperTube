@@ -4,6 +4,8 @@
 
 const passport = require('passport');
 const Strategy42 = require('passport-42').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const UserModel = require('../models/UserModel');
 
 // Function to allow serialization of the UserModel object
@@ -33,11 +35,44 @@ passport.deserializeUser(function(user_id, done)
     Defines passport strategies.
 \* ------------------------------------------------------------------------ */
 
+// ------ Common function for action on success ------
+
+function authSuccess(authProvider, profile, done)
+{
+  /*
+  facebook and google don't give a username, so we can use the display name
+  BUT have to change it to make it valid for hypertube conditions
+  */
+  if (profile.username)
+    userName = profile.username;
+  else
+    userName = profile.displayName;
+  UserModel.findOrCreate
+  (
+    { provider: authProvider, providerId: profile.id },
+    {
+      active: true,
+      provider: authProvider,
+      providerId: profile.id,
+      avatar: profile.photos[0].value,
+      firstName: profile.name.givenName,
+      lastName: profile.name.familyName,
+      email: profile.emails[0].value,
+      username: userName,
+      password: 'none' /* --------- does this allow sign in using HT and 'none' password ?? */
+    },
+    function (error, user_object)
+    {
+      return done(error, user_object);
+    }
+  );
+}
+
 // ------ 42 authentification ------
+//ID and secret defined at https://profile.intra.42.fr/oauth/applications/4260
 
 passport.use(new Strategy42(
-{
-  //ID and secret defined at https://profile.intra.42.fr/oauth/applications/4260
+{  
   clientID: "d4570548182bf2a5bfc57fa5c36fb0765188aded46627ae57f4859cdb0b05715",
   clientSecret: "92910a8897fe54a86e44cc40511cc7d00c2bde26552d2cd0a31d16f2c4fb704b",
   callbackURL: "http://localhost:3000/api/auth/42/callback",
@@ -51,21 +86,48 @@ passport.use(new Strategy42(
     'username': 'login'
   }
 },
-function(accessToken, refreshToken, profile, cb)
+function(accessToken, refreshToken, profile, done)
 {
-  UserModel.findOrCreate
-  (
-    { fortytwoId: profile.id },
-    {
-      active: true,
-      avatar: profile.photos[0].value,
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
-      email: profile.emails[0].value,
-      username: profile.username,
-      password: 'token?',
-      fortytwoId: profile.id
-    },
-    function (err, user_object) { return cb(err, user_object); }
-  );
+  return authSuccess('42', profile, done);
 }));
+
+// ------ Facebook authentification ------
+// ID and secret defined at https://developers.facebook.com/apps/1095920914095181/fb-login/settings/
+
+passport.use(new FacebookStrategy(
+{
+  clientID: '1095920914095181',
+  clientSecret: '9fef9706e172ad432ad5ae2501320def',
+  callbackURL: "http://localhost:3000/api/auth/facebook/callback",
+  profileFields:
+  [
+    'id',
+    'picture.type(large)',
+    'first_name',
+    'last_name',
+    'emails',
+    'displayName'
+  ]
+},
+function(accessToken, refreshToken, profile, done)
+{
+  return authSuccess('facebook', profile, done);
+}
+));
+
+// ------ Google authentification ------
+//npm install passport-google-oauth20 --save
+// ID and secret defined at https://console.developers.google.com/apis/credentials/oauthclient/906011525965-13t11do75gift1g4hk36stv73p5n1555.apps.googleusercontent.com?project=hypertube-272819
+
+passport.use(new GoogleStrategy(
+{
+  clientID: '906011525965-13t11do75gift1g4hk36stv73p5n1555.apps.googleusercontent.com',
+  clientSecret: 'WvUjkDkt-AqEAMrjZem6Cl1f',
+  callbackURL: "http://localhost:3000/api/auth/google/callback"
+  //profileFields:
+},
+function(accessToken, refreshToken, profile, done)
+{
+  return authSuccess('google', profile, done);
+}
+));

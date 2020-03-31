@@ -10,6 +10,8 @@ const findOrCreate = require('mongoose-findorcreate');
 // 2) Define
 const userSchema = mongoose.Schema({
   active: { type: Boolean, default: false },
+  provider: { type: String, default: 'HyperTube' },
+  providerId: { type: String },
   avatar: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -17,8 +19,7 @@ const userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   language: { type: String, default: 'en' },
-  randomStr: { type: String },
-  fortytwoId: String
+  randomStr: { type: String }
 });
 
 // 3) Add the plugins
