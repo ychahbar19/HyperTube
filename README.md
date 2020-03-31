@@ -2,4 +2,4 @@ Install:
 
 1) git clone
 2) cd back > npm install > nodemon (> open http://localhost:3000/)
-3) cd front > npm install > ng serve (> open http://localhost:4200/)
+3) cd front > npm install > ng serve > open http://localhost:4200/
