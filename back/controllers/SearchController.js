@@ -40,8 +40,10 @@ async function searchMovies(query)
   if (genre)
     yts_url += '&genre=' + genre;
 
-  if (sort_by)
+  if (sort_by == 'title')
     yts_url += '&sort_by=' + sort_by + '&order_by=asc';
+  else if (sort_by == 'year')
+    yts_url += '&sort_by=' + sort_by + '&order_by=desc';
   else
     yts_url += '&sort_by=download_count'; //popularity --> rating/peers/seeds/download_count/like_count'
 
@@ -83,10 +85,10 @@ async function search(req, res)
   await searchMovies(req.query)
     .then(() =>
     {
+      //await searchTVShows();
       res.status(200).send(hypertubeResults);
     })
-  .catch(error => res.status(400).json({ error }));
-  //await searchTVShows();
+    .catch(error => res.status(400).json({ error }));
 };
 
 module.exports.search = search;

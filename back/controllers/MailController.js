@@ -1,57 +1,68 @@
-// mot de passe Gmail : gccpmyozhzyefcfi
+/* -------------------------------------------------------------------------- *\
+    1) Imports and variable definitions.
+\* -------------------------------------------------------------------------- */
+
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
+/* -------------------------------------------------------------------------- *\
+    2) Defines the base SENDMAIL function.
+\* -------------------------------------------------------------------------- */
+
+function sendMail(to, subject, html)
+{
+  const transporter = nodemailer.createTransport(
+  {
     service: 'gmail',
-    auth: {
-        user: 'a.ceciora@gmail.com',
-        pass: 'gccpmyozhzyefcfi'
-    }
-});
-
-const mailOptions = {
-    from: 'a.ceciora@gmail.com'
-}
-
-function sendMail(to, subject, html) {
-  mailOptions.to = to;
-  mailOptions.subject = subject;
-  mailOptions.html = html;
+    auth: { user: 'a.ceciora@gmail.com', pass: 'gccpmyozhzyefcfi' }
+  });
+  const mailOptions =
+  {
+    from: 'a.ceciora@gmail.com',
+    to: to,
+    subject: subject,
+    html: html
+  }
   
-  // TODO : Style the email. Create a template and call it here
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).json({ message: error });
-    } else {
+  /*
+  *
+  TODO : Style the email. Create a template and call it here
+  *
+  */
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  transporter.sendMail(mailOptions, (error, info) =>
+  {
+    if (error)
+      console.log(error); //return res.status(500).json({ message: error });
+    else
       console.log('Email send: ' + info.response);
-    }
   });
 }
 
-exports.sendConfirmMail = (req, res, next) => {
+/* -------------------------------------------------------------------------- *\
+    2) Defines the authentification-related email functions.
+\* -------------------------------------------------------------------------- */
+
+// Signup confirmation email.
+exports.sendConfirmMail = (req, res) =>
+{
   const to = req.body.email;
   const subject = 'HyperTube Account Confirmation';
-  const html = ` <h3> Hello ` + res.savedUser.firstName + ` !</h3>
-                      <p>Please confirm your account by clicking on this 
-                      <a href="http://localhost:4200/signin?id=` + res.savedUser._id + `">link</a>
-                      </p>`;
+  const html = `<h3>Hello ` + res.savedUser.firstName + ` !</h3>
+                <p>Please confirm your account by clicking on this 
+                  <a href="http://localhost:4200/signin?id=` + res.savedUser._id + `">link</a>.
+                </p>`;
   sendMail(to, subject, html);
-  res.status(201).json({
-    message: 'User created',
-    result: res.savedUser
-  });
+  res.status(201).json({ message: 'User created', result: res.savedUser });
 };
 
-exports.sendResetPwd = async (req, res, next) => {
+// Password reset email.
+exports.sendResetPwd = async (req, res) =>
+{
   const to = req.user.email;
   const subject = 'Reset HyperTube Password';
-  const html =
-    `<h3>Reset Password!</h3
-                <p>Follow this <a href="http://localhost:4200/forgotPassword?id=` +
-    req.user.id +
-    `&hash=` +
-    res.locals.randomStr +
-    `">link</a>
+  const html = `<h3>Reset Password!</h3>
+                <p>Reset your password by clicking on this 
+                  <a href="http://localhost:4200/forgotPassword?id=` + req.user.id + `&hash=` + res.locals.randomStr +`">link</a>.
                 </p>`;
   sendMail(to, subject, html);
   res.status(200).json({ message : 'Reset Password email sent !' });

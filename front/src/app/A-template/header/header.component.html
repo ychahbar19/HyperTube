@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand">
+
+  <a *ngIf="!userIsAuthenticated" routerLink='/' class="navbar-brand">
+    <img src="../../assets/img/ht-logo.png" alt="" width="120" height="44">
+  </a>
+
+  <a *ngIf="userIsAuthenticated" routerLink='/search' class="navbar-brand">
+    <img src="../../assets/img/ht-logo.png" alt="" width="120" height="44">
+  </a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+    <ul class="navbar-nav">
+      <ng-template #mainNavbar [ngIf]="userIsAuthenticated">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="https://secure.webtoolhub.com/static/resources/icons/set128/43d7dd9d.png" alt="" width="50px" height="50px">
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a routerLink="profile" routerLinkActive="router-link-active" class="dropdown-item">
+              <i class="large material-icons">account_box</i> {{ txt['My profile'][lg] }}
+            </a>
+            <a routerLink="edit" routerLinkActive="router-link-active" class="dropdown-item">
+              <i class="large material-icons">settings_applications</i> {{ txt['Settings'][lg] }}
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" (click)="onLogout()">
+              <i class="large material-icons">power_settings_new</i> {{ txt['Log out'][lg] }}
+            </button>
+          </div>
+        </li>
+      </ng-template>
+    </ul>
+
+    <button (click)="onLanguageChange('en')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'en', 'btn-outline-warning' : lg != 'en'}">EN</button>
+    <button (click)="onLanguageChange('fr')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'fr', 'btn-outline-warning' : lg != 'fr'}">FR</button>
+
+  </div>
+</nav>

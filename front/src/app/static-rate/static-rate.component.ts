@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {NgbRatingConfig} from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
+import { NgbRatingConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-static-rate',
@@ -7,14 +7,11 @@ import {NgbRatingConfig} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./static-rate.component.scss'],
   providers: [NgbRatingConfig]
 })
-export class StaticRateComponent implements OnInit {
-
-  constructor(config: NgbRatingConfig) {
+export class StaticRateComponent
+{
+  constructor(config: NgbRatingConfig)
+  {
     config.max = 10;
     config.readonly = true;
   }
-
-  ngOnInit(): void {
-  }
-
 }

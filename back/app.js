@@ -10,13 +10,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const passport = require('passport');
 
-// const homeRoutes = require('./routes/home');
-// const stuffRoutes = require('./routes/stuff');
-const userRoutes = require('./routes/user');
-const signinRoutes = require('./routes/signin');
-const signUpRoutes = require('./routes/signup');
-const profileRoutes = require('./routes/profile');
-const editProfileRoutes = require('./routes/editProfile');
 require('./config/database');
 require('./config/authentification');
 
@@ -69,25 +62,25 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 /* ------------------------ API routes ------------------------ */
 
-// const userRoutes = require('./routes/user');
-// const signUpRoutes = require('./routes/signup');
-// const signinRoutes = require('./routes/signin');
-// const UserRoute = require('./routes/UserRoute');
-// const authentificationRoute = require('./routes/AuthentificationRoute');
-// const profileRoutes = require('./routes/profile');
-// const editProfileRoutes = require('./routes/editProfile');
+const authRoute = require('./routes/AuthRoute');
+const userRoute = require('./routes/UserRoute');
+//const signinRoutes = require('./routes/signin');
+//const signupRoutes = require('./routes/signup');
+    // const UserRoute = require('./routes/UserRoute');
+//const profileRoutes = require('./routes/profile');
+//const editProfileRoutes = require('./routes/editProfile');
 const searchRoute = require('./routes/SearchRoute');
 const videoRoute = require('./routes/VideoRoute');
 const commentsRoute = require('./routes/commentsRoute');
 const homeRoute = require('./routes/HomeRoute');
 
-app.use('/api/auth', userRoutes);
-app.use('/signup', signUpRoutes);
-app.use('/signin', signinRoutes);
-// app.use('/api/user', UserRoute);
-// app.use('/api/authentification', authentificationRoute);
-app.use('/profile', profileRoutes);
-app.use('/editProfile', editProfileRoutes);
+app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
+//app.use('/signup', signupRoutes);
+//app.use('/signin', signinRoutes);
+    // app.use('/api/user', UserRoute);
+//app.use('/profile', profileRoutes);
+//app.use('/editProfile', editProfileRoutes);
 app.use('/api/search', searchRoute);
 app.use('/api/video', videoRoute);
 app.use('/api/comments', commentsRoute);

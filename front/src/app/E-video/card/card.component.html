@@ -1,0 +1,72 @@
+<div class="container-fluid">
+
+  <!-- VIDEO INFO -->
+  <div class="row justify-content-center mt-2">
+
+    <div class="col-md-3 text-center mb-2">
+      <img src="{{ video['Poster'] }}" class="img-fluid">
+    </div>
+
+    <div class="col-md-8">
+      <h1>{{ video['Title'] }}</h1>
+      <p>
+        <span class="star-rating">
+          <span class="back-stars">
+            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+            <span class="front-stars" [style.width]="video['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+          </span>
+          {{ video['imdbRating'] / 2 }}/5 ({{ video['imdbVotes'] }} votes) | {{ video['Year'] }} | {{ video['Runtime'] }} | {{ video['Genre'] }}
+        </span>
+      </p>
+      <p>{{ video['Plot'] }}</p>
+      <p class="small">{{ txt['With'][lg] }} {{ video['Actors'] }}.</p>
+      <p class="small">{{ txt['By'][lg] }} {{ video['Director'] }}, {{ video['Writer'] }}, {{ video['Production'] }} (producer).</p>
+    </div>
+  </div>
+
+  <!-- VIDEO TORRENTS -->
+  <div class="table-responsive mt-2">
+    <table class="table table-striped table-dark" id="accordion">
+      <thead>
+        <tr>
+          <th> </th>
+          <th>{{ txt['Upload year'][lg] }}</th>
+          <th>{{ txt['Size'][lg] }}</th>
+          <th>{{ txt['Seeds'][lg] }}</th>
+          <th>{{ txt['Peers'][lg] }}</th>
+          <th> </th>
+        </tr>
+      </thead>
+
+      <tbody *ngFor="let torrent of video['Torrents']; let i = index;">
+        <tr class="bg-dark">
+          <td>YIFY {{ torrent.quality }} {{ torrent.type }}</td>
+          <td>{{ torrent.year_uploaded }}</td>
+          <td>{{ torrent.size }}</td>
+          <td>{{ torrent.seeds }}</td>
+          <td>{{ torrent.peers }}</td>
+          <td class="min">
+            <button type="button" class="btn btn-success" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">
+              {{ txt['Play now'][lg] }}
+            </button>
+            <button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">
+              {{ txt['Load and play'][lg] }}
+            </button>
+          </td>
+        </tr>
+        <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
+          <td colspan="6">STREAM WINDOW</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <!-- VIDEO COMMENTS -->
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <app-comments></app-comments>
+    </div>
+  </div>
+
+</div>

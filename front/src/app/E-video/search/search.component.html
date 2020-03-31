@@ -1,0 +1,73 @@
+<div class="container-fluid">
+
+  <!-- SEARCH FORM -->
+  <form #searchParams="ngForm" (ngSubmit)="getSearchResults(searchParams)" class="mb-3" novalidate>
+
+    <div class="row justify-content-center">
+      <div class="col-sm-8 col-md-6 search">
+        <input
+          type="text" name="query_term" placeholder="{{ txt['Search'][lg] }}"
+          class="form-control bg-dark" autocomplete="off"
+          ngModel
+        >
+        <button type="submit" class="btn btn-warning">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+
+      <div class="col-sm-4 col-md-3 form-group dropdw">
+        <label>{{ txt['Genre'][lg] }}</label>
+        <select ngModel name="genre" (change)="getSearchResults(searchParams)" class="form-control bg-dark">
+          <option value="" selected>{{ txt['All'][lg] }}</option>
+          <option *ngFor="let genre of txt['genres'][lg]; let i = index" value="{{ txt['genres']['en'][i] }}">{{ genre }}</option>
+        </select>
+        <i class="fas fa-sort-down text-warning"></i>
+      </div>
+
+      <div class="col-sm-4 col-md-3 form-group dropdw">
+        <label>{{ txt['Sort by'][lg] }}</label>
+        <select class="form-control bg-dark" ngModel name="sort_by" (change)="getSearchResults(searchParams)">
+          <option value="" selected>{{ txt['Popularity'][lg] }}</option>
+          <option value="title">{{ txt['Title'][lg] }}</option>
+          <option value="year">{{ txt['Year'][lg] }}</option>
+        </select>
+        <i class="fas fa-sort-down text-warning"></i>
+      </div>
+
+    </div>
+
+  </form>
+
+  <!-- SEARCH RESULTS -->
+  <div class="row">
+
+    <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
+      <div class="card bg-dark">
+        <img class="card-img-top" src="{{ result['Poster'] }}">
+        <div class="card-body">
+          <h6 class="card-title">
+            <a href="/video/{{ result.imdb_id }}/{{ result.yts_id }}" class="stretched-link">
+              {{ result.Title }} ({{ result['Year'] }})
+            </a>
+          </h6>
+          <p>
+            <span class="star-rating">
+              <span class="back-stars">
+                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+              </span>
+              <span class="small">
+                {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
+              </span>
+            </span>
+          </p>
+          <p>{{ result['Genre'] }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

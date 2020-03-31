@@ -46,7 +46,7 @@ async function getTorrents(yts_id)
 async function getVideoInfo(req, res)
 {
   await getInfo(req.params.imdb_id);
-  if (req.params.yts_id)
+  if (req.params.yts_id) /*do we need this?*/
     await getTorrents(req.params.yts_id);
   res.status(200).send(videoInfo);
 };
