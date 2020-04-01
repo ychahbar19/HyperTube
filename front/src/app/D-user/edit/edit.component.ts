@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from '../../app.component';
+import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { AppComponent } from '../../app.component';
 import { mimeType } from '../../mime-type.validator';
-import { HttpClient } from '@angular/common/http';
-
 import { AuthService } from '../../C-auth/auth.service';
-
 
 @Component({
   selector: 'app-edit',
@@ -15,7 +13,10 @@ import { AuthService } from '../../C-auth/auth.service';
 })
 export class EditComponent implements OnInit
 {
-  // 1) Defines the translations for the static text.
+  /* ------------------------------------------------------- *\
+      User language & translations for the static text.
+  \* ------------------------------------------------------- */
+
   public lg = AppComponent.userLanguage;
   public txt = {
     'Edit profile':           { en: 'Edit profile', fr: 'Modifier mon profil' },
@@ -34,14 +35,26 @@ export class EditComponent implements OnInit
     'Submit':                 { en: 'Submit', fr: 'Envoyer' }
   };
 
+  /* ------------------------------------------------------- *\
+      Listeners for status changes. 
+  \* ------------------------------------------------------- */
+
+  private errorStatusSub: Subscription;
+
+  /* ------------------------------------------------------- *\
+      Public variables.
+  \* ------------------------------------------------------- */
+
+  public isLoading = false;
   public form: FormGroup;
   public avatarPreview: string;
   public errorMessage: string;
-  public isLoading = false;
   public user: Object;
   public userData: any;
 
-  private errorStatusSub: Subscription;
+  /* ------------------------------------------------------- *\
+      Initialisation
+  \* ------------------------------------------------------- */
 
   constructor(private authService: AuthService,
               private http: HttpClient) {}
@@ -97,14 +110,15 @@ export class EditComponent implements OnInit
     reader.readAsDataURL(file);
   }
 
-  // 4) 
+  /* ------------------------------------------------------- *\
+      Dealing with input/form submission.
+  \* ------------------------------------------------------- */
+
   onEdit()
   {
     if (this.form.invalid)
       return;
     // this.isLoading = true;
-    this.authService.updateUser(this.form.value);
+    //this.authService.updateUser(this.form.value);
   }
-
-
 }

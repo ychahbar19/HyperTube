@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AppComponent } from '../../app.component';
-import { AuthService } from '../auth.service';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { ErrorService } from 'src/app/error/error.service';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { AppComponent } from '../../app.component';
+import { AuthService } from '../auth.service';
+import { ErrorService } from 'src/app/error/error.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -14,7 +14,10 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ForgotPasswordComponent implements OnInit
 {
-  // 1) Defines the translations for the static text.
+  /* ------------------------------------------------------- *\
+      User language & translations for the static text.
+  \* ------------------------------------------------------- */
+
   public lg = AppComponent.userLanguage;
   public txt = {
     'Forgotten password':     { en: 'Forgotten password', fr: 'Mot de passe oublié' },
@@ -29,34 +32,52 @@ export class ForgotPasswordComponent implements OnInit
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
     'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
   };
-  
+
+  /* ------------------------------------------------------- *\
+      Listeners for status changes. 
+  \* ------------------------------------------------------- */
+
+  private authServiceWorkingSub: Subscription;
+  private errorStatusSub: Subscription;
+
+  /* ------------------------------------------------------- *\
+      Public variables.
+  \* ------------------------------------------------------- */
+
+  public isLoading = false;
+  public resetStatus = false;
+  public errorMessage: string;
+  public successMessage: string;
+  public secondForm = false;
+
+  /* ------------------------------------------------------- *\
+      U
+  \* ------------------------------------------------------- */
+
   @ViewChild('f', { static: false }) forgotForm: NgForm;
   @ViewChild('f2', { static: false }) resetForm: NgForm;
-  private errorStatusSub: Subscription;
-  private authStatusSub: Subscription;
-  resetStatus = false;
-  errorMessage: string;
-  successMessage: string;
-  isLoading = false;
-  secondForm = false;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-    private errorService: ErrorService,
-    private route: ActivatedRoute
-  ) {}
+  /* ------------------------------------------------------- *\
+      Initialisation
+  \* ------------------------------------------------------- */
 
-  ngOnInit(): void {
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe(authStatus => {
-        this.successMessage = this.authService.resetPasswordSuccessMessage;
-        this.isLoading = false;
-      });
+  constructor(private http: HttpClient,
+              private authService: AuthService,
+              private errorService: ErrorService,
+              private route: ActivatedRoute) {}
+
+  ngOnInit(): void
+  {
+    // Listens to know when auth.service is ready (=when it's done running)
+    // and then sets isLoading (=spinner) to FALSE.
+    this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
+      .subscribe(sub => { this.successMessage = this.authService.resetPasswordSuccessMessage;
+                          this.isLoading = false; });
+
     this.errorStatusSub = this.errorService.errorObs.subscribe(error => {
       this.errorMessage = error;
     });
+
     if (
       this.route.snapshot.queryParams.id &&
       this.route.snapshot.queryParams.hash
@@ -65,18 +86,22 @@ export class ForgotPasswordComponent implements OnInit
     }
   }
 
-  onForgotPwd() {
-    if (this.forgotForm.invalid) {
+  /* ------------------------------------------------------- *\
+      Dealing with form submission.
+  \* ------------------------------------------------------- */
+
+  onForgotPwd()
+  {
+    if (this.forgotForm.invalid)
       return;
-    }
     this.isLoading = true;
     this.authService.forgotPassword(this.forgotForm.value);
   }
 
-  onResetPwd() {
-    if (this.resetForm.invalid) {
+  onResetPwd()
+  {
+    if (this.resetForm.invalid)
       return;
-    }
     this.isLoading = true;
     this.authService.resetPassword(
       this.route.snapshot.queryParams.id,

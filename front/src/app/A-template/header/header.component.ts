@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AppComponent } from '../../app.component';
 //import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { AuthService } from '../../C-auth/auth.service';
 
 @Component({
@@ -11,7 +11,10 @@ import { AuthService } from '../../C-auth/auth.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy
 {
-  // 1) Defines the translations for the static text.
+  /* ------------------------------------------------------- *\
+      User language & translations for the static text.
+  \* ------------------------------------------------------- */
+
   public lg = AppComponent.userLanguage;
   public txt = {
     'My profile': { en: 'My profile', fr: 'Mon profil' },
@@ -19,9 +22,17 @@ export class HeaderComponent implements OnInit, OnDestroy
     'Log out':    { en: 'Log out', fr: 'Déconnexion' }
   };
   
+  /* ------------------------------------------------------- *\
+      Variables
+  \* ------------------------------------------------------- */
+
   public userIsAuthenticated = false;
   private authListenerSubs: Subscription;
   
+  /* ------------------------------------------------------- *\
+      Initialisation
+  \* ------------------------------------------------------- */
+
   constructor(private authService: AuthService/*,
               private router: Router*/) {}
 
@@ -30,7 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy
   ngOnInit()
   {
     this.userIsAuthenticated = this.authService.getIsAuth();
-    this.authListenerSubs = this.authService.getAuthStatusListener()
+    this.authListenerSubs = this.authService.getAuthServiceWorkingListener()
                               .subscribe(isAuthenticated =>
                               {
                                 this.userIsAuthenticated = isAuthenticated;
