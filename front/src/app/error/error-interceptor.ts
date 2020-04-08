@@ -5,18 +5,17 @@ import { Injectable } from '@angular/core';
 
 import { ErrorService } from './error.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ErrorInterceptor implements HttpInterceptor {
+@Injectable({ providedIn: 'root' })
+export class ErrorInterceptor implements HttpInterceptor
+{
+  constructor(private errorService: ErrorService) {}
 
-  constructor(private errorService: ErrorService) { }
-
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.errorObs.next(error.error.message);
-        return throwError(error);
+  intercept(req: HttpRequest<any>, next: HttpHandler)
+  {
+    return next.handle(req).pipe(catchError((e: HttpErrorResponse) =>
+      {
+        this.errorService.errorObs.next(e.error.errors_array);
+        return throwError(e);
       })
     );
   }

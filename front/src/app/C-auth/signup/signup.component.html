@@ -16,7 +16,7 @@
           </p>
 
           <p *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ errorMessage }}
+            {{ txt['Creation error alert'][lg] }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -72,6 +72,7 @@
               <span *ngIf="form.get('username').errors.required">{{ txt['Username required'][lg] }}</span>
               <span *ngIf="form.get('username').errors.pattern">{{ txt['Username format'][lg] }}</span>
             </p>
+            <p *ngIf="usernameNotUnique" class="error--msg">{{ txt['Username unique'][lg] }}</p>
           </div>
 
           <div class="form-group">
@@ -84,6 +85,7 @@
               <span *ngIf="form.get('email').errors.required">{{ txt['Email required'][lg] }}</span>
               <span *ngIf="form.get('email').errors.pattern">{{ txt['Email format'][lg] }}</span>
             </p>
+            <p *ngIf="emailNotUnique" class="error--msg">{{ txt['Email unique'][lg] }}</p>
           </div>
 
           <div class="form-group">

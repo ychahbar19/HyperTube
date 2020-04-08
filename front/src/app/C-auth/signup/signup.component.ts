@@ -23,6 +23,8 @@ export class SignupComponent implements OnInit, OnDestroy
     'with':                   { en: 'with', fr: 'avec' },
     'Creation success alert': { en: 'A confirmation email has been sent to your address. Please check it to activate your account.',
                                 fr: 'Un email de confirmation vous a été envoyé. Veuillez le consulter pour activer votre compte.' },
+    'Creation error alert':   { en: 'Oops, something is wrong. Please correct your info then submit it again.',
+                                fr: 'Oups, il y a une erreur. Veuillez corriger vos informations puis les renvoyer.' },
     'First name':             { en: 'First name', fr: 'Prénom' },
     'Last name':              { en: 'Last name', fr: 'Nom' },
     'Name required':          { en: 'Full name is required.', fr: 'Le nom complet est requis.' },
@@ -32,9 +34,12 @@ export class SignupComponent implements OnInit, OnDestroy
     'Username required':      { en: 'Username is required.', fr: 'Le pseudo est requis.' },
     'Username format':        { en: 'Your username must be 4-20 characters long (letters and numbers only)',
                                 fr: 'Votre pseudo doit contenir 4 à 20 caractères (lettres et chiffres uniquement).' },
+    'Username unique':        { en: 'This username is taken.', fr: 'Ce pseudo est déjà pris.' },
     'Email':                  { en: 'Email', fr: 'Email' },
     'Email required':         { en: 'Email is required.', fr: 'L\'email est requis.' },
-    'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
+    'Email format':           { en: 'Please enter a valid email address.',
+                                fr: 'Veuillez entrer une adresse email valide.' },
+    'Email unique':           { en: 'This email address is taken.', fr: 'Cette adresse email est déjà prise.' },
     'Password':               { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
@@ -51,7 +56,7 @@ export class SignupComponent implements OnInit, OnDestroy
 
   private authServiceWorkingSub: Subscription; //Tracks if auth.service is running/done.
   private signupSuccessSub: Subscription; //Tracks if the signup process is a success.
-  private errorStatusSub: Subscription; //
+  private errorStatusSub: Subscription; //Gets any error from the API (back).
   
   /* ------------------------------------------------------- *\
       Public variables.
@@ -60,8 +65,11 @@ export class SignupComponent implements OnInit, OnDestroy
   public isLoading = false; //Used to show the spinner during execution times.
   public form: FormGroup; //Contains the signup form.
   public avatarPreview: string; //Preview of the uploaded avatar.
+  public usernameNotUnique = false;
+  public emailNotUnique = false;
+
   public signupSuccess = false; //Used to hide/show the 'successful signup' message.
-  public errorMessage: string;
+  public errorMessage = false; //Used to hide/show the 'error signup' message.
 
   /* ------------------------------------------------------- *\
       Initialisation
@@ -86,11 +94,20 @@ export class SignupComponent implements OnInit, OnDestroy
     // and then sets signupSuccess and errorMessage appropriately.
     this.signupSuccessSub = this.authService.getSignupSuccessListener()
       .subscribe(sub => { this.signupSuccess = true;
-                          this.errorMessage = null; });
+                          this.errorMessage = false; });
 
-    // Listens to ........
+    // Listens to errors from the API's signup process
+    // and translates them into field specific field errors.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      error => { this.errorMessage = error; }
+      errors_array =>
+      {
+        this.errorMessage = true;
+
+        if (typeof errors_array['username'] !== 'undefined')
+          this.usernameNotUnique = true;
+        if (typeof errors_array['email'] !== 'undefined')
+          this.emailNotUnique = true;
+      }
     );
   }
 
@@ -119,6 +136,8 @@ export class SignupComponent implements OnInit, OnDestroy
     if (this.form.invalid)
       return;
     this.isLoading = true;
+    this.usernameNotUnique = false;
+    this.emailNotUnique = false;
     this.authService.signup(this.form.value);
   }
 

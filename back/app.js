@@ -30,6 +30,7 @@ const app = express();
 
 /* ------------------------ Common routes ------------------------ */
 
+/*
 app.use(expressSession(
 {
     secret: 'ssshhhhh',
@@ -43,6 +44,7 @@ app.use(expressSession(
         expires: new Date(Date.now() + (3 * 60 * 60 * 1000))
     }
 }));
+*/
 app.use((req, res, next) => // Allows access to our API from any origin, with any method and any header.
 {
   res.setHeader('Access-Control-Allow-Origin', '*'); 
@@ -51,7 +53,7 @@ app.use((req, res, next) => // Allows access to our API from any origin, with an
   next();
 });
 app.use(bodyParser.json()); //Processes ALL requests to tranforms it's body into a Json object (usable in JS).
-app.use(bodyParser.urlencoded({ extended: true })); //??
+//app.use(bodyParser.urlencoded({ extended: true })); //??
 app.use(passport.initialize()); //Initialises the authentication module.
 app.use(passport.session()); //Alters 'req' to transform the user value (from the client cookie), which is the session id, into a UserModel object.
 
@@ -64,9 +66,6 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const authRoute = require('./routes/AuthRoute');
 const userRoute = require('./routes/UserRoute');
-//const signinRoutes = require('./routes/signin');
-//const signupRoutes = require('./routes/signup');
-    // const UserRoute = require('./routes/UserRoute');
 //const profileRoutes = require('./routes/profile');
 //const editProfileRoutes = require('./routes/editProfile');
 const searchRoute = require('./routes/SearchRoute');
@@ -76,9 +75,6 @@ const homeRoute = require('./routes/HomeRoute');
 
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
-//app.use('/signup', signupRoutes);
-//app.use('/signin', signinRoutes);
-    // app.use('/api/user', UserRoute);
 //app.use('/profile', profileRoutes);
 //app.use('/editProfile', editProfileRoutes);
 app.use('/api/search', searchRoute);

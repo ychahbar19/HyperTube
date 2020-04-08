@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AppComponent } from '../../app.component';
 import { AuthService } from '../auth.service';
 import { ErrorService } from 'src/app/error/error.service';
@@ -12,7 +11,7 @@ import { ErrorService } from 'src/app/error/error.service';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss']
 })
-export class ForgotPasswordComponent implements OnInit
+export class ForgotPasswordComponent implements OnInit, OnDestroy
 {
   /* ------------------------------------------------------- *\
       User language & translations for the static text.
@@ -56,13 +55,13 @@ export class ForgotPasswordComponent implements OnInit
 
   @ViewChild('f', { static: false }) forgotForm: NgForm;
   @ViewChild('f2', { static: false }) resetForm: NgForm;
+  response: Observable<any>;
 
   /* ------------------------------------------------------- *\
       Initialisation
   \* ------------------------------------------------------- */
 
-  constructor(private http: HttpClient,
-              private authService: AuthService,
+  constructor(private authService: AuthService,
               private errorService: ErrorService,
               private route: ActivatedRoute) {}
 
@@ -74,22 +73,26 @@ export class ForgotPasswordComponent implements OnInit
       .subscribe(sub => { this.successMessage = this.authService.resetPasswordSuccessMessage;
                           this.isLoading = false; });
 
-    this.errorStatusSub = this.errorService.errorObs.subscribe(error => {
-      this.errorMessage = error;
-    });
-
-    if (
-      this.route.snapshot.queryParams.id &&
-      this.route.snapshot.queryParams.hash
-    ) {
+    // When the URL contains an id and hash,
+    // shows the second form to choose a new password
+    // (default is first form to trigger a reset request based on username).
+    if (this.route.snapshot.queryParams.id &&
+        this.route.snapshot.queryParams.hash)
       this.secondForm = true;
-    }
+
+    // Listens to ........
+    this.errorStatusSub = this.errorService.errorObs.subscribe(
+      error => { this.errorMessage = error; }
+    );
   }
 
   /* ------------------------------------------------------- *\
       Dealing with form submission.
   \* ------------------------------------------------------- */
 
+  // When the form is submitted, if it's valid, sets the loading status
+  // as true while authService.forgotPassword connects to the API (back) to
+  // generate a reset hash and set the user as active=false.
   onForgotPwd()
   {
     if (this.forgotForm.invalid)
@@ -98,6 +101,9 @@ export class ForgotPasswordComponent implements OnInit
     this.authService.forgotPassword(this.forgotForm.value);
   }
 
+  // When the form is submitted, if it's valid, sets the loading status
+  // as true while authService.resetPassword connects to the API (back) to
+  // ......
   onResetPwd()
   {
     if (this.resetForm.invalid)
@@ -110,7 +116,18 @@ export class ForgotPasswordComponent implements OnInit
     );
   }
 
-  samePwd(password1: string, password2: string): boolean {
+  samePwd(password1: string, password2: string): boolean
+  {
     return password1 === password2;
+  }
+
+  /* ------------------------------------------------------- *\
+      End
+  \* ------------------------------------------------------- */
+
+  ngOnDestroy()
+  {
+    this.authServiceWorkingSub.unsubscribe();
+    this.errorStatusSub.unsubscribe();
   }
 }

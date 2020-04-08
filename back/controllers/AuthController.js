@@ -17,8 +17,20 @@ function validPattern(str, pattern)
   return (pattern.test(str));
 }
 
+// Defines the password crypting and comparison methods
+async function cryptPwd(password)
+{
+  const cryptedPwd = await bcrypt.hash(password, 10); // Applies bcrypt's hash on the password in 10 steps (=lvls of security.
+  return cryptedPwd;
+}
+async function isSamePwds(password_input, password_db)
+{
+  const isSame = await bcrypt.compare(password_input, password_db);
+  return isSame;
+}
+
 /* -------------------------------------------------------------------------- *\
-    2) Defines the authentification-related functions.
+    2) Defines SIGNUP functions.
 \* -------------------------------------------------------------------------- */
 
 /* ------------------------ SIGNUP (step 1) ------------------------ */
@@ -26,9 +38,6 @@ function validPattern(str, pattern)
 
 exports.signupInputsValidation = (req, res, next) =>
 {
-  /* ****
-  no first name, last name, avatar ? 
-  **** */
   const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
@@ -46,17 +55,16 @@ exports.signupInputsValidation = (req, res, next) =>
 };
 
 /* ------------------------ SIGNUP (step 2) ------------------------ */
-// Creates a new instance of UserModel and saves it in the database.
+// Creates a new instance of UserModel and saves it in the database,
+// or splits the errors into a custom array of field=>type for each error.
 
 exports.createUser = async (req, res, next) =>
 {
   try
   {
-    // Applies bcrypt's hash on the password in 10 steps (= lvl of security).
-    const hashPwd = await bcrypt.hash(req.body.password, 10);
+    const hashPwd = await cryptPwd(req.body.password);
     const url = req.protocol + "://" + req.get("host");
 
-    // Creates a new instance of UserModel.
     const user = new UserModel(
     {
       avatar: url + "/assets/pictures/" + req.file.filename,
@@ -67,11 +75,19 @@ exports.createUser = async (req, res, next) =>
       password: hashPwd
     });
 
-    // Saves the new user in the database.
     res.savedUser = await user.save();
     return next();
   }
-  catch (error) { return res.status(500).json({ message: error.message });
+  catch (e)
+  {
+    let errors_array = {};
+    
+    if (typeof e.errors.username !== 'undefined')
+      errors_array.username = e.errors.username.kind;
+    if (typeof e.errors.email !== 'undefined')
+      errors_array.email = e.errors.email.kind;
+
+    return res.status(500).json({ errors_array: errors_array });
   }
 };
 
@@ -92,8 +108,18 @@ exports.activateAccount = async (req, res) =>
     await UserModel.updateOne({ '_id': oUserId }, { $set: { 'active': true } });
     return res.status(200).json({ message: 'Account activated' });
   }
-  catch (error) { res.status(500).json({ message: error }); }
+  catch (e)
+  {
+    let errors_array = {};
+    console.log('********', e, '--------', e.message)
+    errors_array.message = e;
+    res.status(500).json({ errors_array: errors_array });
+  }
 };
+
+/* -------------------------------------------------------------------------- *\
+    3) Defines SIGNIN functions.
+\* -------------------------------------------------------------------------- */
 
 /* ------------------------ SIGNIN (step 1) ------------------------ */
 // Checks that the input fields (username & password) are valid.
@@ -142,7 +168,7 @@ exports.login = async (req, res) =>
       return res.status(401).json({ message: 'The username doesn\'t belong to any account. Please create an account' });
     
     // Checks the user & signin passwords match.
-    const samePwds = await bcrypt.compare(req.body.password, foundUser.password);
+    const samePwds = await isSamePwds(req.body.password, foundUser.password);
     if (!samePwds)
       return res.status(401).json({ message: 'The password is incorrect. Please try again !' });
 
@@ -152,6 +178,10 @@ exports.login = async (req, res) =>
   }
   catch (error) { return res.status(500).send(error); }
 };
+
+/* -------------------------------------------------------------------------- *\
+    4) Defines FORGOTTEN PASSWORD functions.
+\* -------------------------------------------------------------------------- */
 
 /* ------------------------ FORGOTTEN PASSWORD ------------------------ */
 // Assigns a random string to the user, to be used in RESET PASSWORD.
@@ -171,7 +201,10 @@ exports.createRandomStr = async (req, res, next) =>
       if (error)
         return res.status(400).json({ message: 'Couldn\'t create a reset hash !'});
       res.locals.randomStr = buffer.toString('hex');
-      await UserModel.updateOne({ username: req.user.username }, { $set: { randomStr: res.locals.randomStr } });
+      await UserModel.updateOne(
+        { username: req.user.username },
+        { $set: { active: false, randomStr: res.locals.randomStr }}
+      );
       next();
     });
   }
@@ -217,15 +250,23 @@ exports.resetPwd = async (req, res) =>
 {
   try
   {
-    // Applies bcrypt's hash on the password in 10 steps (= lvl of security).
-    const hashPwd = await bcrypt.hash(req.body.formData.password, 10);
+    const hashPwd = await cryptPwd(req.body.formData.password);
 
-    // Updates the user password in the database.
-    await UserModel.updateOne({ _id: req.body.id }, { $set: { 'password': hashPwd } });
+    await UserModel.updateOne(
+      { _id: req.body.id },
+      {
+        $set: { active: true, password: hashPwd },
+        $unset: { randomStr: 1 }
+      }
+    );
     return res.status(200).json({ message: 'Password has been changed successfully!' });
   }
   catch (error) { return res.status(500).json({ message: error }); }
 };
+
+/* -------------------------------------------------------------------------- *\
+    5) Defines LOGOUT functions.
+\* -------------------------------------------------------------------------- */
 
 /* ------------------------ LOGOUT ------------------------ */
 

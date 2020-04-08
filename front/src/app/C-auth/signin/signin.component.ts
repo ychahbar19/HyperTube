@@ -35,15 +35,10 @@ export class SigninComponent implements OnInit, OnDestroy
   /* ------------------------------------------------------- *\
       Listeners for status changes. 
   \* ------------------------------------------------------- */
-/*
-  private authStatusSub: Subscription;
-  private accountStatusSub: Subscription;
-  private errorStatusSub: Subscription;
-*/
 
   private authServiceWorkingSub: Subscription; //Tracks if auth.service is running/done.
-  private accountStatusSub: Subscription; //Tracks if the ....... process is a success.
-  private errorStatusSub: Subscription; //
+  private accountStatusSub: Subscription; //Tracks .....
+  private errorStatusSub: Subscription; //Gets any error from the API (back).
 
   /* ------------------------------------------------------- *\
       Public variables.
@@ -77,25 +72,28 @@ export class SigninComponent implements OnInit, OnDestroy
     );
     //------>>>> same as signup
 
-    // Listens to know when a signin successful,
-    // and .......
+    // When the URL contains an id,
+    // triggers the service's activateAccount() function.
     if (this.route.snapshot.queryParams.id)
     {
       this.isLoading = true;
       this.accountStatusSub = this.authService.activateAccount(this.route.snapshot.queryParams.id).subscribe(
-        success => {
+        success =>
+        {
           this.isLoading = false;
           this.successSignup = true;
-        }, error => {
+        },
+        error =>
+        {
           this.isLoading = false;
           this.errorMessage = error.error.message;
         }
       );
     }
 
-    // Listens to ........
+    // Listens to errors from the signin API process.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      error => { this.errorMessage = error; }
+      errors_array => { this.errorMessage = errors_array['message']; }
     );
   }
 
@@ -103,7 +101,7 @@ export class SigninComponent implements OnInit, OnDestroy
       Dealing with form submission.
   \* ------------------------------------------------------- */
 
-  // When the form is updated, if it's valid, sets the loading status
+  // When the form is submitted, if it's valid, sets the loading status
   // as true while authService.signin connects to the API (back) to
   // signin the user.
   onLogin()

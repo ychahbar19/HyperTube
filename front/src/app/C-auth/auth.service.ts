@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { AuthData } from './auth-data.model';
+//import { AuthData } from './auth-data.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService
@@ -27,36 +27,8 @@ export class AuthService
 
   public resetPasswordSuccessMessage: string;
   
-  /* ------------------------------------------------------- *\
-      Initialisation and private functions.
-  \* ------------------------------------------------------- */
-
   constructor(private http: HttpClient,
               private router: Router) {}
-
-  private saveAuthData(token: string, expirationDate: Date)
-  {
-    localStorage.setItem('token', token);
-    localStorage.setItem('expiration', expirationDate.toISOString());
-  }
-  private setAuthTimer(duration: number)
-  {
-    this.tokenTimer = setTimeout(() => { this.logout(); }, duration * 1000);
-  }
-
-  private applySuccessSignin(response)
-  {
-    const now = new Date();
-    const expirationDate = new Date(now.getTime() + response.expiresIn * 1000);
-    const duration = response.expiresIn;
-
-    this.isAuthenticated = true;
-    //this.setAuthTimer(response.expiresIn);
-    this.tokenTimer = setTimeout(() => { this.logout(); }, duration * 1000);
-    //this.saveAuthData(this.token, expirationDate);
-    localStorage.setItem('token', this.token);
-    localStorage.setItem('expiration', expirationDate.toISOString());
-  }
 
   /* ------------------------------------------------------------------ *\
       Public getters for the private variables.
@@ -122,23 +94,30 @@ export class AuthService
       SIGNIN
   \* ------------------------------------------------------------------ */
 
+  private applySuccessSignin(response)
+  {
+    const now = new Date();
+    const expirationDate = new Date(now.getTime() + response.expiresIn * 1000);
+    const expiresInDuration = response.expiresIn;
+
+    this.isAuthenticated = true;
+    //this.setAuthTimer(expiresInDuration);
+    this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
+    //this.saveAuthData(this.token, expirationDate);
+    localStorage.setItem('token', this.token);
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+  
   login(formData: // Takes the 'signin' form input as parameter.
     {
       username: string;
       password: string
     })
   {
-    /* const authData: AuthData = // Translates the input into another format.
-    { username: formData.username, password: formData.password
-    }; */
-    const authData = new FormData(); // Translates the input into another format.
-    authData.append('username', formData.username);
-    authData.append('password', formData.password);
-
     // Calls the API (back) for the signin process.
     // If the signin is a success, gets the token and token expiration in response,
     // calls applySuccessSignin(), and redirects to /search.
-    this.http.post<{ token: string; expiresIn: number }>('http://localhost:3000/api/auth/signin', authData)
+    this.http.post<{ token: string; expiresIn: number }>('http://localhost:3000/api/auth/signin', formData)
       .subscribe(
         response =>
         {
@@ -259,14 +238,17 @@ export class AuthService
         // this.isLoading.next(false);
         const token = response.token;
         this.token = token;
-        if (token) {
+        if (this.token) {
           const expiresInDuration = response.expiresIn;
-          this.setAuthTimer(expiresInDuration);
+          //this.setAuthTimer(expiresInDuration);
+          this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          this.saveAuthData(token, expirationDate);
+          //this.saveAuthData(token, expirationDate);
+          localStorage.setItem('token', this.token);
+          localStorage.setItem('expiration', expirationDate.toISOString());
         }
       }, error => {
         this.authStatusListener.next(false);
@@ -306,11 +288,12 @@ export class AuthService
 
     const now = new Date();
     // getTime() -> number of miliseconds since 1 jan 1970 and the date
-    const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
-    if (expiresIn > 0)
+    const expiresInDuration = authInformation.expirationDate.getTime() - now.getTime();
+    if (expiresInDuration > 0)
     {
       this.token = authInformation.token;
-      this.setAuthTimer(expiresIn / 1000);
+      //this.setAuthTimer(expiresInDuration / 1000);
+      this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
       this.isAuthenticated = true;
       this.authServiceWorkingListener.next(true);
     }
