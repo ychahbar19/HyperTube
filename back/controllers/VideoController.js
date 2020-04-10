@@ -57,24 +57,27 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
-{ 
-  var engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
-
+exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next) { 
+  let engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: '../videos' });
+  
   engine.on("ready", function() {
-
-    // console.log(engine.files);
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        console.log(file.name);
+        console.log(file.path);
         let stream = file.createReadStream();
         // stream is readable stream to containing the file content
-        // return res.status(200).json({ data:  });
+        return res.status(200).json({ data: file.path });
       }
     }
+    return res.status(404).json({ message: 'error undefined BGBG' });
   });
-  // return res.status(404).json({ message: 'error undefined BGBG' });
-}
+  engine.on("download", function(data) {
+    console.log("       piece downloaded :", data);
+  });
+  engine.on("idle", function() {
+    console.log("download ended !");
+  });
+};
