@@ -59,6 +59,7 @@ export class VideoComponent implements OnInit {
   private imdb_id;
   private yts_id;
   public video = {};
+  public stream;
 
   constructor(
     private videoService: VideoService,
@@ -77,9 +78,18 @@ export class VideoComponent implements OnInit {
     );
   }
 
-  streamVideo(index: number) {
+  async streamVideo(index: number) {
     const torrentHash = { hash: this.video['Torrents'][index].hash };
-    console.log(torrentHash);
-    this.videoService.streamVideo(torrentHash);
+    const data = await this.videoService.streamVideo(torrentHash);
+    // setTimeout(() => {
+    //   this.stream = data;
+    // }, 20000);
+    this.stream = data;
+    console.log(this.stream);
+    this.stream.src = this.stream.src.replace(/ /g, '%20');
+    this.stream.src = this.stream.src.replace(/\[/g, '%5B');
+    this.stream.src = this.stream.src.replace(/\]/g, '%5D');
+    console.log(this.stream);
+    
   }
 }

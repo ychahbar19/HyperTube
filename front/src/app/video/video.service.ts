@@ -46,9 +46,11 @@ export class VideoService
   }
 
   streamVideo(torrentHash: object) {
-    this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
-      .subscribe(response => {
-        console.log(response);
-      });
+    return new Promise(async (resolve, reject) => {
+      const torrentPath = await this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
+        .toPromise()
+        .then(response => { resolve(response); },
+              error => { reject(error) });
+    });
   }
 }
