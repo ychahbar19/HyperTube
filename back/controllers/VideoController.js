@@ -68,8 +68,6 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
   
 
   engine.on("ready", function() {
-
-    // console.log(engine.files);
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
