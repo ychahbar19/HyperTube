@@ -51,9 +51,8 @@
           <td colspan="6">STREAM WINDOW</td>
           <div *ngIf="stream">
             {{ stream.src }}
-            <video id="videoPlayer" controls autoplay [src]="stream.src" crossorigin="anonymous">
-              <!-- <source [src]="stream.stream" type="video/mp4">
-              <source [src]="stream.stream"> -->
+            <video id="videoPlayer" controls crossorigin="anonymous">
+              <source [src]="stream.src" type="video/ogg">
                 <!-- <source src="http://localhost:3000/video/Big%20Hero%206%20(2014)/Big.Hero.6.2014.720p.BluRay.x264.YIFY.mp4> -->
               <!-- <source [src]="stream.stream" type="video/webm"> -->
             </video>

@@ -79,7 +79,7 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
         info = file;
         response.status = 'success';
         response.path = file.path;
-        response.src = url + '/assets/video/' + response.path;
+        response.src = url + '/assets/videos/' + response.path;
         console.log(file.length);
 
         // return res.status(200).json(response);
