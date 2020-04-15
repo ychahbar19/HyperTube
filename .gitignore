@@ -1,5 +1,6 @@
 back/node_modules
 front/node_modules
+back/assets/videos
 
 .DS_Store
 ._.DS_Store
