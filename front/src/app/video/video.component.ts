@@ -22,10 +22,10 @@ import { ActivatedRoute } from '@angular/router';
 import { VideoService } from './video.service';
 
 @Component({
-  selector: "app-video",
+  selector: 'app-video',
   providers: [VideoService],
-  templateUrl: "./video.component.html",
-  styleUrls: ["./video.component.scss"]
+  templateUrl: './video.component.html',
+  styleUrls: ['./video.component.scss']
 })
 /*
 export class VideoComponent implements OnInit, OnDestroy
@@ -56,8 +56,8 @@ export class VideoComponent implements OnInit, OnDestroy
 }
 */
 export class VideoComponent implements OnInit {
-  private imdb_id;
-  private yts_id;
+  private imdbId;
+  private ytsId;
   public video = {};
   public stream;
 
@@ -66,19 +66,22 @@ export class VideoComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.route.params.subscribe(params => {
-      this.imdb_id = params["imdb_id"];
-      this.yts_id = params["yts_id"];
+      // tslint:disable-next-line: no-string-literal
+      this.imdbId = params['imdb_id'];
+      // tslint:disable-next-line: no-string-literal
+      this.ytsId = params['yts_id'];
     });
   }
 
   async ngOnInit() {
     this.video = await this.videoService.getVideoInfo(
-      this.imdb_id,
-      this.yts_id
+      this.imdbId,
+      this.ytsId
     );
   }
 
   async streamVideo(index: number) {
+    // tslint:disable-next-line: no-string-literal
     const torrentHash = { hash: this.video['Torrents'][index].hash };
     const data = await this.videoService.streamVideo(torrentHash);
     // setTimeout(() => {
@@ -90,6 +93,5 @@ export class VideoComponent implements OnInit {
     this.stream.src = this.stream.src.replace(/\[/g, '%5B');
     this.stream.src = this.stream.src.replace(/\]/g, '%5D');
     console.log(this.stream);
-    
   }
 }

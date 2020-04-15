@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-//import { Observable, Subject } from 'rxjs';
-//import { VideoModel } from './video.model';
+// import { Observable, Subject } from 'rxjs';
+// import { VideoModel } from './video.model';
 
 @Injectable()
-export class VideoService
-{
+export class VideoService {
   /*
   private video: VideoModel = {
                     _id: '',
@@ -34,11 +33,9 @@ export class VideoService
 
   constructor(private http: HttpClient) {}
 
-  getVideoInfo(imdb_id, yts_id)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      this.http.get<{}>('http://localhost:3000/api/video/'+imdb_id+'/'+yts_id)
+  getVideoInfo(imdbId, ytsId) {
+    return new Promise((resolve, reject) => {
+      this.http.get<{}>('http://localhost:3000/api/video/' + imdbId + '/' + ytsId)
         .toPromise()
         .then(response => { resolve(response); },
               error => { reject(error); });
@@ -50,7 +47,7 @@ export class VideoService
       const torrentPath = await this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
         .toPromise()
         .then(response => { resolve(response); },
-              error => { reject(error) });
+              error => { reject(error); });
     });
   }
 }
