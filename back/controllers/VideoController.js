@@ -59,7 +59,7 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
 
 exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
 { 
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/video" });
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/videos" });
   let response = {};
   const url = req.protocol + "://" + req.get("host");
   let info;
