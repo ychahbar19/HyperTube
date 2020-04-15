@@ -57,27 +57,55 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next) { 
-  let engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: '../videos' });
+exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
+{ 
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/video" });
+  let response = {};
+  const url = req.protocol + "://" + req.get("host");
+  let info;
+  let readable = false;
+  // console.log(res);
   
+
   engine.on("ready", function() {
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        console.log(file.path);
         let stream = file.createReadStream();
+        
         // stream is readable stream to containing the file content
-        return res.status(200).json({ data: file.path });
+     
+        info = file;
+        response.status = 'success';
+        response.path = file.path;
+        response.src = url + '/assets/video/' + response.path;
+        console.log(file.length);
+        
+        // return res.status(200).json(response);
+        return;
       }
+      else
+        file.deselect();
     }
-    return res.status(404).json({ message: 'error undefined BGBG' });
+    // return res.status(404).json({
+    //   status: 'failure',
+    //   path: null
+    // });
   });
-  engine.on("download", function(data) {
-    console.log("       piece downloaded :", data);
+  engine.on('download', function() {
+    console.log(Number.parseFloat(engine.swarm.downloaded / info.length).toPrecision(2) + '% done...');
+    
+    let div = engine.swarm.downloaded / info.length;
+    if (!readable && div > 0.02)
+    {
+      readable = true;
+      return res.json(response);
+    }
   });
+  
   engine.on("idle", function() {
-    console.log("download ended !");
+    console.log("download ended");
   });
-};
+}
