@@ -65,7 +65,6 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
   let info;
   let readable = false;
   // console.log(res);
-  
 
   engine.on("ready", function() {
     for (const file of engine.files) {
@@ -85,8 +84,7 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
 
         // return res.status(200).json(response);
         return;
-      }
-      else
+      } else
         file.deselect();
     }
     // return res.status(404).json({
@@ -96,15 +94,14 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
   });
   engine.on('download', function() {
     console.log(Number.parseFloat(engine.swarm.downloaded / info.length).toPrecision(2) + '% done...');
-    
+
     let div = engine.swarm.downloaded / info.length;
-    if (!readable && div > 0.02)
-    {
+    if (!readable && div > 0.02) {
       readable = true;
       return res.json(response);
     }
   });
-  
+
   engine.on("idle", function() {
     console.log("download ended");
   });

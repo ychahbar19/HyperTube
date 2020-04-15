@@ -80,6 +80,13 @@ export class VideoComponent implements OnInit {
     );
   }
 
+  parseSrc(src) {
+    src = src.replace(/ /g, '%20');
+    src = src.replace(/\[/g, '%5B');
+    src = src.replace(/\]/g, '%5D');
+    return src;
+  }
+
   async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
     const torrentHash = { hash: this.video['Torrents'][index].hash };
@@ -89,9 +96,7 @@ export class VideoComponent implements OnInit {
     // }, 20000);
     this.stream = data;
     console.log(this.stream);
-    this.stream.src = this.stream.src.replace(/ /g, '%20');
-    this.stream.src = this.stream.src.replace(/\[/g, '%5B');
-    this.stream.src = this.stream.src.replace(/\]/g, '%5D');
+    this.stream.src = this.parseSrc(this.stream.src);
     console.log(this.stream);
   }
 }
