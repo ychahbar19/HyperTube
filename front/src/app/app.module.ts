@@ -19,7 +19,6 @@ import { OmniauthComponent } from './auth/omniauth/omniauth.component';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
-import { ErrorInterceptor } from './error/error-interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { RatingComponent } from './rating/rating.component';
@@ -29,9 +28,12 @@ import { EditComponent } from './edit/edit.component';
 
 // Video components
 import { SearchComponent } from './search/search.component';
-  // import { GalleryComponent } from './gallery/gallery.component';
 import { VideoComponent } from './video/video.component';
 import { CommentsComponent } from './comments/comments.component';
+
+// Utils components
+import { ErrorInterceptor } from './error/error-interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +42,6 @@ import { CommentsComponent } from './comments/comments.component';
     SigninComponent,
     HomeComponent,
     SignupComponent,
-    // GalleryComponent,
     OmniauthComponent,
     ProfileComponent,
     ForgotPasswordComponent,
@@ -50,7 +51,7 @@ import { CommentsComponent } from './comments/comments.component';
     EditComponent,
     SearchComponent,
     VideoComponent,
-    CommentsComponent
+    CommentsComponent,
   ],
   imports: [
     BrowserModule,
