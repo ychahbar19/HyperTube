@@ -57,9 +57,9 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
-{ 
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/videos" });
+exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next) {
+  const path = 'assets/videos';
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: path });
   let response = {};
   const url = req.protocol + "://" + req.get("host");
   let info;
@@ -73,17 +73,16 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
         let stream = file.createReadStream();
-        
+
         // stream is readable stream to containing the file content
-     
+
         info = file;
         response.status = 'success';
         response.path = file.path;
-        response.src = url + '/assets/videos/' + response.path;
+        response.src = url + '/' + path + '/' + response.path;
         console.log(file.length);
-
         // return res.status(200).json(response);
-        return;
+        return ;
       } else
         file.deselect();
     }
@@ -92,7 +91,7 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
     //   path: null
     // });
   });
-  engine.on('download', function() {
+  engine.on('download', () => {
     console.log(Number.parseFloat(engine.swarm.downloaded / info.length).toPrecision(2) + '% done...');
 
     let div = engine.swarm.downloaded / info.length;
