@@ -84,6 +84,7 @@ export class VideoComponent implements OnInit {
     // tslint:disable-next-line: no-string-literal
     const torrentHash = { hash: this.video['Torrents'][index].hash };
     const data = await this.videoService.streamVideo(torrentHash);
+    
     // setTimeout(() => {
     //   this.stream = data;
     // }, 20000);

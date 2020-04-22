@@ -5,6 +5,7 @@
 const axios = require('axios');
 const VideoModel = require('../models/VideoModel');
 const torrentStream = require('torrent-stream');
+const fs = require('fs-extra');
 
 
 let videoInfo = {};
@@ -59,12 +60,12 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
 
 exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next)
 { 
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/videos" });
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: "./assets/tmp" });
   let response = {};
   const url = req.protocol + "://" + req.get("host");
   let info;
+  let fileLength;
   let readable = false;
-  // console.log(res);
 
   engine.on("ready", function() {
     for (const file of engine.files) {
@@ -72,21 +73,19 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        let stream = file.createReadStream();
-        
-        // stream is readable stream to containing the file content
-     
-        info = file;
-        response.status = 'success';
-        response.path = file.path;
-        response.src = url + '/assets/videos/' + response.path;
-        console.log(file.length);
-
-        // return res.status(200).json(response);
-        return;
-      } else
-        file.deselect();
-    }
+          let stream = file.createReadStream();
+          // stream is readable stream to containing the file content
+      
+          info = file;
+          response.status = 'success';
+          response.path = file.path;
+          response.src = url + '/assets/tmp/' + response.path;
+          fileLength = file.length;
+          console.log(file.length);
+          // return;
+        } else
+          file.deselect();
+      }
     // return res.status(404).json({
     //   status: 'failure',
     //   path: null
@@ -101,8 +100,10 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
       return res.json(response);
     }
   });
-
   engine.on("idle", function() {
     console.log("download ended");
+    // stocker le fichier dans le dossier video , move file de tmp vers videos
+    fs.move('./assets/tmp/' + response.path, './assets/videos');
   });
+  next();
 }
