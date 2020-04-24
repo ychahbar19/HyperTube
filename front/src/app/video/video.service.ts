@@ -33,7 +33,7 @@ export class VideoService {
 
   constructor(private http: HttpClient) {}
 
-  getVideoInfo(imdbId, ytsId) {
+  getVideoInfo(imdbId: string, ytsId: string) {
     return new Promise((resolve, reject) => {
       this.http.get<{}>('http://localhost:3000/api/video/' + imdbId + '/' + ytsId)
         .toPromise()
@@ -44,7 +44,7 @@ export class VideoService {
 
   streamVideo(torrentHash: object) {
     return new Promise(async (resolve, reject) => {
-      const torrentPath = await this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
+      this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
         .toPromise()
         .then(response => { resolve(response); },
               error => { reject(error); });

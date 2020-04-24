@@ -5,7 +5,8 @@
 const axios = require('axios');
 const VideoModel = require('../models/VideoModel');
 const torrentStream = require('torrent-stream');
-
+const fs = require('fs');
+const path = require('path');
 
 let videoInfo = {};
 
@@ -57,32 +58,72 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, res, next) {
-  const path = 'assets/videos';
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash , { path: path });
-  let response = {};
-  const url = req.protocol + "://" + req.get("host");
-  let info;
-  let readable = false;
-  // console.log(res);
+// lists all files in dirPath (including files in subdir of dirPath)
+const getAllFiles = (dirPath, arrayOfFiles) => {
+  files = fs.readdirSync(dirPath);
 
-  engine.on("ready", function() {
+  arrayOfFiles = arrayOfFiles || [];
+
+  for (const file of files) {
+    if (fs.statSync(dirPath + '/' + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(file));
+    }
+  }
+
+  return arrayOfFiles;
+};
+
+// Check if torrent is already downloaded on server
+exports.checkDownloadedVids = (req, res, next) => {
+  const path = 'assets/videos';
+  const url = req.protocol + '://' + req.get('host');
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
+  engine.on('ready', () => {
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        let stream = file.createReadStream();
+        const arrayOfFiles = getAllFiles('./assets/videos');
+        if (arrayOfFiles.includes(file.name)) {
+          return res.status(200).json({
+            status: 'success',
+            src: url + '/' + path + '/' + file.path
+          });
+        } else {
+          next();
+        }
+        break;
+      }
+    }
+  });
+};
 
-        // stream is readable stream to containing the file content
+exports.downloadTorrent = async (req, res, next) => {
+  const path = 'assets/videos';
+  const url = req.protocol + '://' + req.get('host');
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: path });
+  let response = {};
+  let info;
+  let readable = false;
 
+  engine.on('ready', function() {
+    for (const file of engine.files) {
+      if (
+        file.name.substr(file.name.length - 3) === 'mkv' ||
+        file.name.substr(file.name.length - 3) === 'mp4'
+      ) {
         info = file;
-        response.status = 'success';
-        response.path = file.path;
-        response.src = url + '/' + path + '/' + response.path;
+        let stream = file.createReadStream();
+        response = {
+          status: 'success',
+          // path: file.path,
+          src: url + '/' + path + '/' + file.path
+        };
         console.log(file.length);
-        // return res.status(200).json(response);
-        return ;
+        // return ;
       } else
         file.deselect();
     }
@@ -97,11 +138,11 @@ exports.StreamAndDownloadTorrent = async function StreamAndDownloadTorrent(req, 
     let div = engine.swarm.downloaded / info.length;
     if (!readable && div > 0.02) {
       readable = true;
-      return res.json(response);
+      return res.status(200).json(response);
     }
   });
 
-  engine.on("idle", function() {
-    console.log("download ended");
+  engine.on('idle', function() {
+    console.log('download ended');
   });
 }

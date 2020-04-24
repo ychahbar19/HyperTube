@@ -56,8 +56,8 @@ export class VideoComponent implements OnInit, OnDestroy
 }
 */
 export class VideoComponent implements OnInit {
-  private imdbId;
-  private ytsId;
+  private imdbId: string;
+  private ytsId: string;
   public video = {};
   public stream;
 
@@ -78,18 +78,18 @@ export class VideoComponent implements OnInit {
       this.imdbId,
       this.ytsId
     );
+    console.log(this.video);
   }
 
   async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
+    // const selectedTorrent = this.video['Torrents'][index];
+    // const data = await this.videoService.streamVideo(selectedTorrent);
+    // tslint:disable-next-line: no-string-literal
     const torrentHash = { hash: this.video['Torrents'][index].hash };
     const data = await this.videoService.streamVideo(torrentHash);
-    // setTimeout(() => {
-    //   this.stream = data;
-    // }, 20000);
     this.stream = data;
-    console.log(this.stream);
     this.stream.src = this.stream.src.replace(/ /g, '%20').replace(/\[/g, '%5B').replace(/\]/g, '%5D');
-    console.log(this.stream);
+    // console.log(this.stream);
   }
 }
