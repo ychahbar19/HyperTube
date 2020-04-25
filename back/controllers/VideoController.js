@@ -106,8 +106,8 @@ exports.downloadTorrent = async (req, res, next) => {
   const url = req.protocol + '://' + req.get('host');
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: path });
   let response = {};
-  let info;
-  let readable = false;
+  let fileCopy;
+  let responseIsSent = false;
 
   engine.on('ready', function() {
     for (const file of engine.files) {
@@ -115,7 +115,7 @@ exports.downloadTorrent = async (req, res, next) => {
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        info = file;
+        fileCopy = file;
         let stream = file.createReadStream();
         response = {
           status: 'success',
@@ -123,7 +123,6 @@ exports.downloadTorrent = async (req, res, next) => {
           src: url + '/' + path + '/' + file.path
         };
         console.log(file.length);
-        // return ;
       } else
         file.deselect();
     }
@@ -133,11 +132,11 @@ exports.downloadTorrent = async (req, res, next) => {
     // });
   });
   engine.on('download', () => {
-    console.log(Number.parseFloat(engine.swarm.downloaded / info.length).toPrecision(2) + '% done...');
+    console.log(Number.parseFloat(engine.swarm.downloaded / fileCopy.length).toPrecision(2) + '% done...');
 
-    let div = engine.swarm.downloaded / info.length;
-    if (!readable && div > 0.02) {
-      readable = true;
+    let div = engine.swarm.downloaded / fileCopy.length;
+    if (!responseIsSent && div > 0.02) {
+      responseIsSent = true;
       return res.status(200).json(response);
     }
   });
