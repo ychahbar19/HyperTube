@@ -101,6 +101,7 @@ exports.checkDownloadedVids = (req, res, next) => {
   });
 };
 
+// Download the files from the torrent and return the source when 2% of the video has been downloaded
 exports.downloadTorrent = async (req, res, next) => {
   const path = 'assets/videos';
   const url = req.protocol + '://' + req.get('host');
