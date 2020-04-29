@@ -52,8 +52,9 @@
           <div *ngIf="stream">
             <!-- {{ stream.src }} -->
             <td colspan="6">
-              <video id="videoPlayer" controls crossorigin="anonymous">
+              <video id="videoPlayer" controls crossorigin="anonymous" #videoPlayer (click)="logTime()">
                 <source [src]="stream.src" type="video/ogg">
+                  Browser not supported
               </video>
             </td>
           </div>

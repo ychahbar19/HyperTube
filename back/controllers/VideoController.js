@@ -117,7 +117,8 @@ exports.downloadTorrent = async (req, res, next) => {
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
         fileCopy = file;
-        let stream = file.createReadStream();
+        file.createReadStream();
+        // let stream = file.createReadStream();
         response = {
           status: 'success',
           // path: file.path,
@@ -133,7 +134,7 @@ exports.downloadTorrent = async (req, res, next) => {
     // });
   });
   engine.on('download', () => {
-    console.log(Number.parseFloat(engine.swarm.downloaded / fileCopy.length).toPrecision(2) + '% done...');
+    console.log(Number.parseFloat(engine.swarm.downloaded / fileCopy.length).toPrecision(2) + '% downloaded');
 
     let div = engine.swarm.downloaded / fileCopy.length;
     if (!responseIsSent && div > 0.02) {
@@ -144,5 +145,9 @@ exports.downloadTorrent = async (req, res, next) => {
 
   engine.on('idle', function() {
     console.log('download ended');
+    if (!responseIsSent) {
+      responseIsSent = true;
+      return res.status(200).json(response);
+    }
   });
 }

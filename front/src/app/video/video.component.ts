@@ -15,7 +15,7 @@ Page content:
     ==> :S | Missing backend data validation and user info from session (id, name, avatar)
 */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 // import { Component, OnInit, OnDestroy } from '@angular/core';
 // import { Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ import { VideoService } from './video.service';
   selector: 'app-video',
   providers: [VideoService],
   templateUrl: './video.component.html',
-  styleUrls: ['./video.component.scss']
+  styleUrls: ['./video.component.scss'],
 })
 /*
 export class VideoComponent implements OnInit, OnDestroy
@@ -59,13 +59,15 @@ export class VideoComponent implements OnInit {
   private imdbId: string;
   private ytsId: string;
   public video = {};
-  public stream;
+  public stream: any;
+  private movie: HTMLVideoElement;
+  @ViewChild('videoPlayer', { static: false }) videoPlayer: ElementRef;
 
   constructor(
     private videoService: VideoService,
     private route: ActivatedRoute
   ) {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       // tslint:disable-next-line: no-string-literal
       this.imdbId = params['imdb_id'];
       // tslint:disable-next-line: no-string-literal
@@ -74,10 +76,7 @@ export class VideoComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.video = await this.videoService.getVideoInfo(
-      this.imdbId,
-      this.ytsId
-    );
+    this.video = await this.videoService.getVideoInfo(this.imdbId, this.ytsId);
     console.log(this.video);
   }
 
@@ -87,9 +86,20 @@ export class VideoComponent implements OnInit {
     // const data = await this.videoService.streamVideo(selectedTorrent);
     // tslint:disable-next-line: no-string-literal
     const torrentHash = { hash: this.video['Torrents'][index].hash };
-    const data = await this.videoService.streamVideo(torrentHash);
-    this.stream = data;
-    this.stream.src = this.stream.src.replace(/ /g, '%20').replace(/\[/g, '%5B').replace(/\]/g, '%5D');
+    this.stream = await this.videoService.streamVideo(torrentHash);
+    console.log(this.stream);
+    this.stream.src = this.stream.src
+      .replace(/ /g, '%20')
+      .replace(/\[/g, '%5B')
+      .replace(/\]/g, '%5D');
     // console.log(this.stream);
+  }
+
+  logTime() {
+    this.videoPlayer.nativeElement.ondurationchange = () => {
+      console.log(this.videoPlayer.nativeElement.currentTime);
+    };
+    // this.movie.play();
+    console.log('playing');
   }
 }
