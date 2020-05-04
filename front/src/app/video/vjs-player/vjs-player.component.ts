@@ -66,24 +66,23 @@ export class VjsPlayerComponent implements OnInit, OnDestroy {
     //   console.log(ranges);
     // });
     this.player.on('error', async (error) => {
-      console.log(this.player.error().code);
-      // if (MediaError.code) {
+      // If movie not entirely downloaded and user trying to seek parts we don't have
+      if (this.player.error().code === 3) {
+        console.log('download reste du fichier');
         // this.targetTime = Math.floor(
         //   (this.player.currentTime() / this.player.duration()) * 100
         // );
         // console.log('hello');
         // const resp = await this.videoService.streamVideo(
-          // this.torrentHash,
-          // this.targetTime
+        // this.torrentHash,
+        // this.targetTime
         // );
         // console.log(resp);
-
         // this.player.dispose();
         // this.player = videojs(this.target.nativeElement, this.options);
         // this.player.currentTime(this.targetTime);
         // this.player.play();
-
-      // }
+      }
     });
     // this.player.on('ended', () => {
     //   console.log('ended');
