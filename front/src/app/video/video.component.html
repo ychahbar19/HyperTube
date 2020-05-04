@@ -48,14 +48,9 @@
           <td class="min"><button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">Play now / Load and play</button></td>
         </tr>
         <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
-          <!-- <td colspan="6">STREAM WINDOW</td> -->
           <div *ngIf="stream">
-            <!-- {{ stream.src }} -->
             <td colspan="6">
-              <video id="videoPlayer" controls crossorigin="anonymous" #videoPlayer (click)="logTime()">
-                <source [src]="stream.src" type="video/ogg">
-                  Browser not supported
-              </video>
+              <app-vjs-player [torrentHash]=torrentHash [options]="{ autoplay: false, controls: true, sources: [{ src: stream.src, type: 'video/mp4' }] }"></app-vjs-player>
             </td>
           </div>
         </tr>

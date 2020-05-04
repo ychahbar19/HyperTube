@@ -80,25 +80,33 @@ exports.checkDownloadedVids = (req, res, next) => {
   const path = 'assets/videos';
   const url = req.protocol + '://' + req.get('host');
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
-  engine.on('ready', () => {
-    for (const file of engine.files) {
-      if (
-        file.name.substr(file.name.length - 3) === 'mkv' ||
-        file.name.substr(file.name.length - 3) === 'mp4'
-      ) {
-        const arrayOfFiles = getAllFiles('./assets/videos');
-        if (arrayOfFiles.includes(file.name)) {
-          return res.status(200).json({
-            status: 'success',
-            src: url + '/' + path + '/' + file.path
-          });
-        } else {
-          next();
+  if (req.body.targetTime !== 0) {
+    console.log('targetTime != 0 -> On ne regarde pas les dossiers du serveur');
+    next();
+  }
+  else {
+    console.log('targetTime = 0 -> On regarde les dossiers du serveur');
+    engine.on('ready', () => {
+      for (const file of engine.files) {
+        if (
+          file.name.substr(file.name.length - 3) === 'mkv' ||
+          file.name.substr(file.name.length - 3) === 'mp4'
+        ) {
+          const arrayOfFiles = getAllFiles('./assets/videos');
+          if (arrayOfFiles.includes(file.name)) {
+            // continue telechargement potentiel
+            return res.status(200).json({
+              status: 'success',
+              src: url + '/' + path + '/' + file.path,
+            });
+          } else {
+            next();
+          }
+          break;
         }
-        break;
       }
-    }
-  });
+    });
+  }
 };
 
 // Download the files from the torrent and return the source when 2% of the video has been downloaded
@@ -111,22 +119,29 @@ exports.downloadTorrent = async (req, res, next) => {
   let responseIsSent = false;
 
   engine.on('ready', function() {
+    console.log('READYYYY');
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
         fileCopy = file;
-        file.createReadStream();
-        // let stream = file.createReadStream();
+        let startByte = Math.floor((req.body.targetTime / 100) * file.length);
+        // check si startByte est deja telecharge.
+        // Si non : on telecharge jusqu'a endByte et renvoie reponse + time dans la progress bar
+        // Si oui : probleme (si error videojs) / OK -> vraie fin de film (si ended videojs)
+        console.log(startByte, file.length);
+        let endByte = file.length;
+        file.createReadStream({ start: startByte, end: endByte });
         response = {
           status: 'success',
           // path: file.path,
           src: url + '/' + path + '/' + file.path
         };
-        console.log(file.length);
-      } else
+      } else {
+        console.log(file.name, file.length);
         file.deselect();
+      }
     }
     // return res.status(404).json({
     //   status: 'failure',
@@ -134,7 +149,7 @@ exports.downloadTorrent = async (req, res, next) => {
     // });
   });
   engine.on('download', () => {
-    console.log(Number.parseFloat(engine.swarm.downloaded / fileCopy.length).toPrecision(2) + '% downloaded');
+    console.log(Number.parseFloat((engine.swarm.downloaded / fileCopy.length) * 100).toPrecision(2) + '% downloaded');
 
     let div = engine.swarm.downloaded / fileCopy.length;
     if (!responseIsSent && div > 0.02) {

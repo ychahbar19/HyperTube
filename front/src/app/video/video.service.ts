@@ -35,19 +35,34 @@ export class VideoService {
 
   getVideoInfo(imdbId: string, ytsId: string) {
     return new Promise((resolve, reject) => {
-      this.http.get<{}>('http://localhost:3000/api/video/' + imdbId + '/' + ytsId)
+      this.http
+        .get<{}>('http://localhost:3000/api/video/' + imdbId + '/' + ytsId)
         .toPromise()
-        .then(response => { resolve(response); },
-              error => { reject(error); });
+        .then(
+          (response) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
     });
   }
 
-  streamVideo(torrentHash: object) {
+  streamVideo(torrentHash: object, targetTime = 0) {
+    const body = { ...torrentHash, targetTime };
     return new Promise(async (resolve, reject) => {
-      this.http.post<{}>('http://localhost:3000/api/video/stream/', torrentHash)
+      this.http
+        .post<{}>('http://localhost:3000/api/video/stream/', body)
         .toPromise()
-        .then(response => { resolve(response); },
-              error => { reject(error); });
+        .then(
+          (response) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
     });
   }
 }

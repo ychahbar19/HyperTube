@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
 import { AppRoutingModule } from './app-routing.module';
+import { MatVideoModule } from 'mat-video';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -33,6 +34,8 @@ import { CommentsComponent } from './comments/comments.component';
 
 // Utils components
 import { ErrorInterceptor } from './error/error-interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { VjsPlayerComponent } from './video/vjs-player/vjs-player.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +55,7 @@ import { ErrorInterceptor } from './error/error-interceptor';
     SearchComponent,
     VideoComponent,
     CommentsComponent,
+    VjsPlayerComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,9 @@ import { ErrorInterceptor } from './error/error-interceptor';
     NgBootstrapFormValidationModule.forRoot(),
     NgBootstrapFormValidationModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    BrowserAnimationsModule,
+    MatVideoModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
