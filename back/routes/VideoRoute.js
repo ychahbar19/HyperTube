@@ -17,9 +17,7 @@ const router = express.Router();
 /* ----- Get info function ----- */
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
-// router.post('/stream', VideoController.downloadTorrent);
 router.post('/stream', VideoController.checkDownloadedVids, VideoController.downloadTorrent);
-// router.post("/stream", VideoController.DownloadFirstPart);
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>

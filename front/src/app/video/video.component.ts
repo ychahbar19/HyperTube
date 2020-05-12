@@ -61,8 +61,13 @@ export class VideoComponent implements OnInit {
   private ytsId: string;
   public video = {};
   public stream: any;
-  private movie: HTMLVideoElement;
-  @ViewChild('videoPlayer', { static: false }) videoPlayer: ElementRef;
+  // private movie: HTMLVideoElement;
+  private videoPlayer: HTMLVideoElement;
+  @ViewChild('videoPlayer', { static: false }) set content(content: ElementRef) {
+    if (content) {
+      this.videoPlayer = content.nativeElement;
+    }
+  }
 
   constructor(
     private videoService: VideoService,
@@ -85,19 +90,29 @@ export class VideoComponent implements OnInit {
     // tslint:disable-next-line: no-string-literal
     this.torrentHash = { hash: this.video['Torrents'][index].hash };
     this.stream = await this.videoService.streamVideo(this.torrentHash);
-    // console.log(this.stream);
+    console.log(this.stream);
     this.stream.src = this.stream.src
       .replace(/ /g, '%20')
       .replace(/\[/g, '%5B')
       .replace(/\]/g, '%5D');
-    // console.log(this.stream);
+    console.log(this.stream);
+    setTimeout(() => {
+      // this.videoPlayer.play();
+      // this.videoPlayer.onended = () => {
+      //   console.log('video ended');
+      // };
+      console.log(this.videoPlayer);
+      // console.log(this.videoPlayer.volume);
+      // this.videoPlayer.volume = 0.5;
+      // console.log(this.videoPlayer.volume);
+    });
   }
 
-  logTime() {
-    this.videoPlayer.nativeElement.ondurationchange = () => {
-      console.log(this.videoPlayer.nativeElement.currentTime);
-    };
-    // this.movie.play();
-    console.log('playing');
-  }
+  // logTime() {
+  //   this.videoPlayer.nativeElement.ondurationchange = () => {
+  //     console.log(this.videoPlayer.nativeElement.currentTime);
+  //   };
+  //   // this.movie.play();
+  //   console.log('playing');
+  // }
 }

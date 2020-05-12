@@ -2,11 +2,16 @@
     1) Imports and variable definitions.
 \* -------------------------------------------------------------------------- */
 
-const axios = require('axios');
 const VideoModel = require('../models/VideoModel');
+
+const axios = require('axios');
 const torrentStream = require('torrent-stream');
 const fs = require('fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
+// const url = require('url');
+const urljoin = require('url-join');
+const rimraf = require('rimraf');
 
 let videoInfo = {};
 
@@ -14,7 +19,7 @@ let videoInfo = {};
     2) Private functions.
 \* -------------------------------------------------------------------------- */
 
-//Gets the video's info from The Open Movie Database (OMDb)'s API.
+// Gets the video's info from The Open Movie Database (OMDb)'s API.
 async function getInfo(imdb_id)
 {
   await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i='+imdb_id)
@@ -22,7 +27,7 @@ async function getInfo(imdb_id)
     {
       videoInfo = new VideoModel(results.data);
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
 };
 
 //Gets the video's torrents from YTS' API.
@@ -77,91 +82,99 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 
 // Check if torrent is already downloaded on server
 exports.checkDownloadedVids = (req, res, next) => {
-  const path = 'assets/videos';
-  const url = req.protocol + '://' + req.get('host');
+  const completePath = 'assets/videos/complete';
+  const serverUrl = req.protocol + '://' + req.get('host');
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
-  if (req.body.targetTime !== 0) {
-    console.log('targetTime != 0 -> On ne regarde pas les dossiers du serveur');
-    next();
-  }
-  else {
-    console.log('targetTime = 0 -> On regarde les dossiers du serveur');
-    engine.on('ready', () => {
-      for (const file of engine.files) {
-        if (
-          file.name.substr(file.name.length - 3) === 'mkv' ||
-          file.name.substr(file.name.length - 3) === 'mp4'
-        ) {
-          const arrayOfFiles = getAllFiles('./assets/videos');
-          if (arrayOfFiles.includes(file.name)) {
-            // continue telechargement potentiel
-            return res.status(200).json({
-              status: 'success',
-              src: url + '/' + path + '/' + file.path,
-            });
-          } else {
-            next();
-          }
-          break;
+  engine.on('ready', () => {
+    for (const file of engine.files) {
+      file.deselect();
+      if (
+        file.name.substr(file.name.length - 3) === 'mkv' ||
+        file.name.substr(file.name.length - 3) === 'mp4'
+      ) {
+        if (fs.existsSync(path.join(completePath, path.dirname(file.path)))) {
+          return res.status(200).json({
+            start: 0,
+            status: "complete",
+            src: urljoin(serverUrl, completePath, "/" + file.path)
+          });
+        } else {
+          next();
         }
+        break;
       }
-    });
-  }
+    }
+  });
 };
 
 // Download the files from the torrent and return the source when 2% of the video has been downloaded
 exports.downloadTorrent = async (req, res, next) => {
-  const path = 'assets/videos';
-  const url = req.protocol + '://' + req.get('host');
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: path });
+  const tmpPath = 'assets/videos/tmp';
+  const completePath = 'assets/videos/complete';
+  const serverUrl = req.protocol + '://' + req.get('host');
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: tmpPath });
   let response = {};
-  let fileCopy;
+  let videoFile;
   let responseIsSent = false;
-
+  
   engine.on('ready', function() {
-    console.log('READYYYY');
     for (const file of engine.files) {
       if (
         file.name.substr(file.name.length - 3) === 'mkv' ||
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
-        fileCopy = file;
-        let startByte = Math.floor((req.body.targetTime / 100) * file.length);
+        videoFile = file;
+        // let startByte = Math.floor((req.body.targetTime / 100) * file.length);
         // check si startByte est deja telecharge.
         // Si non : on telecharge jusqu'a endByte et renvoie reponse + time dans la progress bar
         // Si oui : probleme (si error videojs) / OK -> vraie fin de film (si ended videojs)
-        console.log(startByte, file.length);
-        let endByte = file.length;
-        file.createReadStream({ start: startByte, end: endByte });
+        // console.log(startByte, file.length);
+        // let endByte = file.length;
+        // file.createReadStream({ start: startByte, end: endByte });
+        file.createReadStream();
         response = {
-          status: 'success',
-          // path: file.path,
-          src: url + '/' + path + '/' + file.path
+          start: 0,
+          status: 'downloading',
+          src: urljoin(serverUrl, tmpPath, '/' + file.path)
         };
       } else {
-        console.log(file.name, file.length);
         file.deselect();
       }
     }
-    // return res.status(404).json({
-    //   status: 'failure',
-    //   path: null
-    // });
   });
-  engine.on('download', () => {
-    console.log(Number.parseFloat((engine.swarm.downloaded / fileCopy.length) * 100).toPrecision(2) + '% downloaded');
 
-    let div = engine.swarm.downloaded / fileCopy.length;
+  engine.on('download', () => {
+    console.log(Number.parseFloat((engine.swarm.downloaded / videoFile.length) * 100).toFixed(2) + '% downloaded');
+
+    let div = engine.swarm.downloaded / videoFile.length;
     if (!responseIsSent && div > 0.02) {
       responseIsSent = true;
       return res.status(200).json(response);
     }
   });
 
-  engine.on('idle', function() {
+  engine.on('idle', async () => {
     console.log('download ended');
+    const folderName = path.dirname(videoFile.path);
+    // Move file to 'complete' folder only if download started at the beggining
+    if (response.start == 0) {
+      // create folder 'assets/videos/complete/folderName'
+      await mkdirp(path.join(completePath, folderName));
+      // move file to 'assets/videos/complete/folderName'
+      fs.rename(
+        path.join(tmpPath, videoFile.path),
+        path.join(completePath, videoFile.path),
+        () => {
+          console.log('Video file moved to ${completePath}');
+        });
+      // delete the folder still in tmp folder
+      rimraf(path.join(tmpPath, folderName), () => {
+        console.log('tmp ${folderName} deleted');
+      });
+    }
+    // set new status to response // Probably can delete this
+    response.status = 'complete';
     if (!responseIsSent) {
-      responseIsSent = true;
       return res.status(200).json(response);
     }
   });

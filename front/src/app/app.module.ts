@@ -31,6 +31,7 @@ import { EditComponent } from './edit/edit.component';
 import { SearchComponent } from './search/search.component';
 import { VideoComponent } from './video/video.component';
 import { CommentsComponent } from './comments/comments.component';
+import { VideoEventsDirective } from './video/video-events.directive';
 
 // Utils components
 import { ErrorInterceptor } from './error/error-interceptor';
@@ -56,6 +57,7 @@ import { VjsPlayerComponent } from './video/vjs-player/vjs-player.component';
     VideoComponent,
     CommentsComponent,
     VjsPlayerComponent,
+    VideoEventsDirective,
   ],
   imports: [
     BrowserModule,
@@ -67,13 +69,12 @@ import { VjsPlayerComponent } from './video/vjs-player/vjs-player.component';
     AppRoutingModule,
     NgbModule,
     BrowserAnimationsModule,
-    MatVideoModule
+    MatVideoModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}
