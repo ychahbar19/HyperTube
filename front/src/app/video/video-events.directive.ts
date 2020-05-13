@@ -8,7 +8,9 @@ import { VideoService } from './video.service';
 export class VideoEventsDirective {
   @Input() torrentHash: object;
   @Input() status: string;
-  constructor(private videoService: VideoService) {}
+  // private error = false;
+
+  constructor(private videoService: VideoService) { }
 
   // @HostListener('play', ['$event.target'])
   // onPlay(target: any) {
@@ -22,13 +24,33 @@ export class VideoEventsDirective {
   // onEnded(target: any) {
   //   console.log(target, 'is ended');
   // }
-  @HostListener('seeking', ['$event.target'])
-  onSeeking(target: any) {
-    console.log(this.torrentHash, this.status);
-    if (this.status === 'downloading') {
-      this.videoService.downloadParts(this.torrentHash, target.currentTime, target.duration);
+
+  @HostListener('error', ['$event.target'])
+  async onError(target: any) {
+    if (target.error.code === 3 && target.seeking && this.status === 'downloading') {
+      const seekTime = target.currentTime;
+      await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
+      target.load();
+      target.currentTime = seekTime;
+      target.play();
     }
   }
+
+  // @HostListener('seeking', ['$event.target'])
+  // async onSeeking(target: any) {
+  //   const seekTime = target.currentTime;
+  //   const a = false;
+  //   if (this.status === 'downloading' && a) {
+  //     await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
+  //     if (this.error) {
+  //       this.error = false;
+  //       target.load();
+  //       target.currentTime = seekTime;
+  //       target.play();
+  //     }
+  //   }
+  // }
+
   // @HostListener('abort', ['$event.target'])
   // onAbort(target: any) {
   //   console.log('aborted');
@@ -45,11 +67,4 @@ export class VideoEventsDirective {
   // onWaiting(target: any) {
   //   console.log('waiting');
   // }
-  @HostListener('error', ['$event.target.error'])
-  onError(error: any) {
-    console.log(error);
-    if (error.code === 3) {
-      console.log('OK');
-    }
-  }
 }

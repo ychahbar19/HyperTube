@@ -82,6 +82,9 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 
 // Check if torrent is already downloaded on server
 exports.checkDownloadedVids = (req, res, next) => {
+  if (req.body.targetPercent !== null) {
+    return next();
+  }
   const completePath = 'assets/videos/complete';
   const serverUrl = req.protocol + '://' + req.get('host');
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
@@ -124,16 +127,11 @@ exports.downloadTorrent = async (req, res, next) => {
         file.name.substr(file.name.length - 3) === 'mp4'
       ) {
         videoFile = file;
-        // let startByte = Math.floor((req.body.targetTime / 100) * file.length);
-        // check si startByte est deja telecharge.
-        // Si non : on telecharge jusqu'a endByte et renvoie reponse + time dans la progress bar
-        // Si oui : probleme (si error videojs) / OK -> vraie fin de film (si ended videojs)
-        // console.log(startByte, file.length);
-        // let endByte = file.length;
-        // file.createReadStream({ start: startByte, end: endByte });
-        file.createReadStream();
+        let startByte = (req.body.targetPercent == null) ? 0 : (Math.floor(req.body.targetPercent) * file.length / 100);
+        let endByte = file.length;
+        file.createReadStream({ start: startByte, end: endByte });
         response = {
-          start: 0,
+          start: req.body.targetPercent,
           status: 'downloading',
           src: urljoin(serverUrl, tmpPath, '/' + file.path)
         };

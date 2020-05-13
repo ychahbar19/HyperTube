@@ -49,32 +49,17 @@ export class VideoService {
     });
   }
 
-  streamVideo(torrentHash: object, targetTime = 0) {
-    const datas = { ...torrentHash, targetTime };
+  streamVideo(torrentHash: object, targetTime: number = 0, duration: number = 0): Promise<{ start: number, status: string, src: string }> {
+    const targetPercent = (targetTime / duration) * 100;
+    console.log(targetPercent);
+    const datas = { ...torrentHash, targetPercent };
+    console.log(datas);
     return new Promise(async (resolve, reject) => {
       this.http
         .post<{}>('http://localhost:3000/api/video/stream/', datas)
         .toPromise()
         .then(
-          (response) => {
-            resolve(response);
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
-  }
-
-  downloadParts(torrentHash: object, target: number, duration: number) {
-    const targetPercent = Math.floor((target / duration) * 100);
-    const datas = { ...torrentHash, targetPercent };
-    return new Promise(async (resolve, reject) => {
-      this.http
-        .post<{}>('http://localhost:3000/api/video/downloadParts', datas)
-        .toPromise()
-        .then(
-          (response) => {
+          (response: { start: number, status: string, src: string }) => {
             resolve(response);
           },
           (error) => {
