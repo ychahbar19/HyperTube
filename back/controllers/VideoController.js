@@ -9,11 +9,11 @@ const torrentStream = require('torrent-stream');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
-// const url = require('url');
 const urljoin = require('url-join');
 const rimraf = require('rimraf');
 
 let videoInfo = {};
+let downloadingVideo = [];
 
 /* -------------------------------------------------------------------------- *\
     2) Private functions.
@@ -22,7 +22,7 @@ let videoInfo = {};
 // Gets the video's info from The Open Movie Database (OMDb)'s API.
 async function getInfo(imdb_id)
 {
-  await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i='+imdb_id)
+  await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + imdb_id)
     .then(results =>
     {
       videoInfo = new VideoModel(results.data);
@@ -30,10 +30,10 @@ async function getInfo(imdb_id)
     .catch(error => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
 };
 
-//Gets the video's torrents from YTS' API.
+// Gets the video's torrents from YTS' API.
 async function getTorrents(yts_id)
 {
-  await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id='+yts_id)
+  await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
     .then(results =>
     {
       videoInfo.Torrents = results.data.data.movie.torrents;
@@ -44,6 +44,36 @@ async function getTorrents(yts_id)
       });
     })
     .catch(error => res.status(400).json({ error }));
+};
+
+// lists all files in dirPath (including files in subdir of dirPath)
+const getAllFiles = (dirPath, arrayOfFiles) => {
+  files = fs.readdirSync(dirPath);
+
+  arrayOfFiles = arrayOfFiles || [];
+
+  for (const file of files) {
+    if (fs.statSync(dirPath + '/' + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(file));
+    }
+  }
+
+  return arrayOfFiles;
+};
+
+const pushToArray = (array, value) => {
+  if (!array.includes(value)) array.push(value);
+};
+
+const deleteFromArray = (array, value) => {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === value) {
+      array.splice(i, 1);
+      break;
+    }
+  }
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -63,23 +93,6 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-// lists all files in dirPath (including files in subdir of dirPath)
-const getAllFiles = (dirPath, arrayOfFiles) => {
-  files = fs.readdirSync(dirPath);
-
-  arrayOfFiles = arrayOfFiles || [];
-
-  for (const file of files) {
-    if (fs.statSync(dirPath + '/' + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
-    } else {
-      arrayOfFiles.push(path.join(file));
-    }
-  }
-
-  return arrayOfFiles;
-};
-
 // Check if torrent is already downloaded on server
 exports.checkDownloadedVids = (req, res, next) => {
   if (req.body.targetPercent !== null) {
@@ -98,8 +111,8 @@ exports.checkDownloadedVids = (req, res, next) => {
         if (fs.existsSync(path.join(completePath, path.dirname(file.path)))) {
           return res.status(200).json({
             start: 0,
-            status: "complete",
-            src: urljoin(serverUrl, completePath, "/" + file.path)
+            status: 'complete',
+            src: urljoin(serverUrl, completePath, '/' + file.path)
           });
         } else {
           next();
@@ -135,6 +148,7 @@ exports.downloadTorrent = async (req, res, next) => {
           status: 'downloading',
           src: urljoin(serverUrl, tmpPath, '/' + file.path)
         };
+        // pushToArray(downloadingVideo, req.body.hash);
       } else {
         file.deselect();
       }
@@ -145,7 +159,7 @@ exports.downloadTorrent = async (req, res, next) => {
     console.log(Number.parseFloat((engine.swarm.downloaded / videoFile.length) * 100).toFixed(2) + '% downloaded');
 
     let div = engine.swarm.downloaded / videoFile.length;
-    if (!responseIsSent && div > 0.02) {
+    if (!responseIsSent && div > 0.01) {
       responseIsSent = true;
       return res.status(200).json(response);
     }
@@ -153,6 +167,7 @@ exports.downloadTorrent = async (req, res, next) => {
 
   engine.on('idle', async () => {
     console.log('download ended');
+    deleteFromArray();
     const folderName = path.dirname(videoFile.path);
     // Move file to 'complete' folder only if download started at the beggining
     if (response.start == 0) {
@@ -177,3 +192,10 @@ exports.downloadTorrent = async (req, res, next) => {
     }
   });
 }
+
+// exports.checkComplete = (req, res) => {
+//   setInterval(() => {
+//     if (!downloadingVideo.includes(req.hash))
+//       return res.status(200).send('complete');
+//   }, 1000);
+// };

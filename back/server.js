@@ -10,14 +10,14 @@ Note: Need aliases for commands installed locally:
     1) Imports the required elements (node package, express app from app.js).
 \* -------------------------------------------------------------------------- */
 
-const http = require('http'); //Node package that has the .createServer() fct.
+const http = require('http'); // Node package that has the .createServer() fct.
 const app = require('./app');
 
 /* -------------------------------------------------------------------------- *\
     2) Defines the port on which 'app' runs.
 \* -------------------------------------------------------------------------- */
 
-//NormalizePort() returns a valid default value (given as number or string).
+// NormalizePort() returns a valid default value (given as number or string).
 const normalizePort = val =>
 {
   const port = parseInt(val, 10);
@@ -28,7 +28,7 @@ const normalizePort = val =>
   return false;
 };
 
-//Port = default valid value or, if none defined, 3000.
+// Port = default valid value or, if none defined, 3000.
 const port = normalizePort(process.env.PORT || '3000');
 
 //Set the chosen port to the app's configuration.

@@ -8,7 +8,7 @@ import { VideoService } from './video.service';
 export class VideoEventsDirective {
   @Input() torrentHash: object;
   @Input() status: string;
-  // private error = false;
+  private canSeek = true;
 
   constructor(private videoService: VideoService) { }
 
@@ -26,30 +26,31 @@ export class VideoEventsDirective {
   // }
 
   @HostListener('error', ['$event.target'])
-  async onError(target: any) {
-    if (target.error.code === 3 && target.seeking && this.status === 'downloading') {
-      const seekTime = target.currentTime;
-      await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
-      target.load();
-      target.currentTime = seekTime;
-      target.play();
-    }
+  onError(target: any) {
+    console.log(target.error);
+    // if (target.error.code === 3 && target.seeking && this.status === 'downloading') {
+    //   const seekTime = target.currentTime;
+    //   await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
+    //   target.load();
+    //   target.currentTime = seekTime;
+    //   target.play();
+    // }
   }
 
-  // @HostListener('seeking', ['$event.target'])
-  // async onSeeking(target: any) {
-  //   const seekTime = target.currentTime;
-  //   const a = false;
-  //   if (this.status === 'downloading' && a) {
-  //     await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
-  //     if (this.error) {
-  //       this.error = false;
-  //       target.load();
-  //       target.currentTime = seekTime;
-  //       target.play();
-  //     }
-  //   }
-  // }
+  @HostListener('seeking', ['$event.target'])
+  async onSeeking(target: any) {
+    const seekTime = target.currentTime;
+    console.log(this.canSeek);
+    if (this.status === 'downloading') {
+      // this.canSeek = !this.canSeek;
+      await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
+      target.pause();
+      target.fastSeek = seekTime;
+      target.play();
+      // console.log(resp);
+      // this.canSeek = !this.canSeek;
+    }
+  }
 
   // @HostListener('abort', ['$event.target'])
   // onAbort(target: any) {

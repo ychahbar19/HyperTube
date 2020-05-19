@@ -51,7 +51,6 @@ export class VideoService {
 
   streamVideo(torrentHash: object, targetTime: number = 0, duration: number = 0): Promise<{ start: number, status: string, src: string }> {
     const targetPercent = (targetTime / duration) * 100;
-    console.log(targetPercent);
     const datas = { ...torrentHash, targetPercent };
     console.log(datas);
     return new Promise(async (resolve, reject) => {
@@ -68,4 +67,20 @@ export class VideoService {
         );
     });
   }
+
+  // listenToComplete(torrentHash: object) {
+  //   return new Promise(async (resolve, reject) => {
+  //     this.http
+  //       .post<{}>('http://localhost:3000/api/video/listenComplete/', torrentHash)
+  //       .toPromise()
+  //       .then(
+  //         response => {
+  //           resolve(response);
+  //         },
+  //         error => {
+  //           reject(error);
+  //         }
+  //       );
+  //   });
+  // }
 }

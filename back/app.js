@@ -12,11 +12,7 @@ const passport = require('passport');
 
 // const homeRoutes = require('./routes/home');
 // const stuffRoutes = require('./routes/stuff');
-const userRoutes = require('./routes/user');
-const signinRoutes = require('./routes/signin');
-const signUpRoutes = require('./routes/signup');
-const profileRoutes = require('./routes/profile');
-const editProfileRoutes = require('./routes/editProfile');
+
 require('./config/database');
 require('./config/authentification');
 
@@ -69,13 +65,12 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 /* ------------------------ API routes ------------------------ */
 
-// const userRoutes = require('./routes/user');
-// const signUpRoutes = require('./routes/signup');
-// const signinRoutes = require('./routes/signin');
-// const UserRoute = require('./routes/UserRoute');
 // const authentificationRoute = require('./routes/AuthentificationRoute');
-// const profileRoutes = require('./routes/profile');
-// const editProfileRoutes = require('./routes/editProfile');
+const userRoutes = require('./routes/user');
+const signinRoutes = require('./routes/signin');
+const signUpRoutes = require('./routes/signup');
+const profileRoutes = require('./routes/profile');
+const editProfileRoutes = require('./routes/editProfile');
 const searchRoute = require('./routes/SearchRoute');
 const videoRoute = require('./routes/VideoRoute');
 const commentsRoute = require('./routes/commentsRoute');
@@ -94,8 +89,7 @@ app.use('/api/comments', commentsRoute);
 app.use('/', homeRoute);
 
 /* ----- Fallback function ----- */
-app.use((req, res) =>
-{
+app.use((req, res) => {
    res.send('Bad request to 3000');
 });
 
