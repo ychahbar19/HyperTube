@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoCardService } from './card.service';
@@ -13,8 +13,13 @@ export class VideoCardComponent implements OnInit
 {
   private imdb_id;
   private yts_id;
+  private completeResponse: any;
+  // private movie: HTMLVideoElement;
+  private videoPlayer: HTMLVideoElement;
 
   public video = {};
+  public torrentHash: object;
+  public stream: any;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
@@ -35,7 +40,9 @@ export class VideoCardComponent implements OnInit
   {
     this.route.params.subscribe(params =>
     {
+      // tslint:disable-next-line: no-string-literal
       this.imdb_id = params['imdb_id'];
+      // tslint:disable-next-line: no-string-literal
       this.yts_id = params['yts_id'];
     });
   }
@@ -46,5 +53,28 @@ export class VideoCardComponent implements OnInit
   async ngOnInit()
   {
     this.video = await this.videoCardService.getVideoInfo(this.imdb_id, this.yts_id);
+  }
+
+  @ViewChild('videoPlayer', { static: false }) set content(
+    content: ElementRef
+  ) {
+    if (content) {
+      this.videoPlayer = content.nativeElement;
+    }
+  }
+
+  async streamVideo(index: number) {
+    // tslint:disable-next-line: no-string-literal
+    this.torrentHash = { hash: this.video['Torrents'][index].hash };
+    this.stream = await this.videoCardService.streamVideo(this.torrentHash);
+    this.stream.src = this.stream.src
+    .replace(/ /g, '%20')
+    .replace(/\[/g, '%5B')
+    .replace(/\]/g, '%5D');
+    setTimeout(() => {
+      // this.videoPlayer.play();
+      console.log(this.videoPlayer);
+    });
+    // this.stream.status = await this.videoCardService.listenToComplete(this.torrentHash);
   }
 }

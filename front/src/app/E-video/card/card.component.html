@@ -46,16 +46,24 @@
           <td>{{ torrent.seeds }}</td>
           <td>{{ torrent.peers }}</td>
           <td class="min">
-            <button type="button" class="btn btn-success" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">
+            <button type="button" class="btn btn-success" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">
               {{ txt['Play now'][lg] }}
             </button>
-            <button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i ">
+            <button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">
               {{ txt['Load and play'][lg] }}
             </button>
           </td>
         </tr>
         <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
-          <td colspan="6">STREAM WINDOW</td>
+          <!-- <div *ngIf="stream"> -->
+            <td colspan="6" *ngIf="stream">
+              <video controls appVideoEvents [torrentHash]="torrentHash" [status]="stream.status" #videoPlayer>
+                <source src="{{ stream.src }}" type="video/mp4">
+                  Your browser doesn't support HTML videos
+              </video>
+              <!-- <app-vjs-player [torrentHash]=torrentHash [options]="{ autoplay: false, controls: true, sources: [{ src: stream.src, type: 'video/mp4' }] }"></app-vjs-player> -->
+            </td>
+          <!-- </div> -->
         </tr>
       </tbody>
 

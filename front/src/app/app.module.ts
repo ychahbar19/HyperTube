@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
+import { MatVideoModule } from 'mat-video';
 
 // Base components
 import { AppComponent } from './app.component';
@@ -35,6 +36,8 @@ import { StaticRateComponent } from './static-rate/static-rate.component';
 import { SearchComponent } from './E-video/search/search.component';
 import { VideoCardComponent } from './E-video/card/card.component';
 import { CommentsComponent } from './E-video/comments/comments.component';
+import { VideoEventsDirective } from './E-video/card/video-events.directive';
+import { VjsPlayerComponent } from './E-video/card/vjs-player/vjs-player.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,8 @@ import { CommentsComponent } from './E-video/comments/comments.component';
     SignupComponent, SigninComponent, OmniauthComponent, ForgotPasswordComponent,
     ProfileComponent, EditComponent,
     RatingComponent, StaticRateComponent,
-    SearchComponent, VideoCardComponent, CommentsComponent
+    SearchComponent, VideoCardComponent, CommentsComponent,
+    VjsPlayerComponent, VideoEventsDirective
   ],
   imports: [
     BrowserModule,
@@ -50,13 +54,13 @@ import { CommentsComponent } from './E-video/comments/comments.component';
     FormsModule, ReactiveFormsModule,
     NgBootstrapFormValidationModule.forRoot(), NgBootstrapFormValidationModule,
     NgbModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatVideoModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}
