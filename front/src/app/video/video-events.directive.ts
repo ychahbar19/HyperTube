@@ -27,6 +27,7 @@ export class VideoEventsDirective {
 
   @HostListener('error', ['$event.target'])
   onError(target: any) {
+    console.log('error event fired !');
     console.log(target.error);
     // if (target.error.code === 3 && target.seeking && this.status === 'downloading') {
     //   const seekTime = target.currentTime;
@@ -39,17 +40,26 @@ export class VideoEventsDirective {
 
   @HostListener('seeking', ['$event.target'])
   async onSeeking(target: any) {
-    const seekTime = target.currentTime;
-    console.log(this.canSeek);
-    if (this.status === 'downloading') {
-      // this.canSeek = !this.canSeek;
-      await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
-      target.pause();
-      target.fastSeek = seekTime;
-      target.play();
-      // console.log(resp);
-      // this.canSeek = !this.canSeek;
-    }
+    console.log('seek event fired !');
+    // const seekTime = target.currentTime;
+    // console.log(this.canSeek);
+    // if (this.status === 'downloading') {
+    //   // this.canSeek = !this.canSeek;
+    //   await this.videoService.streamVideo(this.torrentHash, target.currentTime, target.duration);
+    //   target.pause();
+    //   target.fastSeek = seekTime;
+    //   target.play();
+    //   // console.log(resp);
+    //   // this.canSeek = !this.canSeek;
+    // }
+  }
+
+  @HostListener('timeupdate', ['$event.target'])
+  onLoadeddata(target: any) {
+    console.log(target.readyState);
+    // for (let i = 0; i < target.seekable.length; i++) {
+    //   console.log(target.seekable.start(i), target.buffered.end(i));
+    // }
   }
 
   // @HostListener('abort', ['$event.target'])

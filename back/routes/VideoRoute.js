@@ -16,6 +16,7 @@ const WebSocket = require('ws');
 /* ----- Layout ----- */
 
 
+router.get("/stream/:assetsDirectory/:videosDirectory/:stateDirectory/:fileDirectory/:fileName", VideoController.streamVideo);
 /* ----- Get info function ----- */
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
@@ -24,7 +25,11 @@ router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 // Si oui, return resp directement avec status downloading et on lance le telechargement.
 // Si qqun seek, on veut attendre 2% -> cas OUI (juste au-dessus) doit check si on seek ou pas !
 // ++++ Send to client when video is fully downloaded
-router.post('/stream', VideoController.checkDownloadedVids, VideoController.downloadTorrent);
+router.post('/videoLauncher', VideoController.checkDownloadedVids, VideoController.downloadTorrent);
+router.get('/stream', (req, res, next) => {
+    console.log('passage');
+    next();
+});
 // router.post("/listenComplete", VideoController.checkComplete);
 
 /* ----- Fallback function ----- */

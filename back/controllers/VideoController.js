@@ -156,10 +156,11 @@ exports.downloadTorrent = async (req, res, next) => {
   });
 
   engine.on('download', () => {
+    console.log(req.headers.range);
     console.log(Number.parseFloat((engine.swarm.downloaded / videoFile.length) * 100).toFixed(2) + '% downloaded');
 
     let div = engine.swarm.downloaded / videoFile.length;
-    if (!responseIsSent && div > 0.01) {
+    if (!responseIsSent && div > 0.02) {
       responseIsSent = true;
       return res.status(200).json(response);
     }
@@ -167,7 +168,7 @@ exports.downloadTorrent = async (req, res, next) => {
 
   engine.on('idle', async () => {
     console.log('download ended');
-    deleteFromArray();
+    // deleteFromArray();
     const folderName = path.dirname(videoFile.path);
     // Move file to 'complete' folder only if download started at the beggining
     if (response.start == 0) {
@@ -187,10 +188,57 @@ exports.downloadTorrent = async (req, res, next) => {
     }
     // set new status to response // Probably can delete this
     response.status = 'complete';
+    response.src = response.src.replace('/tmp/', '/complete/');
     if (!responseIsSent) {
       return res.status(200).json(response);
     }
   });
+}
+
+exports.streamVideo = (req, res, next) => {
+  const file = './' + Object.values(req.params).join('/');
+  fs.stat(file, (err, stats) => {
+    if (err) {
+      // file does not exist
+      if (err.code === 'ENOENT') {
+        return res.sendStatus(404);
+      }
+      return next(err);
+    }
+    let range = req.headers.range;
+    if (!range) {
+      let err = new Error('Wrong range');
+      err.status = 416;
+      return next(err);
+    }
+    let positions = range.replace(/bytes=/, '').split('-');
+    let start = parseInt(positions[0], 10);
+    let fileSize = stats.size;
+    let end = positions[1] ? parseInt(positions[1], 10) : fileSize - 1;
+    // Amount of bits that will be sent back to browser
+    let chunkSize = (end - start) + 1;
+    // Header for the video tag
+    let head = {
+      'Content-Range': 'bytes ' + start + '-' + end + '/' + fileSize,
+			'Accept-Ranges': 'bytes',
+			'Content-Length': chunkSize,
+			'Content-Type': 'video/mp4'
+    }
+    // Send the custom header
+    res.writeHead(206, head);
+    let streamPositions = {
+      start: start,
+      end: end
+    };
+    let stream = fs.createReadStream(file, streamPositions);
+    stream.on('open', () => {
+      stream.pipe(res);
+    });
+    stream.on('error', err => {
+      return next(err);
+    });
+  });
+  // res.status(200).send('ok');
 }
 
 // exports.checkComplete = (req, res) => {
