@@ -47,23 +47,23 @@
           <td>{{ torrent.peers }}</td>
           <td class="min">
             <button type="button" class="btn btn-success" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">
-              {{ txt['Play now'][lg] }}
-            </button>
-            <button type="button" class="btn btn-primary" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">
-              {{ txt['Load and play'][lg] }}
+              {{ txt['Play'][lg] }}
             </button>
           </td>
         </tr>
         <tr class="collapse" id="collapse_{{ i }}" data-parent="#accordion">
-          <!-- <div *ngIf="stream"> -->
-            <td colspan="6" *ngIf="stream">
-              <video controls appVideoEvents [torrentHash]="torrentHash" [status]="stream.status" #videoPlayer>
+          <td colspan="6">
+            <div *ngIf="!stream">
+              <p>Placeholder</p>
+            </div>
+            <div *ngIf="stream">
+              <video controls autoplay playsinline #videoPlayer appVideoEvents [torrentHash]="torrentHash" [status]="stream.status">
                 <source src="{{ stream.src }}" type="video/mp4">
-                  Your browser doesn't support HTML videos
+                <p>Your browser doesn't support HTML videos.</p>
               </video>
               <!-- <app-vjs-player [torrentHash]=torrentHash [options]="{ autoplay: false, controls: true, sources: [{ src: stream.src, type: 'video/mp4' }] }"></app-vjs-player> -->
-            </td>
-          <!-- </div> -->
+            </div>
+          </td>
         </tr>
       </tbody>
 
