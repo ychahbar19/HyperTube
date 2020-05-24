@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // 2) Define
-const MovieInfoSchema = mongoose.Schema({
+const DownloadedMovieSchema = mongoose.Schema({
   movieName: { type: String, required: true },
   quality: { type: String, required: true},
   type: { type: String, required: true },
@@ -11,4 +11,4 @@ const MovieInfoSchema = mongoose.Schema({
 });
 
 // 3) Export
-module.exports = mongoose.model('MovieInfoModel', MovieInfoSchema);
+module.exports = mongoose.model('DownloadedMovieModel', DownloadedMovieSchema);

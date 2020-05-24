@@ -3,7 +3,7 @@
 \* -------------------------------------------------------------------------- */
 
 const VideoModel = require('../models/VideoModel');
-const MovieInfoModel = require("../models/MovieInfo");
+const DownloadedMovieModel = require('../models/DownloadedMovieModel');
 
 const axios = require('axios');
 const torrentStream = require('torrent-stream');
@@ -196,7 +196,7 @@ exports.checkDownloadedVids = (req, res, next) => {
 //   });
 // }
 let videoFile;
-const downloadTorrent = (req, opts, directoryPath) => {
+const downloadTorrent = (req, opts, directoryPath, filePath) => {
   // let start;
   // if (opts.full) {
   //   start = 0;
@@ -209,52 +209,28 @@ const downloadTorrent = (req, opts, directoryPath) => {
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
         // videoFile = file; // A décommenter pour le on('download');
         try {
-          const movieInfo = new MovieInfoModel({
-            title: req.params.title,
+          const downloadedMovie = new DownloadedMovieModel({
+            movieName: req.params.title,
             quality: req.params.quality,
             type: req.params.type,
-            ext: ext,
-            status: downloading
+            extension: ext,
+            status: 'downloading',
           });
-          movieInfo.save();
+          downloadedMovie.save();
         }
         catch (err) {
           console.log(err); // a gerer mieux
         }
-        // const title = req.params.title;
-        // const quality = req.params.quality;
-        // const type = req.params.type;
-        // movies[title] = {
-        //   ext: ext,
-        //   quality: quality,
-        //   type: type,
-        //   status: 'downloading'
-        // };
-        // console.log(movies);
-        const moviePath =
-          directoryPath + '/' + 
-          req.params.title + '.' +
-          req.params.quality + '.' + 
-          req.params.type + '.' + 
-          ext;
+        filePath += ('.' + ext);
 
-        // const moviePath = directoryPath + filePath ? filePath : '/' + 
-        //   req.params.title + '.' +
-        //   req.params.quality + '.' + 
-        //   req.params.type + '.' + 
-        //   ext;
-
-
-        // console.log(moviePath);
-
-        // change start depending on first download - browser's range, .... (end too)
-        const start = 0;
-        const end = file.length - 1;
-        await mkdirp(directoryPath);
-        let src = file.createReadStream({ start: start, end: (file.length / 20) });
-        let dest = fs.createWriteStream(moviePath);
-        src.pipe(dest);
-        // appel d'une fct A
+        // // change start depending on first download - browser's range, .... (end too)
+        // const start = 0;
+        // const end = file.length - 1;
+        // await mkdirp(directoryPath);
+        // let src = file.createReadStream({ start: start, end: (file.length / 20) });
+        // let dest = fs.createWriteStream(moviePath);
+        // src.pipe(dest);
+        // // appel d'une fct A
       }
     }
   });
@@ -267,10 +243,10 @@ const downloadTorrent = (req, opts, directoryPath) => {
   //   );
   // });
   engine.on('idle', () => {
-    rimraf("./assets/videos/tmp", () => {
-      console.log("tmp folder deleted");
+    rimraf('./assets/videos/tmp', () => {
+      console.log('tmp folder deleted');
     });
-    movies[req.params.title].status = 'fully downloaded';
+    // update db -> status: 'fully downloaded';
     console.log('download ended!');
   });
 }
@@ -278,16 +254,19 @@ const downloadTorrent = (req, opts, directoryPath) => {
 exports.streamManager = async (req, res, next) => {
   // check si file existe avec fs.stat()
   // -> on veut le chemin d'acces vers le fichier (avec extension)
-  // -> Regarder dans la db movieInfo si le fichier existe et prendre l'extension
+  // -> Regarder dans la db downloadedMovie si le fichier existe et prendre l'extension
   // non : file = ''. --> Fichier existe pas --> downloadTorrent depuis 0
   // oui : regarder la value de la key ext --> creer la variable file
   // --> stream le fichier
 
-  let ext;
+  let ext = null;
+  let opts = {};
 
   try {
-    const foundMovie = await MovieInfoModel.findOne({ title: req.params.title, quality: req.params.quality, type: req.params.type });
+    const foundMovie = await DownloadedMovieModel.findOne({ movieName: req.params.title, quality: req.params.quality, type: req.params.type });
     if (foundMovie) {
+      console.log('MOVIE FOUND :')
+      console.log(foundMovie);
       ext = foundMovie.extension;
     }
   }
@@ -295,15 +274,35 @@ exports.streamManager = async (req, res, next) => {
     console.log(err) // a gerer mieux
   }
 
-
-  let opts = {};
-  let arrayOfFiles;
-  let file = '';
   let movieDirectoryPath =
     './assets/videos/' + 
     req.params.title + ' ' +
     req.params.quality + ' ' +
-    req.params.type
+    req.params.type;
+  let file =
+    movieDirectoryPath + '/' +
+    req.params.title + '.' +
+    req.params.quality + '.' +
+    req.params.type;
+  if (ext) {
+    file += ('.' + ext);
+  }
+
+  // fs.stat(file, (err, stats) => {
+  //   if (err) {
+  //     // file does not exist -> download entirely
+  //     if (err.code === 'ENOENT') {
+  //       opts.full = true;
+  //       downloadTorrent(req, opts, movieDirectoryPath, file);
+  //     }
+  //     return next(err);
+  //   }
+  // });
+
+  // let opts = {};
+  // let arrayOfFiles;
+  // let file = '';
+  
   // arrayOfFiles = getAllFiles(movieDirectoryPath, arrayOfFiles);
   // if (arrayOfFiles)
   //   file = arrayOfFiles[0];
