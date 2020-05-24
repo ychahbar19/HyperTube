@@ -17,18 +17,15 @@ export class CommentsComponent implements OnInit
   public comments;
   public formGroup = new FormGroup(
   {
-    Comment: new FormControl('', [ Validators.required, Validators.minLength(10) ]),
-    Name: new FormControl('', [ Validators.required, Validators.minLength(2) ]),
+    Comment: new FormControl('', [ Validators.required, Validators.minLength(10) ])
   });
   public postResponse;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
   public txt = {
-    'Comments':         { en: 'Comments', fr: 'Commentaires' },
-    'Write a comment':  { en: 'Write a comment', fr: 'Ecrivez un commentaire' },
-    'Your name':        { en: 'Your name', fr: 'Entrez votre nom' },
-    'Send':             { en: 'Send', fr: 'Envoyer' }
+    'Add a comment':  { en: 'Add a comment', fr: 'Ajoutez un commentaire' },
+    'Send':           { en: 'Send', fr: 'Envoyer' }
   };
 
   // 2) Defines the variable imdb_id by taking the value in the URL.
@@ -52,7 +49,7 @@ export class CommentsComponent implements OnInit
   // in comments.component.html.
   async fetchComments()
   {
-    this.comments = await this.commentsService.fetchComments(this.imdb_id);
+    this.comments = await this.commentsService.fetchComments(this.imdb_id, this.lg);
   }
 
   // 4) Calls postComment() (in comments.service.ts) to save a new comment in the db,
@@ -60,7 +57,7 @@ export class CommentsComponent implements OnInit
   // plus resets the form.
   async postComment()
   {
-    this.postResponse = await this.commentsService.postComment(this.imdb_id, this.formGroup.value);
+    this.postResponse = await this.commentsService.postComment(this.imdb_id, this.formGroup.value, this.lg);
     if (this.postResponse.message == 'OK')
     {
       await this.fetchComments();

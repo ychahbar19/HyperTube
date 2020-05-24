@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 var ResultSchema = new mongoose.Schema(
 {
   yts_id: Number,
-  eztv_id: Number,
+  //eztv_id: Number,
   imdb_id: String,
   title: String
 });

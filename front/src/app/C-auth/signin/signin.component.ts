@@ -72,8 +72,7 @@ export class SigninComponent implements OnInit, OnDestroy
     );
     //------>>>> same as signup
 
-    // When the URL contains an id,
-    // triggers the service's activateAccount() function.
+    // When the URL contains an id, triggers the service's activateAccount() function.
     if (this.route.snapshot.queryParams.id)
     {
       this.isLoading = true;
@@ -89,6 +88,13 @@ export class SigninComponent implements OnInit, OnDestroy
           this.errorMessage = error.error.message;
         }
       );
+    }
+
+    // When the URL contains a token, triggers the service's applySuccessSignin() function.
+    if (this.route.snapshot.queryParams.token)
+    {
+      this.isLoading = true;
+      this.authService.applySuccessSignin(this.route.snapshot.queryParams);
     }
 
     // Listens to errors from the signin API process.

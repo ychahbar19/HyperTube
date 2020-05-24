@@ -9,8 +9,7 @@ const AuthCtlr = require('../controllers/AuthController');
 const MailCtlr = require('../controllers/MailController');
 const passport = require('passport');
 
-const failureRedirectURL = 'http://localhost:4200/signin';
-const successRedirectURL = 'http://localhost:4200/';
+let redirectURL = 'http://localhost:4200/signin';
 
 const router = express.Router();
 
@@ -32,16 +31,8 @@ router.post('/resetPassword', AuthCtlr.checkIdAndHash, AuthCtlr.checkPassword, A
 function authSuccess(req, res, provider)
 {
   const token = AuthCtlr.generateLogToken(req.user);
-
-  console.log('provider: ', provider);
-  console.log(token);
-  /*
-  //Save user info in the session
-  let sessionContents = req.session;
-  sessionContents.authStrategy = '42';
-  sessionContents.authUserId = req.user.fortytwoId;
-  */
-  res.redirect(successRedirectURL);
+  const token_param = new URLSearchParams(token).toString()
+  res.redirect(redirectURL + '?' + token_param);
 };
 
 /* ----- 42 authentification ----- */
@@ -49,7 +40,7 @@ function authSuccess(req, res, provider)
 router.get('/42', passport.authenticate('42'));
 router.get('/42/callback', passport.authenticate('42',
 {
-  failureRedirect: failureRedirectURL //Redirect if failure
+  failureRedirect: redirectURL //Redirect if failure
 }),
 function(req, res)
 {
@@ -61,7 +52,7 @@ function(req, res)
 router.get('/facebook', passport.authenticate('facebook', { scope : ['email'] }));
 router.get('/facebook/callback', passport.authenticate('facebook',
 {
-  failureRedirect: failureRedirectURL
+  failureRedirect: redirectURL
 }),
 function(req, res)
 {
@@ -72,7 +63,7 @@ function(req, res)
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', passport.authenticate('google',
 {
-  failureRedirect: failureRedirectURL
+  failureRedirect: redirectURL
 }),
 function(req, res)
 {

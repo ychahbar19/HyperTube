@@ -66,8 +66,6 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const authRoute = require('./routes/AuthRoute');
 const userRoute = require('./routes/UserRoute');
-//const profileRoutes = require('./routes/profile');
-//const editProfileRoutes = require('./routes/editProfile');
 const searchRoute = require('./routes/SearchRoute');
 const videoRoute = require('./routes/VideoRoute');
 const commentsRoute = require('./routes/commentsRoute');
@@ -75,8 +73,6 @@ const homeRoute = require('./routes/HomeRoute');
 
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
-//app.use('/profile', profileRoutes);
-//app.use('/editProfile', editProfileRoutes);
 app.use('/api/search', searchRoute);
 app.use('/api/video', videoRoute);
 app.use('/api/comments', commentsRoute);

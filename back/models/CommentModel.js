@@ -5,9 +5,13 @@ const mongoose = require('mongoose');
 var CommentSchema = new mongoose.Schema(
 {
   imdb_id: String,
-  author_name: String,
   posted_datetime: Date,
-  content: String
+  content: String,
+  language: String,
+  author_id: String,
+  author_avatar: String,
+  author_username: String,
+  videoInfo: {}
 });
 
 // 3) Export
