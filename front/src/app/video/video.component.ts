@@ -65,6 +65,7 @@ export class VideoComponent implements OnInit {
     const torrentHash = this.videoInfos['Torrents'][index].hash;
     // tslint:disable-next-line: no-string-literal
     const title = this.videoInfos['Title'];
+    // tslint:disable-next-line: no-string-literal
     const torrentQuality = this.videoInfos['Torrents'][index].quality;
     // tslint:disable-next-line: no-string-literal
     const torrentType = this.videoInfos['Torrents'][index].type;
