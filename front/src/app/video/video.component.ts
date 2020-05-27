@@ -69,16 +69,10 @@ export class VideoComponent implements OnInit {
     const torrentQuality = this.videoInfos['Torrents'][index].quality;
     // tslint:disable-next-line: no-string-literal
     const torrentType = this.videoInfos['Torrents'][index].type;
-    // tslint:disable-next-line: no-string-literal
-    console.log(this.videoInfos['Torrents'][index]);
     this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + title + '/' + torrentQuality + '/' + torrentType;
-    // const video = await this.videoService.streamVideo(this.torrentHash);
-    // const url = new URL(video.src);
-    // this.stream = 'http://localhost:3000/api/video/stream' + url.pathname;
     setTimeout(() => {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    // this.stream.status = await this.videoService.listenToComplete(this.torrentHash);
   }
 }
