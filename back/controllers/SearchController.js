@@ -4,7 +4,7 @@
 
 const axios = require('axios');
 const YtsResultsModel = require('../models/YtsResultsModel');
-const EztvResultsModel = require('../models/EztvResultsModel');
+// const EztvResultsModel = require('../models/EztvResultsModel');
 //const ResultModel = require('../models/ResultModel');
 
 let hypertubeResults = {};
@@ -15,13 +15,13 @@ let hypertubeResults = {};
 \* -------------------------------------------------------------------------- */
 
 //Fills our hypertubeResults by being called from the different sources.
-function addToHypertubeResults(imdb_id, title, yts_id, eztv_id)
+function addToHypertubeResults(imdb_id, title, yts_id/*, eztv_id*/)
 {
   hypertubeResults[imdb_id] =
   {
     title: title,
     yts_id: yts_id,
-    eztv_id: eztv_id
+    // eztv_id: eztv_id
   };
 }
 
@@ -55,7 +55,7 @@ async function searchMovies(query)
     {
       const ytsResults = new YtsResultsModel(results.data);
       hypertubeResults = {};
-      ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title, movie.id, ''));
+      ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title, movie.id/*, ''*/));
     })
     .catch(error => res.status(400).json({ error }));
 };

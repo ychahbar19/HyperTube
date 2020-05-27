@@ -2,7 +2,9 @@
     1) Imports and variable definitions.
 \* -------------------------------------------------------------------------- */
 
+const ObjectId = require('mongodb').ObjectId;
 const CommentModel = require('../models/CommentModel');
+const UserModel = require('../models/UserModel');
 
 /* -------------------------------------------------------------------------- *\
     2) CRUD functions.
@@ -20,7 +22,8 @@ exports.create = (req, res) =>
     //Copies all the fields from the posted data and uses them to fill the model.
     ...commentPosted,
     //Add the time
-    posted_datetime: Date.now()
+    posted_datetime: Date.now(),
+    author_id: req.userToken.userId
   });
 
   //Uses mongoose's .save method to save the new object in the database
@@ -32,19 +35,24 @@ exports.create = (req, res) =>
 
 /* ------------------------ READ ------------------------ */
 
-exports.read = (req, res) =>
+exports.read = async (req, res) =>
 {
-  CommentModel.find
-  (
-    { imdb_id: req.params.video_imdb_id }
-  )
-    .sort( { posted_datetime: -1 } )
-    .then(comments => res.status(200).json(comments))
-    .catch(error => res.status(400).json({ error }));
+  let comments = await CommentModel
+                        .find({ imdb_id: req.params.video_imdb_id, language: req.params.language })
+                        .sort({ posted_datetime: -1 });
+
+  const len = comments.length;
+  for (let i = 0; i < len; i++)
+  {
+    let user = await UserModel.findOne({ _id: ObjectId(comments[i].author_id) })
+    comments[i].author_avatar = user.avatar;
+    comments[i].author_username = user.username;
+  }
+  res.status(200).json(comments);
 };
 
 /* ------------------------ UPDATE ------------------------ */
-
+/*
 exports.update = (req, res) =>
 {
   //Updates the object that matches the id given as route parameter (:id),
@@ -59,7 +67,7 @@ exports.update = (req, res) =>
 };
 
 /* ------------------------ DELETE ------------------------ */
-
+/*
 exports.delete = (req, res) =>
 {
   CommentModel.deleteOne
@@ -69,3 +77,4 @@ exports.delete = (req, res) =>
     .then(() => res.status(200).json({ message: 'Comment deleted.'}))
     .catch(error => res.status(400).json({ error }));
 };
+*/

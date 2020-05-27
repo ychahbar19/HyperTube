@@ -3,64 +3,62 @@
 \* -------------------------------------------------------------------------- */
 
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const ObjectId = require('mongodb').ObjectId;
 const UserModel = require('../models/UserModel');
+const CommentModel = require('../models/CommentModel');
+const VideoModel = require('../models/VideoModel');
 
 /* -------------------------------------------------------------------------- *\
-    2) Defines the xxxxxxxxxx-related functions.
+    2) Defines the user-related functions.
 \* -------------------------------------------------------------------------- */
 
-/*
-exports.getCurrentUser = (req, res) =>
+/* ------------------------ READ ------------------------ */
+
+// Gets the user's personal information
+exports.getUserInfo = async (req, res) =>
 {
-  console.log(req);
-  res.send('ok');
-};
-
-exports.getUserInfo = (req, res, next) =>
-{
-  res.send('user info');
-};
-*/
-
-// get user informations (HYDRATATION)
-exports.getUserInfo = async (req, res, next) => {
-  let error = false;
-  let id;
-
-  try {
-    if (!req.body.id) {
-      id = req.userToken.userId;
-    } else {
-      id = req.body.id;
-    }
-      
-    const oUserId = ObjectId(id);
-    const userInfo = await UserModel.findOne({_id: oUserId});
+  try
+  {
+    const id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
+    const userInfo = await UserModel.findOne({ _id: ObjectId(id) });
+    
     if (!userInfo)
-      return res.status(401).json({
-        message: "Oops ! User not found !"
-      });
-    const humanReadName = userInfo.firstName + ' ' + userInfo.lastName;
-    return res.status(200).json({
-      avatar: userInfo.avatar,
-      firstName: userInfo.firstName,
-      lastName: userInfo.lastName,
-      username: userInfo.username,
-      email: userInfo.email,
-      humanReadName: humanReadName,
-      message: 'get user successfully !'
-    });
-  } catch(err) {
-    res.status(500).send(err);
+      return res.status(401).json({ message: "Oops ! User not found !" });
+
+    let userComments = await CommentModel.find({ author_id: id }).sort({ posted_datetime: -1 });
+    const len = userComments.length;
+
+    for (let i = 0; i < len; i++)
+    {
+      await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + userComments[i].imdb_id)
+                 .then(results =>
+                  {
+                    userComments[i].videoInfo = new VideoModel(results.data);
+                  })
+                  .catch(error => res.status(400).json({ error }))
+    }
+
+    return res.status(200).json({ user_id: id,
+                                  avatar: userInfo.avatar,
+                                  firstName: userInfo.firstName,
+                                  lastName: userInfo.lastName,
+                                  username: userInfo.username,
+                                  email: userInfo.email,
+                                  // humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
+                                  message: 'get user successfully !'
+                                });
   }
+  catch(err) { res.status(500).send(err); }
 }
 
-// update user : 
-exports.updateUser = async (req, res, next) => {
-  let error = false;
+/* ------------------------ UPDATE ------------------------ */
 
-  try {
+// Updates the user's personal information
+exports.updateUser = async (req, res, next) =>
+{
+  try
+  {
     const url = req.protocol + "://" + req.get("host");
     let userToken;
     let updateData = new Object;
@@ -89,11 +87,11 @@ exports.updateUser = async (req, res, next) => {
     delete updateData.email; 
     res.updatedDataToToken = updateData;
     return next();
-  } catch (err) {
-      return res.status(500).send(err);
   }
+  catch (err) { return res.status(500).send(err); }
 };
 
+//
 exports.updateToken = async (req, res, next) => {
   const data = req.res.updatedDataToToken;
   try {
