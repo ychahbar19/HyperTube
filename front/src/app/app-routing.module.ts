@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent, canActivate: [NotAuthGuard] },
   { path: 'signin', component: SigninComponent, canActivate: [NotAuthGuard] },
   { path: 'forgotPassword', component: ForgotPasswordComponent, canActivate: [NotAuthGuard] },
-  { path: 'profile/:id?', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'profile/:user_id', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'edit', component:  EditComponent, canActivate: [AuthGuard] },
   { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },

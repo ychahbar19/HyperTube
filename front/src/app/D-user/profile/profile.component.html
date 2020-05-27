@@ -1,57 +1,52 @@
 <!-- <div class="spinner" *ngIf="isLoading"></div> -->
 <div class="container">
   <div class="row justify-content-center profile--main">
-    <div class="col-12 col-md-10 col-lg-6 mt-5">
-      <div clas="justify-content-center">
-        <img class="avatar-img"src="http://localhost:3000/assets/pictures/vippng.com-demon-face-png-1981503-1583751871213.png" alt="profile-pic" width="100px">
+    <div class="col-12 col-md-10 mt-5">
+
+      <div class="justify-content-center">
+        <img class="avatar-img"src="{{ profile['avatar'] }}" alt="profile-pic" width="100px">
       </div>
+
       <div>
-        <p class="name--p">firstName lastName</p>
-        <p class="username--p">username</p>
-        <a routerLink="/edit">Edit Profile</a>
+        <p class="username--p">
+          {{ profile['username'] }}
+          <span class="name--p">({{ profile['firstName'] }} {{ profile['lastName'] }})</span>
+        </p>
+        <p><a routerLink="/edit" *ngIf="showEdit">{{ txt['Edit'][lg] }}</a></p>
       </div>
-      <div class="">
-        <!-- TEMPLATE historique des actions (commentaires des films, notes ) -->
-        <div class="card mb-3 historic--card" style="max-width: 540px;">
-          <div class="row no-gutters" style="height: 100%;">
-            <div class="col-4">
-              <img src="../../assets/img/download.jpeg"  alt="...">
-            </div>
-            <div class="col-8">
-              <div class="card-body">
-                <h5 class="card-title">gived a note :</h5>
-                <app-static-rate></app-static-rate>
-              </div>
-            </div>
+
+      <div>
+        <div class="row my-2" *ngFor="let comment of profile['comments']">
+          <div class="col-4 col-md-2">
+            <img class="img-fluid" src="{{ comment.videoInfo.Poster }}">
           </div>
-        </div>
-        <div class="card mb-3 historic--card" style="max-width: 540px;">
-          <div class="row no-gutters" style="height: 100%;">
-            <div class="col-4">
-              <img src="../../assets/img/download.jpeg"  alt="...">
-            </div>
-            <div class="col-8">
-              <div class="card-body">
-                <h5 class="card-title">gived a note :</h5>
-                <app-static-rate></app-static-rate>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card mb-3 historic--card" style="max-width: 540px;">
-          <div class="row no-gutters" style="height: 100%;">
-            <div class="col-4">
-              <img src="../../assets/img/download.jpeg"  alt="...">
-            </div>
-            <div class="col-8">
-              <div class="card-body">
-                <h5 class="card-title">gived a note :</h5>
-                <app-static-rate></app-static-rate>
-              </div>
+          <div class="col-8 col-md-10">
+            <div class="card bg-dark text-white">
+              <p class="card-header">
+                <b><a href="/video/{{ comment.imdb_id }}/{{ comment.videoInfo.yts_id }}">{{ comment.videoInfo.Title }}</a></b>
+                <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
+              </p>
+              <p class="card-body">{{ comment.content }}</p>
             </div>
           </div>
         </div>
       </div>
+
+      <!--
+      <div class="card mb-3 historic--card" style="max-width: 540px;">
+        <div class="row no-gutters" style="height: 100%;">
+          <div class="col-4">
+            <img src="../../assets/img/download.jpeg"  alt="...">
+          </div>
+          <div class="col-8">
+            <div class="card-body">
+              <h5 class="card-title">gived a note :</h5>
+              <app-static-rate></app-static-rate>
+            </div>
+          </div>
+        </div>
+      </div>
+      -->
     </div>
   </div>
 </div>
