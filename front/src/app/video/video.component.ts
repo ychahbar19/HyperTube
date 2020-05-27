@@ -75,10 +75,10 @@ export class VideoComponent implements OnInit {
     // const video = await this.videoService.streamVideo(this.torrentHash);
     // const url = new URL(video.src);
     // this.stream = 'http://localhost:3000/api/video/stream' + url.pathname;
-    // setTimeout(() => {
+    setTimeout(() => {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
-      // console.log(this.videoPlayer);
-    // });
+      console.log(this.videoPlayer);
+    });
     // this.stream.status = await this.videoService.listenToComplete(this.torrentHash);
   }
 }

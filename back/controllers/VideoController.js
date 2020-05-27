@@ -297,7 +297,8 @@ const streamVideo = (res, datas) => {
     'Content-Range': 'bytes ' + start + '-' + end + '/' + fileSize,
     'Accept-Ranges': 'bytes',
     'Content-Length': chunksize,
-    'Content-Type': 'video/mp4'
+    'Content-Type': 'video/mp4',
+    'Connection': 'keep-alive'
   }
 
   //
@@ -324,6 +325,7 @@ const streamVideo = (res, datas) => {
   //		object.
   //
   stream.pipe(res);
+  // console.log(res);
   //
   //	->	If there was an error while opening a stream we stop the
   //		request and display it.
@@ -345,7 +347,7 @@ const downloadTorrent = (res, req, positions, directoryPath, filePath) => {
         filePath += ('.' + ext);
         // commencer telechargement de start a end;
         let start = parseInt(positions[0], 10);
-        let end = positions[1] ? parseInt(positions[1], 10) : file.length;
+        let end = positions[1] ? parseInt(positions[1], 10) : (file.length - 1);
         fs.access(directoryPath, async err => {
           if (err && err.code === 'ENOENT') {
             await mkdirp(directoryPath);
