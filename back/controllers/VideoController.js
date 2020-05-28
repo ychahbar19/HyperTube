@@ -3,9 +3,11 @@
 \* -------------------------------------------------------------------------- */
 
 const VideoModel = require('../models/VideoModel');
+const MovieHistoryModel = require('../models/MovieHistoryModel');
 
 const axios = require('axios');
 const torrentStream = require('torrent-stream');
+const fs = require('fs');
 const rimraf = require('rimraf'); // keep to delete tmp video file
 
 let videoInfo = {};
@@ -58,7 +60,27 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
     4) download and stream torrent.
 \* -------------------------------------------------------------------------- */
 
-const streamVideo = (res, datas) => {
+//  Update lastSeen (milliseconds) in DB or add it if it's not in it yet
+const updateDB = async (req, next) => {
+    try {
+      const lastSeen = await MovieHistoryModel.findOne({ id: req.params.id });
+      const now = Date.now();
+      console.log(now);
+      if (lastSeen) {
+        MovieHistoryModel.updateOne({ id: req.params.id }, { $set: { lastSeen: now } });
+      } else {
+        const movieHistory = new MovieHistoryModel({
+          id: req.params.id,
+          lastSeen: now
+        });
+        movieHistory.save();
+      }
+    } catch (err) {
+      return next(err);
+    }
+}
+
+const streamVideo = (res, datas, completeVideo) => {
 
   const file = datas.file;
   const fileSize = datas.length;
@@ -90,8 +112,12 @@ const streamVideo = (res, datas) => {
   };
 
   //	5.	Create a stream chunk based on what the browser asked us for
-  let stream = file.createReadStream(streamPosition);
-
+  let stream;
+  if (!completeVideo) {
+    stream = file.createReadStream(streamPosition);
+  } else {
+    stream = fs.createReadStream(file, streamPosition);
+  }
   //	6.	Once the stream is open, we pipe the data through the response
   //		object.
   stream.pipe(res);
@@ -104,38 +130,88 @@ const streamVideo = (res, datas) => {
 }
 
 //  Download parts asked by the browser
-const downloadTorrent = (res, req, positions) => {
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos' });
+const downloadTorrent = (res, datas, paths) => {
+  //  check if paths.uncomplete existe -> if it is complete : rename.
+  //  else : start downloading the file
+  if (fs.existsSync(paths.uncomplete)) {
+    // Compare the uncomplete file size with the torrent-stream file size
+    const sizeUncomplete = fs.statSync(paths.uncomplete).size;
+    const sizeTorrentStream = datas.file.length;
 
+    if (sizeUncomplete === sizeTorrentStream) {
+      console.log('same sizes -> rename and delete');
+      //  Move from uncomplete to complete
+      fs.rename(paths.uncomplete, paths.complete, err => {
+        if (err)
+          console.log(err); // a gerer mieux
+        else {
+          console.log('renamed from ' + paths.uncomplete + ' to ' + paths.complete);
+          datas.file = paths.complete;
+          //  Delete the paths.uncomplete file
+          rimraf('./assets/videos/' + req.params.hash, err => {
+            if (err)
+              console.log(err) // a gerer mieux
+            else
+              console.log('deleted ' + paths.uncomplete);
+          });
+          streamVideo(res, datas, true);
+        }
+      });
+    }
+  }
+  //  start download
+  let src = datas.file.createReadStream();
+  src.pipe(fs.createWriteStream(paths.uncomplete));
+  streamVideo(res, datas, false);
+};
+
+
+//  Download parts asked by the browser
+const startEngine = (req, res, next, positions, paths) => {
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash });
+  
   engine.on('ready', () => {
-    engine.files.forEach(file => {
-      //  Check if ext is a video file -> If yes, download
+    engine.files.forEach(async file => {  
       let ext = file.name.split('.').pop();
+      //  Check if ext is a video file
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
-        let start = parseInt(positions[0], 10);
-        let end = positions[1] ? parseInt(positions[1], 10) : (file.length - 1);
-        length = file.length;
-        //  start download
-        file.createReadStream();
+        paths.uncomplete += ('.' + ext);
+        paths.complete += ('.' + ext);
+        // Create object with datas needed to stream the movie
+        const start = parseInt(positions[0], 10);
+        const end = positions[1] ? parseInt(positions[1], 10) : file.length - 1;
         const datas = {
-          file: file,
           length: file.length,
           start: start,
           end: end
+        };
+        // check if paths.complete existe -> we know the movie is fully downloaded already -> stream the movie
+        // else : start / continue downloading the file before streaming it
+        if(fs.existsSync(paths.complete)) {
+          datas.file = paths.complete;
+          streamVideo(res, datas, true);
+        } else {
+          datas.file = file;
+          downloadTorrent(res, datas, paths);
         }
-        streamVideo(res, datas);
       }
     });
   });
 };
 
 exports.streamManager = (req, res, next) => {
-  //	1.	Save the range the browser is asking for in a variable
+  //	1. Create 2 paths.
+  const paths = {
+    uncomplete: 'assets/videos/downloading/' + req.params.hash,
+    complete: 'assets/videos/downloaded/' + req.params.hash
+  }
+
+  //	2.	Save the range the browser is asking for in a variable
   //		It is a range of bytes asked by the browser
   //		EXAMPLE: bytes=65534-33357823
-
-  //	2.	Make sure the browser ask for a range to be sent.
   let range = req.headers.range;
+
+  //	3.	Make sure the browser ask for a range to be sent.
   if (!range) {
     // 	1.	Create the error
     let err = new Error('Wrong range');
@@ -145,9 +221,9 @@ exports.streamManager = (req, res, next) => {
     return next(err);
   }
 
-  //	3.	Convert from string to array.
+  //	4.	Convert from string to array.
   let positions = range.replace(/bytes=/, '').split('-');
 
-  //  4.  Download torrent
-  downloadTorrent(res, req, positions);
+  //  5.  Download torrent
+  startEngine(req, res, next, positions, paths);
 };

@@ -63,13 +63,7 @@ export class VideoComponent implements OnInit {
   async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
     const torrentHash = this.videoInfos['Torrents'][index].hash;
-    // tslint:disable-next-line: no-string-literal
-    const title = this.videoInfos['Title'];
-    // tslint:disable-next-line: no-string-literal
-    const torrentQuality = this.videoInfos['Torrents'][index].quality;
-    // tslint:disable-next-line: no-string-literal
-    const torrentType = this.videoInfos['Torrents'][index].type;
-    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + title + '/' + torrentQuality + '/' + torrentType;
+    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash;
     setTimeout(() => {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);

@@ -13,11 +13,11 @@ const router = express.Router();
 
 /* ----- Layout ----- */
 
+/* ----- Download movie and stream ----- */
+router.get('/stream/:hash', VideoController.streamManager);
+
 /* ----- Get info function ----- */
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
-
-/* ----- Download movie and stream ----- */
-router.get('/stream/:hash/:title/:quality/:type', VideoController.streamManager);
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>
