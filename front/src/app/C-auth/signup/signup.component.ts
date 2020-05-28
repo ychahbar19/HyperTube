@@ -67,7 +67,6 @@ export class SignupComponent implements OnInit, OnDestroy
   public avatarPreview: string; //Preview of the uploaded avatar.
   public usernameNotUnique = false;
   public emailNotUnique = false;
-
   public signupSuccess = false; //Used to hide/show the 'successful signup' message.
   public errorMessage = false; //Used to hide/show the 'error signup' message.
 
@@ -84,7 +83,7 @@ export class SignupComponent implements OnInit, OnDestroy
     // Creates the form with all the necessary validation rules.
     this.form = this.formAuthUserService.defineValidFormGroup('signup');
 
-    // Listens to know when auth.service is ready (=when it's done running)
+    // Listens to know when auth.service is ready (= when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
       .subscribe(sub => { this.isLoading = false; }
@@ -102,7 +101,6 @@ export class SignupComponent implements OnInit, OnDestroy
       errors_array =>
       {
         this.errorMessage = true;
-
         if (typeof errors_array['username'] !== 'undefined')
           this.usernameNotUnique = true;
         if (typeof errors_array['email'] !== 'undefined')
@@ -115,8 +113,8 @@ export class SignupComponent implements OnInit, OnDestroy
       Dealing with input/form submission.
   \* ------------------------------------------------------- */
 
-  // When a file (=avatar) is uploaded, add its info to the
-  // form object, and reads it to output the avatar preview.
+  // When a file (= avatar) is uploaded, adds its info to the
+  // form object and reads it to output the avatar preview.
   onAvatarPicked(event: Event)
   {
     const file = (event.target as HTMLInputElement).files[0];
@@ -128,9 +126,8 @@ export class SignupComponent implements OnInit, OnDestroy
     reader.readAsDataURL(file);
   }
 
-  // When the form is updated, if it's valid, sets the loading status
-  // as true while authService.signup connects to the API (back) to
-  // signup the user.
+  // When the form is updated, if it's valid, sets the loading status as true
+  // while authService.signup connects to the API (back) to signup the user.
   onSignup()
   {
     if (this.form.invalid)

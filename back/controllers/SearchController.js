@@ -4,7 +4,7 @@
 
 const axios = require('axios');
 const YtsResultsModel = require('../models/YtsResultsModel');
-// const EztvResultsModel = require('../models/EztvResultsModel');
+//const EztvResultsModel = require('../models/EztvResultsModel');
 //const ResultModel = require('../models/ResultModel');
 
 let hypertubeResults = {};
@@ -21,7 +21,7 @@ function addToHypertubeResults(imdb_id, title, yts_id/*, eztv_id*/)
   {
     title: title,
     yts_id: yts_id,
-    // eztv_id: eztv_id
+    //eztv_id: eztv_id
   };
 }
 

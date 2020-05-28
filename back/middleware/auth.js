@@ -8,11 +8,9 @@ module.exports = (req, res, next) =>
 {
   try
   {
-    /*
-    Gets the token from the Authorization header,
-    (i.e. the element after the space: "Authorization: Bearer eyJhbGciO..."),
-    and decodes it (i.e. turns it back it a JS element, usable as such).
-    */
+    // Gets the token from the Authorization header
+    // (i.e. the element after the space: "Authorization: Bearer eyJhbGciO...")
+    // and decodes it (i.e. turns it back it a JS element, usable as such).
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, 'secret_this_should_be_longer');
 
@@ -29,9 +27,3 @@ module.exports = (req, res, next) =>
   }
   catch (error) { res.status(401).json({ error: error | 'Requête non authentifee '}); }
 };
-
-
-
-// to use: const authCheck = require(this file !!);
-
-// router.post('/', authCheck, xxxxx, yyyyy, (req, res, next) ...);

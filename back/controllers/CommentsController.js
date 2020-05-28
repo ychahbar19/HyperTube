@@ -40,8 +40,8 @@ exports.read = async (req, res) =>
   let comments = await CommentModel
                         .find({ imdb_id: req.params.video_imdb_id, language: req.params.language })
                         .sort({ posted_datetime: -1 });
-
   const len = comments.length;
+
   for (let i = 0; i < len; i++)
   {
     let user = await UserModel.findOne({ _id: ObjectId(comments[i].author_id) })
@@ -65,7 +65,7 @@ exports.update = (req, res) =>
     .then(() => res.status(200).json({ message: 'Comment modified.'}))
     .catch(error => res.status(400).json({ error }));
 };
-
+*/
 /* ------------------------ DELETE ------------------------ */
 /*
 exports.delete = (req, res) =>

@@ -15,8 +15,7 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- User functions ----- */
-
-router.post('/profile', authCheck, UserController.getUserInfo);
+router.get('/profile/:user_id?', authCheck, UserController.getUserInfo);
 // , UserController.checkPassword(), UserController.updateUser());
 // , authCheck, UserController.getInfoById
 

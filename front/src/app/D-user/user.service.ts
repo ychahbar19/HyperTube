@@ -19,4 +19,5 @@ export class UserService
               error => { reject(error); });
     });
   }
+
 }

@@ -18,22 +18,25 @@ export class VideoCardService
     });
   }
 
-  streamVideo(torrentHash: object, targetTime: number = 0, duration: number = 0): Promise<{ start: number, status: string, src: string }> {
+  // Launches the video's download (starting at targetTime),
+  // and its streaming when the video is downloaded at 1%.
+  // Expects an object in response which contains the video's source url.
+  streamVideo(
+    torrentHash: object,
+    targetTime: number = 0,
+    duration: number = 0): Promise<{ start: number, status: string, src: string }>
+  {
     const targetPercent = (targetTime / duration) * 100;
     const datas = { ...torrentHash, targetPercent };
+
     console.log(datas);
-    return new Promise(async (resolve, reject) => {
-      this.http
-        .post<{}>('http://localhost:3000/api/video/stream/', datas)
+    
+    return new Promise(async (resolve, reject) =>
+    {
+      this.http.post<{}>('http://localhost:3000/api/video/stream/', datas)
         .toPromise()
-        .then(
-          (response: { start: number, status: string, src: string }) => {
-            resolve(response);
-          },
-          (error) => {
-            reject(error);
-          }
-        );
+        .then((response: { start: number, status: string, src: string }) => { resolve(response); },
+              (error) => { reject(error); });
     });
   }
 

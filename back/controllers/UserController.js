@@ -22,7 +22,6 @@ exports.getUserInfo = async (req, res) =>
   {
     const id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
     const userInfo = await UserModel.findOne({ _id: ObjectId(id) });
-    
     if (!userInfo)
       return res.status(401).json({ message: "Oops ! User not found !" });
 
@@ -32,11 +31,11 @@ exports.getUserInfo = async (req, res) =>
     for (let i = 0; i < len; i++)
     {
       await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + userComments[i].imdb_id)
-                 .then(results =>
-                  {
-                    userComments[i].videoInfo = new VideoModel(results.data);
-                  })
-                  .catch(error => res.status(400).json({ error }))
+      .then(results =>
+      {
+        userComments[i].videoInfo = new VideoModel(results.data);
+      })
+      .catch(error => res.status(400).json({ error }))
     }
 
     return res.status(200).json({ user_id: id,
@@ -45,9 +44,9 @@ exports.getUserInfo = async (req, res) =>
                                   lastName: userInfo.lastName,
                                   username: userInfo.username,
                                   email: userInfo.email,
-                                  // humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
-                                  message: 'get user successfully !'
-                                });
+                                  //humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
+                                  //message: 'get user successfully !'
+                                  comments: userComments });                         
   }
   catch(err) { res.status(500).send(err); }
 }
@@ -91,7 +90,7 @@ exports.updateUser = async (req, res, next) =>
   catch (err) { return res.status(500).send(err); }
 };
 
-//
+// 
 exports.updateToken = async (req, res, next) => {
   const data = req.res.updatedDataToToken;
   try {

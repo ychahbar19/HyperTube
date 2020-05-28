@@ -22,26 +22,28 @@
           </div>
           <div class="col-8 col-md-10">
             <div class="card bg-dark text-white">
-              <p class="card-header">
-                <b><a href="/video/{{ comment.imdb_id }}/{{ comment.videoInfo.yts_id }}">{{ comment.videoInfo.Title }}</a></b>
-                <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
-              </p>
-              <p class="card-body">{{ comment.content }}</p>
+                <p class="card-header">
+                  <b><a href="/video/{{ comment.imdb_id }}/{{ comment.videoInfo.yts_id }}">{{ comment.videoInfo.Title }}</a></b>
+                  <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
+                </p>
+                <p class="card-body">{{ comment.content }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!--
-      <div class="card mb-3 historic--card" style="max-width: 540px;">
-        <div class="row no-gutters" style="height: 100%;">
-          <div class="col-4">
-            <img src="../../assets/img/download.jpeg"  alt="...">
-          </div>
-          <div class="col-8">
-            <div class="card-body">
-              <h5 class="card-title">gived a note :</h5>
-              <app-static-rate></app-static-rate>
+      <div>
+        <div class="card mb-3 historic--card" style="max-width: 540px;">
+          <div class="row no-gutters" style="height: 100%;">
+            <div class="col-4">
+              <img src="../../assets/img/download.jpeg"  alt="...">
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 class="card-title">gived a note :</h5>
+                <app-static-rate></app-static-rate>
+              </div>
             </div>
           </div>
         </div>

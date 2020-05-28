@@ -3,6 +3,7 @@
 \* -------------------------------------------------------------------------- */
 
 const express = require('express');
+const authCheck = require('../middleware/auth');
 const CommentsController = require('../controllers/CommentsController');
 
 const router = express.Router();
@@ -12,10 +13,10 @@ const router = express.Router();
 \* ------------------------------------------------------------------------ */
 
 /* ----- CRUD functions ----- */
-router.post('/create', CommentsController.create);
-router.get('/read/:video_imdb_id', CommentsController.read);
-router.put('/update/:comment_id', CommentsController.update);
-router.delete('/delete/:comment_id', CommentsController.delete);
+router.post('/create', authCheck, CommentsController.create);
+router.get('/read/:video_imdb_id/:language', CommentsController.read);
+// router.put('/update/:comment_id', CommentsController.update);
+// router.delete('/delete/:comment_id', CommentsController.delete);
 
 /* ----- Fallback function ----- */
 router.use((req, res) => {

@@ -126,13 +126,14 @@ exports.activateAccount = async (req, res) =>
 
 exports.loginInputsValidation = (req, res, next) =>
 {
+  console.log('here');
+
   const username = req.body.username;
   const password = req.body.password;
 
   if (username == null || !validPattern(username, usernamePattern) ||
       password == null || !validPattern(password, passwordPattern))
     return res.status(403).json({ message: 'An error occured !' });
-
   return next();
 };
 
@@ -142,6 +143,8 @@ exports.loginInputsValidation = (req, res, next) =>
 
 exports.generateLogToken = function(userInstance)
 {
+  console.log('here2');
+
   const token = jwt.sign(
     {
       userId: userInstance._id,
@@ -160,6 +163,8 @@ exports.generateLogToken = function(userInstance)
 
 exports.login = async (req, res) =>
 {
+  console.log('here3');
+  
   try
   {
     // Fetches the user from the db, if it exists.
