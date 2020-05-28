@@ -22,7 +22,6 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "jsonwebtoken": "^8.5.1",
-    "mkdirp": "^1.0.4",
     "mongoose": "^5.9.2",
     "mongoose-findorcreate": "^3.0.0",
     "mongoose-unique-validator": "^2.0.3",
@@ -34,7 +33,6 @@
     "passport-local": "^1.0.0",
     "rimraf": "^3.0.2",
     "torrent-stream": "^1.2.0",
-    "url-join": "^4.0.1",
-    "ws": "^7.3.0"
+    "url-join": "^4.0.1"
   }
 }

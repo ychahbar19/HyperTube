@@ -6,8 +6,6 @@ const VideoModel = require('../models/VideoModel');
 
 const axios = require('axios');
 const torrentStream = require('torrent-stream');
-const fs = require('fs');
-const mkdirp = require('mkdirp');
 const rimraf = require('rimraf'); // keep to delete tmp video file
 
 let videoInfo = {};
@@ -67,16 +65,12 @@ const streamVideo = (res, datas) => {
   const start = datas.start;
   const end = datas.end;
 
-  //
-  //	8.	Calculate the amount of bits will be sent back to the
+  //	1.	Calculate the amount of bits will be sent back to the
   //		browser.
-  //
   const chunksize = (end - start) + 1;
 
-  //
-  //	9.	Create the header for the video tag so it knows what is
+  //	2.	Create the header for the video tag so it knows what is
   //		receiving.
-  //
   const head = {
     'Content-Range': 'bytes ' + start + '-' + end + '/' + fileSize,
     'Accept-Ranges': 'bytes',
@@ -85,125 +79,75 @@ const streamVideo = (res, datas) => {
     'Connection': 'keep-alive'
   }
 
-  //
-  //	10.	Send the custom header
-  //
+  //	3.	Send the custom header
   res.writeHead(206, head);
 
-  //
-  //	11.	Create the createReadStream option object so createReadStream
+  //	4.	Create the createReadStream option object so createReadStream
   //		knows how much data it should be read from the file.
-  //
   let streamPosition = {
     start: start,
     end: end
   };
 
-  //
-  //	12.	Create a stream chunk based on what the browser asked us for
-  //
+  //	5.	Create a stream chunk based on what the browser asked us for
   let stream = file.createReadStream(streamPosition);
 
-  //
-  //	13.	Once the stream is open, we pipe the data through the response
+  //	6.	Once the stream is open, we pipe the data through the response
   //		object.
-  //
   stream.pipe(res);
 
-  //
   //	->	If there was an error while opening a stream we stop the
   //		request and display it.
-  //
   stream.on('error', function(err) {
     return next(err);
   });
 }
 
-const downloadTorrent = (res, req, positions, directoryPath, filePath) => {
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/tmp' });
+//  Download parts asked by the browser
+const downloadTorrent = (res, req, positions) => {
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos' });
 
   engine.on('ready', () => {
     engine.files.forEach(file => {
-      // check de la taille du fichier en serveur avec la taille du fichier 'file'
-      // telecharger les parties demandees par le browser
+      //  Check if ext is a video file -> If yes, download
       let ext = file.name.split('.').pop();
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
-        filePath += ('.' + ext);
-        // commencer telechargement de start a end;
         let start = parseInt(positions[0], 10);
         let end = positions[1] ? parseInt(positions[1], 10) : (file.length - 1);
-        fs.access(directoryPath, async err => {
-          if (err && err.code === 'ENOENT') {
-            await mkdirp(directoryPath);
-          }
-          let src = file.createReadStream();
-          let dest = fs.createWriteStream(filePath);
-          src.pipe(dest);
-          const datas = {
-            file: file,
-            length: file.length,
-            start: start,
-            end: end
-          }
-          streamVideo(res, datas);
-        });
-
-      } else {
-
+        length = file.length;
+        //  start download
+        file.createReadStream();
+        const datas = {
+          file: file,
+          length: file.length,
+          start: start,
+          end: end
+        }
+        streamVideo(res, datas);
       }
     });
   });
-
-  engine.on('download', () => {});
-
-  engine.on('idle', () => {});
 };
 
 exports.streamManager = (req, res, next) => {
-  //
-	//	1.	Path to the movie to stream
-  //
-  let movieDirectoryPath =
-    './assets/videos/' + 
-    req.params.title + ' ' +
-    req.params.quality + ' ' +
-    req.params.type;
-  let filePath =
-    movieDirectoryPath + '/' +
-    req.params.title + '.' +
-    req.params.quality + '.' +
-    req.params.type;
-
-  //
-  //	1.	Save the range the browser is asking for in a clear and
-  //		reusable variable
-  //
-  //		The range tells us what part of the file the browser wants
-  //		in bytes.
-  //
+  //	1.	Save the range the browser is asking for in a variable
+  //		It is a range of bytes asked by the browser
   //		EXAMPLE: bytes=65534-33357823
-  //
-  let range = req.headers.range;
-  //
+
   //	2.	Make sure the browser ask for a range to be sent.
-  //
+  let range = req.headers.range;
   if (!range) {
-    //
     // 	1.	Create the error
-    //
     let err = new Error('Wrong range');
     err.status = 416;
 
-    //
     //	->	Send the error and stop the request.
-    //
     return next(err);
   }
 
-  //
-  //	3.	Convert the string range in to an array for easy use.
-  //
+  //	3.	Convert from string to array.
   let positions = range.replace(/bytes=/, '').split('-');
 
-  downloadTorrent(res, req, positions, movieDirectoryPath, filePath);
+  //  4.  Download torrent
+  downloadTorrent(res, req, positions);
 };

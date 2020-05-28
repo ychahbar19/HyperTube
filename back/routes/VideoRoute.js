@@ -7,8 +7,6 @@ const VideoController = require('../controllers/VideoController');
 
 const router = express.Router();
 
-const WebSocket = require('ws');
-
 /* ------------------------------------------------------------------------ *\
     2) Calls to the controller's functions based on the request type/route.
 \* ------------------------------------------------------------------------ */
