@@ -9,6 +9,7 @@ const axios = require('axios');
 const torrentStream = require('torrent-stream');
 const fs = require('fs');
 const rimraf = require('rimraf'); // keep to delete tmp video file
+const path = require('path');
 
 let videoInfo = {};
 
@@ -41,6 +42,27 @@ async function getTorrents(yts_id)
       });
     })
     .catch(error => res.status(400).json({ error }));
+};
+
+const removeDir = (path) => {
+  if (fs.existsSync(path)) {
+    const files = fs.readdirSync(path);
+
+    if (files.length > 0) {
+      files.forEach(function (filename) {
+        if (fs.statSync(path + "/" + filename).isDirectory()) {
+          removeDir(path + "/" + filename);
+        } else {
+          fs.unlinkSync(path + "/" + filename);
+        }
+      });
+      fs.rmdirSync(path);
+    } else {
+      fs.rmdirSync(path);
+    }
+  } else {
+    console.log("Directory path not found.");
+  }
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -151,7 +173,7 @@ const downloadTorrent = (req, res, datas, paths) => {
           console.log('moved from ' + paths.uncomplete + ' to ' + paths.complete);
           datas.file = paths.complete;
           //  Delete the engine folder
-          fs.promises.rmdir('./assets/videos/' + req.params.hash, { recursive: true });
+          removeDir('./assets/videos/' + req.params.hash);
           // rimraf('./assets/videos/' + req.params.hash + '/', err => {
           //   if (err)
           //     console.log(err) // a gerer mieux
@@ -161,15 +183,13 @@ const downloadTorrent = (req, res, datas, paths) => {
           streamVideo(res, datas, true);
         }
       });
-    }
-    else {
+    } else {
       //  start download
       let src = datas.file.createReadStream();
       src.pipe(fs.createWriteStream(paths.uncomplete));
       streamVideo(res, datas, false);
     }
-  }
-  else {
+  } else {
     //  start download
     let src = datas.file.createReadStream();
     src.pipe(fs.createWriteStream(paths.uncomplete));
