@@ -173,13 +173,15 @@ const downloadTorrent = (req, res, datas, paths) => {
           console.log('moved from ' + paths.uncomplete + ' to ' + paths.complete);
           datas.file = paths.complete;
           //  Delete the engine folder
-          removeDir('./assets/videos/' + req.params.hash);
-          // rimraf('./assets/videos/' + req.params.hash + '/', err => {
-          //   if (err)
-          //     console.log(err) // a gerer mieux
-          //   else
-          //     console.log('deleted ./assets/videos/' + req.params.hash);
-          // });
+          // let pathToDir = path.join();
+          
+          // removeDir('./assets/videos/' + req.params.hash);
+          rimraf('./assets/videos/' + req.params.hash + '/', err => {
+            if (err)
+              console.log(err) // a gerer mieux
+            else
+              console.log('deleted ./assets/videos/' + req.params.hash);
+          });
           streamVideo(res, datas, true);
         }
       });
