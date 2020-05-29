@@ -87,6 +87,8 @@ const streamVideo = (res, datas, completeVideo) => {
   const start = datas.start;
   const end = datas.end;
 
+  console.log(file);
+
   //	1.	Calculate the amount of bits will be sent back to the
   //		browser.
   const chunksize = (end - start) + 1;
@@ -125,12 +127,13 @@ const streamVideo = (res, datas, completeVideo) => {
   //	->	If there was an error while opening a stream we stop the
   //		request and display it.
   stream.on('error', function(err) {
+    console.log(err);
     return next(err);
   });
 }
 
 //  Download parts asked by the browser
-const downloadTorrent = (res, datas, paths) => {
+const downloadTorrent = (req, res, datas, paths) => {
   //  check if paths.uncomplete existe -> if it is complete : rename.
   //  else : start downloading the file
   if (fs.existsSync(paths.uncomplete)) {
@@ -145,14 +148,14 @@ const downloadTorrent = (res, datas, paths) => {
         if (err)
           console.log(err); // a gerer mieux
         else {
-          console.log('renamed from ' + paths.uncomplete + ' to ' + paths.complete);
+          console.log('moved from ' + paths.uncomplete + ' to ' + paths.complete);
           datas.file = paths.complete;
-          //  Delete the paths.uncomplete file
+          //  Delete the engine folder
           rimraf('./assets/videos/' + req.params.hash, err => {
             if (err)
               console.log(err) // a gerer mieux
             else
-              console.log('deleted ' + paths.uncomplete);
+              console.log('deleted ./assets/videos/' + req.params.hash);
           });
           streamVideo(res, datas, true);
         }
@@ -192,18 +195,22 @@ const startEngine = (req, res, next, positions, paths) => {
           streamVideo(res, datas, true);
         } else {
           datas.file = file;
-          downloadTorrent(res, datas, paths);
+          downloadTorrent(req, res, datas, paths);
         }
       }
     });
+  });
+
+  engine.on('idle', () => {
+    console.log('ended');
   });
 };
 
 exports.streamManager = (req, res, next) => {
   //	1. Create 2 paths.
   const paths = {
-    uncomplete: 'assets/videos/downloading/' + req.params.hash,
-    complete: 'assets/videos/downloaded/' + req.params.hash
+    uncomplete: './assets/videos/downloading/' + req.params.hash,
+    complete: './assets/videos/downloaded/' + req.params.hash
   }
 
   //	2.	Save the range the browser is asking for in a variable
