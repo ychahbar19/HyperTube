@@ -151,21 +151,30 @@ const downloadTorrent = (req, res, datas, paths) => {
           console.log('moved from ' + paths.uncomplete + ' to ' + paths.complete);
           datas.file = paths.complete;
           //  Delete the engine folder
-          rimraf('./assets/videos/' + req.params.hash, err => {
-            if (err)
-              console.log(err) // a gerer mieux
-            else
-              console.log('deleted ./assets/videos/' + req.params.hash);
-          });
+          fs.promises.rmdir('./assets/videos/' + req.params.hash, { recursive: true });
+          // rimraf('./assets/videos/' + req.params.hash + '/', err => {
+          //   if (err)
+          //     console.log(err) // a gerer mieux
+          //   else
+          //     console.log('deleted ./assets/videos/' + req.params.hash);
+          // });
           streamVideo(res, datas, true);
         }
       });
     }
+    else {
+      //  start download
+      let src = datas.file.createReadStream();
+      src.pipe(fs.createWriteStream(paths.uncomplete));
+      streamVideo(res, datas, false);
+    }
   }
-  //  start download
-  let src = datas.file.createReadStream();
-  src.pipe(fs.createWriteStream(paths.uncomplete));
-  streamVideo(res, datas, false);
+  else {
+    //  start download
+    let src = datas.file.createReadStream();
+    src.pipe(fs.createWriteStream(paths.uncomplete));
+    streamVideo(res, datas, false);
+  }
 };
 
 
