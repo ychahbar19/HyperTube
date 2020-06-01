@@ -8,7 +8,7 @@ const uniqueValidator = require("mongoose-unique-validator"); // Supports 'uniqu
 
 // 2) Define
 const movieHistorySchema = mongoose.Schema({
-  id: { type: String, required: true, unique: true },
+  hash: { type: String, required: true, unique: true },
   lastSeen: { type: Number, required: true },
 });
 

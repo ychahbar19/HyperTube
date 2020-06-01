@@ -13,6 +13,8 @@ Note: Need aliases for commands installed locally:
 const http = require('http'); // Node package that has the .createServer() fct.
 const app = require('./app');
 
+const cronTask = require('./cronTask');
+
 /* -------------------------------------------------------------------------- *\
     2) Defines the port on which 'app' runs.
 \* -------------------------------------------------------------------------- */
@@ -70,6 +72,8 @@ const onListening = () =>
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
+  require('./cronTask');
+  // console.log('Cron task started !');
 };
 
 /* -------------------------------------------------------------------------- *\

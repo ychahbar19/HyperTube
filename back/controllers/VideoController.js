@@ -5,11 +5,13 @@
 const VideoModel = require('../models/VideoModel');
 const MovieHistoryModel = require('../models/MovieHistoryModel');
 
-const axios = require('axios');
-const torrentStream = require('torrent-stream');
-const fs = require('fs');
-const rimraf = require('rimraf'); // keep to delete tmp video file
 const path = require('path');
+const fs = require('fs');
+
+const axios = require('axios');
+const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
+const torrentStream = require('torrent-stream');
 
 let videoInfo = {};
 
@@ -44,32 +46,11 @@ async function getTorrents(yts_id)
     .catch(error => res.status(400).json({ error }));
 };
 
-const removeDir = (path) => {
-  if (fs.existsSync(path)) {
-    const files = fs.readdirSync(path);
-
-    if (files.length > 0) {
-      files.forEach(function (filename) {
-        if (fs.statSync(path + "/" + filename).isDirectory()) {
-          removeDir(path + "/" + filename);
-        } else {
-          fs.unlinkSync(path + "/" + filename);
-        }
-      });
-      fs.rmdirSync(path);
-    } else {
-      fs.rmdirSync(path);
-    }
-  } else {
-    console.log("Directory path not found.");
-  }
-};
-
 /* -------------------------------------------------------------------------- *\
     3) Public function and export.
 \* -------------------------------------------------------------------------- */
 
-//Calls the different sources and returns their combined results.
+//  Calls the different sources and returns their combined results.
 exports.getVideoInfo = async function getVideoInfo(req, res)
 {
   await getInfo(req.params.imdb_id);
@@ -85,20 +66,22 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
 //  Update lastSeen (milliseconds) in DB or add it if it's not in it yet
 const updateDB = async (req, next) => {
     try {
-      const lastSeen = await MovieHistoryModel.findOne({ id: req.params.id });
+      const lastSeen = await MovieHistoryModel.findOne({ hash: req.params.hash });
       const now = Date.now();
-      console.log(now);
       if (lastSeen) {
-        MovieHistoryModel.updateOne({ id: req.params.id }, { $set: { lastSeen: now } });
+        await MovieHistoryModel.updateOne({ hash: req.params.hash }, { $set: { lastSeen: now } });
       } else {
         const movieHistory = new MovieHistoryModel({
-          id: req.params.id,
+          hash: req.params.hash,
           lastSeen: now
         });
         movieHistory.save();
       }
     } catch (err) {
-      return next(err);
+      //  No need to stop the entire process (?)
+      console.log('Could not update `lastSeen` in database...');
+      console.log(err);
+      // return next(err);
     }
 }
 
@@ -108,8 +91,6 @@ const streamVideo = (res, datas, completeVideo) => {
   const fileSize = datas.length;
   const start = datas.start;
   const end = datas.end;
-
-  console.log(file);
 
   //	1.	Calculate the amount of bits will be sent back to the
   //		browser.
@@ -154,48 +135,41 @@ const streamVideo = (res, datas, completeVideo) => {
   });
 }
 
+const startDownload = (res, datas, paths) => {
+  let src = datas.file.createReadStream();
+  src.pipe(fs.createWriteStream(paths.uncomplete));
+  streamVideo(res, datas, false);
+}
+
 //  Download parts asked by the browser
 const downloadTorrent = (req, res, datas, paths) => {
-  //  check if paths.uncomplete existe -> if it is complete : rename.
-  //  else : start downloading the file
+  //  1. Check if paths.uncomplete existe.
+  //      else : start downloading the file.
   if (fs.existsSync(paths.uncomplete)) {
-    // Compare the uncomplete file size with the torrent-stream file size
+    //  1. Compare the uncomplete file size with the torrent-stream file size
     const sizeUncomplete = fs.statSync(paths.uncomplete).size;
     const sizeTorrentStream = datas.file.length;
 
     if (sizeUncomplete === sizeTorrentStream) {
-      console.log('same sizes -> rename and delete');
       //  Move from uncomplete to complete
       fs.rename(paths.uncomplete, paths.complete, err => {
         if (err)
           console.log(err); // a gerer mieux
         else {
-          console.log('moved from ' + paths.uncomplete + ' to ' + paths.complete);
           datas.file = paths.complete;
           //  Delete the engine folder
-          // let pathToDir = path.join();
-          
-          // removeDir('./assets/videos/' + req.params.hash);
           rimraf('./assets/videos/' + req.params.hash + '/', err => {
             if (err)
               console.log(err) // a gerer mieux
-            else
-              console.log('deleted ./assets/videos/' + req.params.hash);
           });
           streamVideo(res, datas, true);
         }
       });
     } else {
-      //  start download
-      let src = datas.file.createReadStream();
-      src.pipe(fs.createWriteStream(paths.uncomplete));
-      streamVideo(res, datas, false);
+      startDownload(res, datas, paths);
     }
   } else {
-    //  start download
-    let src = datas.file.createReadStream();
-    src.pipe(fs.createWriteStream(paths.uncomplete));
-    streamVideo(res, datas, false);
+    startDownload(res, datas, paths);
   }
 };
 
@@ -207,11 +181,11 @@ const startEngine = (req, res, next, positions, paths) => {
   engine.on('ready', () => {
     engine.files.forEach(async file => {  
       let ext = file.name.split('.').pop();
-      //  Check if ext is a video file
+      //  1. Check if ext is a video file.
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
         paths.uncomplete += ('.' + ext);
         paths.complete += ('.' + ext);
-        // Create object with datas needed to stream the movie
+        //  1. Create object with datas needed to stream the movie.
         const start = parseInt(positions[0], 10);
         const end = positions[1] ? parseInt(positions[1], 10) : file.length - 1;
         const datas = {
@@ -219,9 +193,12 @@ const startEngine = (req, res, next, positions, paths) => {
           start: start,
           end: end
         };
-        // check if paths.complete existe -> we know the movie is fully downloaded already -> stream the movie
-        // else : start / continue downloading the file before streaming it
+        //  2. Check if paths.complete exists.
+        //      else : start / continue downloading the file before streaming it.
         if(fs.existsSync(paths.complete)) {
+          //  1. update DB
+          updateDB(req, next);
+          //  2. Movie entirely downloaded -> stream
           datas.file = paths.complete;
           streamVideo(res, datas, true);
         } else {
@@ -231,25 +208,25 @@ const startEngine = (req, res, next, positions, paths) => {
       }
     });
   });
-
-  engine.on('idle', () => {
-    console.log('ended');
-  });
 };
 
-exports.streamManager = (req, res, next) => {
+exports.streamManager = async (req, res, next) => {
   //	1. Create 2 paths.
   const paths = {
     uncomplete: './assets/videos/downloading/' + req.params.hash,
     complete: './assets/videos/downloaded/' + req.params.hash
   }
 
-  //	2.	Save the range the browser is asking for in a variable
+  //	2. Create both folders
+  await mkdirp(path.dirname(paths.uncomplete));
+  await mkdirp(path.dirname(paths.complete));
+
+  //	3.	Save the range the browser is asking for in a variable
   //		It is a range of bytes asked by the browser
   //		EXAMPLE: bytes=65534-33357823
   let range = req.headers.range;
 
-  //	3.	Make sure the browser ask for a range to be sent.
+  //	4.	Make sure the browser ask for a range to be sent.
   if (!range) {
     // 	1.	Create the error
     let err = new Error('Wrong range');
@@ -259,9 +236,9 @@ exports.streamManager = (req, res, next) => {
     return next(err);
   }
 
-  //	4.	Convert from string to array.
+  //	5.	Convert from string to array.
   let positions = range.replace(/bytes=/, '').split('-');
 
-  //  5.  Download torrent
+  //  6.  Download torrent
   startEngine(req, res, next, positions, paths);
 };
