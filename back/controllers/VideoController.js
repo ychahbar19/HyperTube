@@ -64,7 +64,7 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
 \* -------------------------------------------------------------------------- */
 
 //  Update lastSeen (milliseconds) in DB or add it if it's not in it yet
-const updateDB = async (req, next) => {
+const updateDB = async (req, next, ext) => {
     try {
       const lastSeen = await MovieHistoryModel.findOne({ hash: req.params.hash });
       const now = Date.now();
@@ -73,7 +73,8 @@ const updateDB = async (req, next) => {
       } else {
         const movieHistory = new MovieHistoryModel({
           hash: req.params.hash,
-          lastSeen: now
+          lastSeen: now,
+          extension: ext
         });
         movieHistory.save();
       }
@@ -197,7 +198,7 @@ const startEngine = (req, res, next, positions, paths) => {
         //      else : start / continue downloading the file before streaming it.
         if(fs.existsSync(paths.complete)) {
           //  1. update DB
-          updateDB(req, next);
+          updateDB(req, next, ext);
           //  2. Movie entirely downloaded -> stream
           datas.file = paths.complete;
           streamVideo(res, datas, true);

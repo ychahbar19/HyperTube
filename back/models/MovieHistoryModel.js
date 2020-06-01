@@ -10,6 +10,7 @@ const uniqueValidator = require("mongoose-unique-validator"); // Supports 'uniqu
 const movieHistorySchema = mongoose.Schema({
   hash: { type: String, required: true, unique: true },
   lastSeen: { type: Number, required: true },
+  extension: { type: String, required: true }
 });
 
 // 3) Add the plugins
