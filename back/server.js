@@ -72,7 +72,7 @@ const onListening = () =>
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
-  require('./cronTask');
+  cronTask.startJob();
   // console.log('Cron task started !');
 };
 
