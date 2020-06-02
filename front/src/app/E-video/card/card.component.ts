@@ -10,10 +10,8 @@ import { VideoCardService } from './card.service';
   styleUrls: ['./card.component.scss']
 })
 export class VideoCardComponent implements OnInit {
-  private imdb_id;
-  private yts_id;
-  private completeResponse: any;
-  // private movie: HTMLVideoElement;
+  private imdbId: string;
+  private ytsId: string;
   private videoPlayer: HTMLVideoElement;
 
   public videoInfos = {};
@@ -37,8 +35,10 @@ export class VideoCardComponent implements OnInit {
   constructor(private videoCardService: VideoCardService,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
-      this.imdb_id = params['imdb_id'];
-      this.yts_id = params['yts_id'];
+      // tslint:disable-next-line: no-string-literal
+      this.imdbId = params['imdb_id'];
+      // tslint:disable-next-line: no-string-literal
+      this.ytsId = params['yts_id'];
     });
   }
 
@@ -46,7 +46,7 @@ export class VideoCardComponent implements OnInit {
   // from the API (back), and saves them in the array 'video' for output
   // in video.component.html.
   async ngOnInit() {
-    this.videoInfos = await this.videoCardService.getVideoInfo(this.imdb_id, this.yts_id);
+    this.videoInfos = await this.videoCardService.getVideoInfo(this.imdbId, this.ytsId);
     this.isLoading = false;
   }
 

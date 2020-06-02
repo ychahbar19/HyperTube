@@ -38,15 +38,17 @@ exports.getUserInfo = async (req, res) =>
       .catch(error => res.status(400).json({ error }))
     }
 
-    return res.status(200).json({ user_id: id,
-                                  avatar: userInfo.avatar,
-                                  firstName: userInfo.firstName,
-                                  lastName: userInfo.lastName,
-                                  username: userInfo.username,
-                                  email: userInfo.email,
-                                  //humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
-                                  //message: 'get user successfully !'
-                                  comments: userComments });                         
+    return res.status(200).json({
+      user_id: id,
+      avatar: userInfo.avatar,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      username: userInfo.username,
+      email: userInfo.email,
+      //humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
+      //message: 'get user successfully !'
+      comments: userComments
+    });
   }
   catch(err) { res.status(500).send(err); }
 }
