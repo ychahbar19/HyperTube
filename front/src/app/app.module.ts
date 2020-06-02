@@ -36,8 +36,6 @@ import { StaticRateComponent } from './static-rate/static-rate.component';
 import { SearchComponent } from './E-video/search/search.component';
 import { VideoCardComponent } from './E-video/card/card.component';
 import { CommentsComponent } from './E-video/comments/comments.component';
-import { VideoEventsDirective } from './E-video/card/video-events.directive';
-import { VjsPlayerComponent } from './E-video/card/vjs-player/vjs-player.component';
 
 @NgModule({
   declarations: [
@@ -45,8 +43,7 @@ import { VjsPlayerComponent } from './E-video/card/vjs-player/vjs-player.compone
     SignupComponent, SigninComponent, OmniauthComponent, ForgotPasswordComponent,
     ProfileComponent, EditComponent,
     RatingComponent, StaticRateComponent,
-    SearchComponent, VideoCardComponent, CommentsComponent,
-    VjsPlayerComponent, VideoEventsDirective
+    SearchComponent, VideoCardComponent, CommentsComponent
   ],
   imports: [
     BrowserModule,

@@ -27,12 +27,12 @@ import { VideoService } from './video.service';
   styleUrls: ['./video.component.scss'],
 })
 export class VideoComponent implements OnInit {
-  public torrentHash: object;
+  // public torrentHash: object;
   private imdbId: string;
   private ytsId: string;
-  public video = {};
+  public videoInfos = {};
   public stream: any;
-  private completeResponse: any;
+  public isLoading = true;
   // private movie: HTMLVideoElement;
   private videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer', { static: false }) set content(
@@ -56,21 +56,18 @@ export class VideoComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.video = await this.videoService.getVideoInfo(this.imdbId, this.ytsId);
+    this.videoInfos = await this.videoService.getVideoInfo(this.imdbId, this.ytsId);
+    this.isLoading = false;
+    console.log(this.videoInfos);
   }
 
   async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
-    this.torrentHash = { hash: this.video['Torrents'][index].hash };
-    this.stream = await this.videoService.streamVideo(this.torrentHash);
-    this.stream.src = this.stream.src
-    .replace(/ /g, '%20')
-    .replace(/\[/g, '%5B')
-    .replace(/\]/g, '%5D');
+    const torrentHash = this.videoInfos['Torrents'][index].hash;
+    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash;
     setTimeout(() => {
-      // this.videoPlayer.play();
+      // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    // this.stream.status = await this.videoService.listenToComplete(this.torrentHash);
   }
 }

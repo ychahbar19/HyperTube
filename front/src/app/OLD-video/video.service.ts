@@ -55,7 +55,7 @@ export class VideoService {
     console.log(datas);
     return new Promise(async (resolve, reject) => {
       this.http
-        .post<{}>('http://localhost:3000/api/video/stream/', datas)
+        .post<{}>('http://localhost:3000/api/video/videoLauncher/', datas)
         .toPromise()
         .then(
           (response: { start: number, status: string, src: string }) => {

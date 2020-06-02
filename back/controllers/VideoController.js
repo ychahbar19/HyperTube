@@ -3,19 +3,17 @@
 \* -------------------------------------------------------------------------- */
 
 const VideoModel = require('../models/VideoModel');
-const tmpPath = 'assets/videos/tmp';
-const completePath = 'assets/videos/complete';
+const MovieHistoryModel = require('../models/MovieHistoryModel');
+
+const path = require('path');
+const fs = require('fs');
 
 const axios = require('axios');
-const torrentStream = require('torrent-stream');
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
-const urljoin = require('url-join');
 const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
+const torrentStream = require('torrent-stream');
 
 let videoInfo = {};
-// let downloadingVideo = [];
 
 /* -------------------------------------------------------------------------- *\
     2) Private functions.
@@ -48,46 +46,6 @@ async function getTorrents(yts_id)
     .catch(error => res.status(400).json({ error }));
 };
 
-// Lists all files in the given dirPath (including its subdirectories)
-// and adds them to the given arrayOfFiles.
-const getAllFiles = (dirPath, arrayOfFiles) =>
-{
-  console.log('FCT: getAllFiles');
-
-  arrayOfFiles = arrayOfFiles || [];
-  files = fs.readdirSync(dirPath);
-  for (const file of files)
-  {
-    if (fs.statSync(dirPath + '/' + file).isDirectory())
-      arrayOfFiles = getAllFiles(dirPath + '/' + file, arrayOfFiles);
-    else
-      arrayOfFiles.push(path.join(file));
-  }
-
-  console.log(arrayOfFiles);
-
-  return arrayOfFiles;
-};
-
-// const pushToArray = (array, value) => {
-//   if (!array.includes(value)) array.push(value);
-// };
-
-// Deletes from the given array, the given value.
-const deleteFromArray = (array, value) =>
-{
-  console.log('FCT: deleteFromArray');
-
-  for (let i = 0; i < array.length; i++)
-  {
-    if (array[i] === value)
-    {
-      array.splice(i, 1);
-      break;
-    }
-  }
-};
-
 /* -------------------------------------------------------------------------- *\
     3) Public functions and exports.
 \* -------------------------------------------------------------------------- */
@@ -102,133 +60,184 @@ exports.getVideoInfo = async function getVideoInfo(req, res)
   res.status(200).send(videoInfo);
 };
 
-// Checks if the video is already downloaded on the server.
-// If so, returns a json object with the video's source url.
-// If not, goes to next() which is downloadTorrent.
-exports.checkDownloadedVids = (req, res, next) =>
-{
-  console.log('FCT: checkDownloadedVids');
-
-  // ??
-  if (req.body.targetPercent !== null)
-    return next();
-
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash);
-  engine.on('ready', () =>
-  {
-    console.log('engine > ready');
-
-    for (const file of engine.files)
-    {
-      file.deselect();
-      if (file.name.substr(file.name.length - 3) === 'mkv' ||
-          file.name.substr(file.name.length - 3) === 'mp4')
-      {
-        if (fs.existsSync(path.join(completePath, path.dirname(file.path))))
-        {
-          const serverUrl = req.protocol + '://' + req.get('host');
-          const videoSrcUrl = urljoin(serverUrl, completePath, '/' + file.path);
-
-          console.log(videoSrcUrl);
-
-          return res.status(200).json({ start: 0, status: 'complete', src: videoSrcUrl });
-        }
-        else
-          return next();
-      }
-    }
-  });
-};
-
-// Downloads the files from the torrent.
-// Returns the source when 1% of the video has been downloaded.
-exports.downloadTorrent = async (req, res) =>
-{
-  console.log('FCT: downloadTorrent');
-
-  let response = {};
-  let videoFile;
-  let responseIsSent = false;
-  
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.body.hash, { path: tmpPath });
-
-  // (1/3) When engine is ready, initiates the download stream and defines the response to send.
-  engine.on('ready', () =>
-  {
-    console.log('engine > ready');
-
-    for (const file of engine.files)
-    {
-      if (file.name.substr(file.name.length - 3) === 'mkv' ||
-          file.name.substr(file.name.length - 3) === 'mp4')
-      {
-        videoFile = file;
-
-        file.createReadStream({
-          // Reads from the start or, if given, from the targetPercent.
-          start: (req.body.targetPercent == null) ? 0 : (Math.floor(req.body.targetPercent) * file.length / 100),
-          // Reads until the end of the file.
-          end: file.length
+//  Update lastSeen (milliseconds) in DB or add it if it's not in it yet
+const updateDB = async (req, next, ext) => {
+    try {
+      const lastSeen = await MovieHistoryModel.findOne({ hash: req.params.hash });
+      const now = Date.now();
+      if (lastSeen) {
+        await MovieHistoryModel.updateOne({ hash: req.params.hash }, { $set: { lastSeen: now } });
+      } else {
+        const movieHistory = new MovieHistoryModel({
+          hash: req.params.hash,
+          lastSeen: now,
+          extension: ext
         });
-
-        const serverUrl = req.protocol + '://' + req.get('host');
-        const videoSrcUrl = urljoin(serverUrl, tmpPath, '/' + file.path);
-        response = { start: req.body.targetPercent, status: 'downloading', src: videoSrcUrl };
-        // pushToArray(downloadingVideo, req.body.hash);
+        movieHistory.save();
       }
-      else
-        file.deselect();
+    } catch (err) {
+      //  No need to stop the entire process (?)
+      console.log('Could not update `lastSeen` in database...');
+      console.log(err);
+      // return next(err);
     }
-  });
+}
 
-  // (2/3) Everytime a piece of the video file has been downloaded and verified,
-  // checks if we reached 1% downloaded. If so, sends the response.
-  engine.on('download', () =>
-  {
-    console.log('engine > download');
-    console.log(Number.parseFloat((engine.swarm.downloaded / videoFile.length) * 100).toFixed(2) + '% downloaded');
-    
-    if (!responseIsSent &&
-        engine.swarm.downloaded / videoFile.length > 0.01)
-    {
-      responseIsSent = true;
-      return res.status(200).json(response);
-    }
-  });
+const streamVideo = (res, datas, completeVideo) => {
 
-  // (3/3) When the video is completely downloaded,
-  // moves it to the 'complete' folder and deletes what's left in 'tmp'.
-  engine.on('idle', async () =>
-  {
-    console.log('engine > idle');
-   
-    // ??
-    deleteFromArray();
-    const folderName = path.dirname(videoFile.path);
-    // Move file to 'complete' folder only if download started at the beggining
-    if (response.start == 0)
-    {
-      // Creates folder 'assets/videos/complete/folderName'.
-      await mkdirp(path.join(completePath, folderName));
-      // Moves the file from 'tmp' to 'complete'.
-      fs.rename(
-        path.join(tmpPath, videoFile.path),
-        path.join(completePath, videoFile.path),
-      );
-      // Delete the 'tmp' folder and all its contents.
-      rimraf(path.join(tmpPath, folderName));
-    }
-    // set new status to response // Probably can delete this
-    // response.status = 'complete';
-    // if (!responseIsSent) {
-    //   return res.status(200).json(response);
-    // }
+  const ext = datas.extension;
+  const file = datas.file;
+  const fileSize = datas.length;
+  const start = datas.start;
+  const end = datas.end;
+
+  //	1.	Calculate the amount of bits will be sent back to the
+  //		browser.
+  const chunksize = (end - start) + 1;
+
+  //	2.	Create the header for the video tag so it knows what is
+  //		receiving.
+  const head = {
+    'Content-Range': 'bytes ' + start + '-' + end + '/' + fileSize,
+    'Accept-Ranges': 'bytes',
+    'Content-Length': chunksize,
+    'Content-Type': 'video/' + ext,
+    'Connection': 'keep-alive'
+  };
+
+  //	3.	Send the custom header
+  res.writeHead(206, head);
+
+  //	4.	Create the createReadStream option object so createReadStream
+  //		knows how much data it should be read from the file.
+  let streamPosition = {
+    start: start,
+    end: end
+  };
+
+  //	5.	Create a stream chunk based on what the browser asked us for
+  let stream;
+  if (!completeVideo) {
+    stream = file.createReadStream(streamPosition);
+  } else {
+    stream = fs.createReadStream(file, streamPosition);
+  }
+  //	6.	Once the stream is open, we pipe the data through the response
+  //		object.
+  stream.pipe(res);
+
+  //	->	If there was an error while opening a stream we stop the
+  //		request and display it.
+  stream.on('error', function(err) {
+    console.log(err);
+    return next(err);
   });
 }
 
-// exports.checkComplete = (req, res) => {
-//   setInterval(() => {
-//     if (!downloadingVideo.includes(req.hash))
-//       return res.status(200).send('complete');
-//   }, 1000);
-// };
+const startDownload = (res, datas, paths) => {
+  let src = datas.file.createReadStream();
+  src.pipe(fs.createWriteStream(paths.uncomplete));
+  streamVideo(res, datas, false);
+}
+
+//  Download parts asked by the browser
+const downloadTorrent = (req, res, datas, paths) => {
+  //  1. Check if paths.uncomplete existe.
+  //      else : start downloading the file.
+  if (fs.existsSync(paths.uncomplete)) {
+    //  1. Compare the uncomplete file size with the torrent-stream file size
+    const sizeUncomplete = fs.statSync(paths.uncomplete).size;
+    const sizeTorrentStream = datas.file.length;
+
+    if (sizeUncomplete === sizeTorrentStream) {
+      //  Move from uncomplete to complete
+      fs.rename(paths.uncomplete, paths.complete, err => {
+        if (err)
+          console.log(err); // a gerer mieux
+        else {
+          datas.file = paths.complete;
+          //  Delete the engine folder
+          rimraf('./assets/videos/' + req.params.hash + '/', err => {
+            if (err)
+              console.log(err) // a gerer mieux
+          });
+          streamVideo(res, datas, true);
+        }
+      });
+    } else {
+      startDownload(res, datas, paths);
+    }
+  } else {
+    startDownload(res, datas, paths);
+  }
+};
+
+//  Download parts asked by the browser
+const startEngine = (req, res, next, positions, paths) => {
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash });
+  
+  engine.on('ready', () => {
+    engine.files.forEach(async file => {  
+      let ext = file.name.split('.').pop();
+      //  1. Check if ext is a video file.
+      if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
+        paths.uncomplete += ('.' + ext);
+        paths.complete += ('.' + ext);
+        //  1. Create object with datas needed to stream the movie.
+        const start = parseInt(positions[0], 10);
+        const end = positions[1] ? parseInt(positions[1], 10) : file.length - 1;
+        const datas = {
+          extension: ext,
+          length: file.length,
+          start: start,
+          end: end
+        };
+        //  2. Check if paths.complete exists.
+        //      else : start / continue downloading the file before streaming it.
+        if(fs.existsSync(paths.complete)) {
+          //  1. update DB
+          updateDB(req, next, ext);
+          //  2. Movie entirely downloaded -> stream
+          datas.file = paths.complete;
+          streamVideo(res, datas, true);
+        } else {
+          datas.file = file;
+          downloadTorrent(req, res, datas, paths);
+        }
+      }
+    });
+  });
+};
+
+exports.streamManager = async (req, res, next) => {
+  //	1. Create 2 paths.
+  const paths = {
+    uncomplete: './assets/videos/downloading/' + req.params.hash,
+    complete: './assets/videos/downloaded/' + req.params.hash
+  }
+
+  //	2. Create both folders
+  await mkdirp(path.dirname(paths.uncomplete));
+  await mkdirp(path.dirname(paths.complete));
+
+  //	3.	Save the range the browser is asking for in a variable
+  //		It is a range of bytes asked by the browser
+  //		EXAMPLE: bytes=65534-33357823
+  let range = req.headers.range;
+
+  //	4.	Make sure the browser ask for a range to be sent.
+  if (!range) {
+    // 	1.	Create the error
+    let err = new Error('Wrong range');
+    err.status = 416;
+
+    //	->	Send the error and stop the request.
+    return next(err);
+  }
+
+  //	5.	Convert from string to array.
+  let positions = range.replace(/bytes=/, '').split('-');
+
+  //  6.  Download torrent
+  startEngine(req, res, next, positions, paths);
+};
