@@ -88,6 +88,7 @@ const updateDB = async (req, next, ext) => {
 
 const streamVideo = (res, datas, completeVideo) => {
 
+  const ext = datas.extension;
   const file = datas.file;
   const fileSize = datas.length;
   const start = datas.start;
@@ -103,9 +104,9 @@ const streamVideo = (res, datas, completeVideo) => {
     'Content-Range': 'bytes ' + start + '-' + end + '/' + fileSize,
     'Accept-Ranges': 'bytes',
     'Content-Length': chunksize,
-    'Content-Type': 'video/mp4',
+    'Content-Type': 'video/' + ext,
     'Connection': 'keep-alive'
-  }
+  };
 
   //	3.	Send the custom header
   res.writeHead(206, head);
@@ -190,6 +191,7 @@ const startEngine = (req, res, next, positions, paths) => {
         const start = parseInt(positions[0], 10);
         const end = positions[1] ? parseInt(positions[1], 10) : file.length - 1;
         const datas = {
+          extension: ext,
           length: file.length,
           start: start,
           end: end

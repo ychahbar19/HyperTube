@@ -1,8 +1,8 @@
-<div class="container-fluid">
+<div class="spinner" *ngIf="isLoading"></div>
+<div class="container-fluid" *ngIf="!isLoading">
 
   <!-- VIDEO INFO -->
   <div class="row justify-content-center mt-2">
-
     <div class="col-md-3 text-center mb-2">
       <img src="{{ videoInfos['Poster'] }}" class="img-fluid">
     </div>
@@ -53,7 +53,9 @@
               <!-- <video controls appVideoEvents [torrentHash]="torrentHash" [status]="stream.status" #videoPlayer> -->
               <video controls #videoPlayer>
                 <source src="{{ stream }}" type="video/mp4">
-                  Your browser doesn't support HTML videos
+                <source src="{{ stream }}" type="video/ogg">
+                <source src="{{ stream }}" type="video/webm">
+                Your browser doesn't support HTML videos
               </video>
               <!-- <app-vjs-player [torrentHash]=torrentHash [options]="{ autoplay: false, controls: true, sources: [{ src: stream.src, type: 'video/mp4' }] }"></app-vjs-player> -->
             </td>

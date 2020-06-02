@@ -32,7 +32,7 @@ export class VideoComponent implements OnInit {
   private ytsId: string;
   public videoInfos = {};
   public stream: any;
-  private completeResponse: any;
+  public isLoading = true;
   // private movie: HTMLVideoElement;
   private videoPlayer: HTMLVideoElement;
   @ViewChild('videoPlayer', { static: false }) set content(
@@ -57,6 +57,7 @@ export class VideoComponent implements OnInit {
 
   async ngOnInit() {
     this.videoInfos = await this.videoService.getVideoInfo(this.imdbId, this.ytsId);
+    this.isLoading = false;
     console.log(this.videoInfos);
   }
 
