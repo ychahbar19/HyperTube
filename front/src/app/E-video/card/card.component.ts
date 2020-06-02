@@ -9,17 +9,17 @@ import { VideoCardService } from './card.service';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })
-export class VideoCardComponent implements OnInit
-{
+export class VideoCardComponent implements OnInit {
   private imdb_id;
   private yts_id;
   private completeResponse: any;
   // private movie: HTMLVideoElement;
   private videoPlayer: HTMLVideoElement;
 
-  public video = {};
+  public videoInfos = {};
   public torrentHash: object;
   public stream: any;
+  public isLoading = true;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
@@ -35,10 +35,8 @@ export class VideoCardComponent implements OnInit
 
   // 2) Defines the variables imdb_id and yts_id by taking the values in the URL.
   constructor(private videoCardService: VideoCardService,
-              private route: ActivatedRoute)
-  {
-    this.route.params.subscribe(params =>
-    {
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
       this.imdb_id = params['imdb_id'];
       this.yts_id = params['yts_id'];
     });
@@ -47,16 +45,14 @@ export class VideoCardComponent implements OnInit
   // 3) Calls getVideoInfo() (in video.service.ts) to fetch the video's info
   // from the API (back), and saves them in the array 'video' for output
   // in video.component.html.
-  async ngOnInit()
-  {
-    this.video = await this.videoCardService.getVideoInfo(this.imdb_id, this.yts_id);
+  async ngOnInit() {
+    this.videoInfos = await this.videoCardService.getVideoInfo(this.imdb_id, this.yts_id);
+    this.isLoading = false;
   }
 
   // 4)
-  @ViewChild('videoPlayer', { static: false }) set content(content: ElementRef)
-  {
-    if (content)
-    {
+  @ViewChild('videoPlayer', { static: false }) set content(content: ElementRef) {
+    if (content) {
       this.videoPlayer = content.nativeElement;
     }
   }
@@ -64,19 +60,13 @@ export class VideoCardComponent implements OnInit
   // 5) Launches the download/stream process for the video clicked,
   // by sending its torrent hash to videoCardService.streamVideo()
   // and getting the video's source url in return.
-  async streamVideo(index: number)
-  {
+  async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
-    this.torrentHash = { hash: this.video['Torrents'][index].hash };
-    this.stream = await this.videoCardService.streamVideo(this.torrentHash);
-    this.stream.src = this.stream.src.replace(/ /g, '%20').replace(/\[/g, '%5B').replace(/\]/g, '%5D');
-
-    // ??
-    setTimeout(() =>
-    {
-      // this.videoPlayer.play();
+    const torrentHash = this.videoInfos['Torrents'][index].hash;
+    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash;
+    setTimeout(() => {
+      // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    // this.stream.status = await this.videoCardService.listenToComplete(this.torrentHash);
   }
 }
