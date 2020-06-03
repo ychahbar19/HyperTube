@@ -1,0 +1,9 @@
+.router--container{
+  min-height: 100%;
+  // equal to footer height
+  // margin-bottom: -80px;
+}
+.router--container:after{
+  // height: 80px;
+  display: block;
+}
