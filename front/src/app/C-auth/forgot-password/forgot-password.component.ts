@@ -19,21 +19,21 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
 
   public lg = AppComponent.userLanguage;
   public txt = {
-    'Forgotten password':     { en: 'Forgotten password', fr: 'Mot de passe oublié' },
-    'Username':               { en: 'Username', fr: 'Pseudo' },
+    'Forgotten password':     { en: 'Forgot password?', fr: 'Mot de passe oublié?' },
+    Username:                 { en: 'Username', fr: 'Pseudo' },
     'Username error':         { en: 'Invalid username.', fr: 'Pseudo invalide.' },
     'Reset password':         { en: 'Reset password', fr: 'Réinitialiser le mot de passe' },
     'New password':           { en: 'New password', fr: 'Nouveau mot de passe' },
-    'Password':               { en: 'Password', fr: 'Mot de passe' },
+    Password:                 { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
-                                fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
+                                fr: 'Votre mot de passe doit contenir minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
     'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
   };
 
   /* ------------------------------------------------------- *\
-      Listeners for status changes. 
+      Listeners for status changes.
   \* ------------------------------------------------------- */
 
   private authServiceWorkingSub: Subscription;
@@ -65,8 +65,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
               private errorService: ErrorService,
               private route: ActivatedRoute) {}
 
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
     // Listens to know when auth.service is ready (=when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
@@ -77,8 +76,9 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
     // shows the second form to choose a new password
     // (default is first form to trigger a reset request based on username).
     if (this.route.snapshot.queryParams.id &&
-        this.route.snapshot.queryParams.hash)
+        this.route.snapshot.queryParams.hash) {
       this.secondForm = true;
+    }
 
     // Listens to ........
     this.errorStatusSub = this.errorService.errorObs.subscribe(
@@ -93,10 +93,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
   // When the form is submitted, if it's valid, sets the loading status
   // as true while authService.forgotPassword connects to the API (back) to
   // generate a reset hash and set the user as active=false.
-  onForgotPwd()
-  {
-    if (this.forgotForm.invalid)
+  onForgotPwd() {
+    if (this.forgotForm.invalid) {
       return;
+    }
     this.isLoading = true;
     this.authService.forgotPassword(this.forgotForm.value);
   }
@@ -104,10 +104,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
   // When the form is submitted, if it's valid, sets the loading status
   // as true while authService.resetPassword connects to the API (back) to
   // ......
-  onResetPwd()
-  {
-    if (this.resetForm.invalid)
+  onResetPwd() {
+    if (this.resetForm.invalid) {
       return;
+    }
     this.isLoading = true;
     this.authService.resetPassword(
       this.route.snapshot.queryParams.id,
@@ -116,8 +116,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
     );
   }
 
-  samePwd(password1: string, password2: string): boolean
-  {
+  samePwd(password1: string, password2: string): boolean {
     return password1 === password2;
   }
 
@@ -125,8 +124,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
       End
   \* ------------------------------------------------------- */
 
-  ngOnDestroy()
-  {
+  ngOnDestroy() {
     this.authServiceWorkingSub.unsubscribe();
     this.errorStatusSub.unsubscribe();
   }
