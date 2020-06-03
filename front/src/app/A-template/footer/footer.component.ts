@@ -6,8 +6,7 @@ import { AppComponent } from '../../app.component';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent
-{
+export class FooterComponent {
   // Defines the translations for the static taxt.
   public lg = AppComponent.userLanguage;
   public txt = {

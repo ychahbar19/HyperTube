@@ -6,22 +6,20 @@ import { AuthService } from './C-auth/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit 
-{
+export class AppComponent implements OnInit {
   public static userLanguage: string;
 
   // 1) Defines the user language. This is inherited by all other
   // components to show the content in the right language.
-  constructor(private authService: AuthService)
-  {
-    if (localStorage.getItem('userLanguage') === null)
+  constructor(private authService: AuthService) {
+    if (localStorage.getItem('userLanguage') === null) {
       localStorage.setItem('userLanguage', 'en');
+    }
     AppComponent.userLanguage = localStorage.getItem('userLanguage');
   }
 
   // 2)
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
     this.authService.autoAuthUser();
   }
 }
