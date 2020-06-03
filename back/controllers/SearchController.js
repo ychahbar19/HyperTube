@@ -48,7 +48,7 @@ async function searchMovies(query)
     yts_url += '&sort_by=download_count'; //popularity --> rating/peers/seeds/download_count/like_count'
 
   if (page)
-    yts_url += '&page' + page;
+    yts_url += '&page=' + page;
   
   await axios.get(yts_url)
     .then(results =>
@@ -82,6 +82,7 @@ async function searchTVShows()
 //Calls the different sources and returns their combined results.
 async function search(req, res)
 {
+  console.log(req.query);
   await searchMovies(req.query)
     .then(() =>
     {
