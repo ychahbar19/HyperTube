@@ -12,19 +12,17 @@ const UserModel = require('../models/UserModel');
 const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$');
 const usernamePattern = new RegExp('^[a-zA-Z0-9]{6,33}$');
 const passwordPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$');
-function validPattern(str, pattern)
-{
+
+function validPattern(str, pattern) {
   return (pattern.test(str));
 }
 
 // Defines the password crypting and comparison methods
-async function cryptPwd(password)
-{
+async function cryptPwd(password) {
   const cryptedPwd = await bcrypt.hash(password, 10); // Applies bcrypt's hash on the password in 10 steps (=lvls of security.
   return cryptedPwd;
 }
-async function isSamePwds(password_input, password_db)
-{
+async function isSamePwds(password_input, password_db) {
   const isSame = await bcrypt.compare(password_input, password_db);
   return isSame;
 }
@@ -36,8 +34,7 @@ async function isSamePwds(password_input, password_db)
 /* ------------------------ SIGNUP (step 1) ------------------------ */
 // Checks that the input fields (names, email, password) are valid.
 
-exports.signupInputsValidation = (req, res, next) =>
-{
+exports.signupInputsValidation = (req, res, next) => {
   const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
@@ -58,15 +55,12 @@ exports.signupInputsValidation = (req, res, next) =>
 // Creates a new instance of UserModel and saves it in the database,
 // or splits the errors into a custom array of field=>type for each error.
 
-exports.createUser = async (req, res, next) =>
-{
-  try
-  {
+exports.createUser = async (req, res, next) => {
+  try {
     const hashPwd = await cryptPwd(req.body.password);
     const url = req.protocol + "://" + req.get("host");
 
-    const user = new UserModel(
-    {
+    const user = new UserModel({
       avatar: url + "/assets/pictures/" + req.file.filename,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -78,8 +72,7 @@ exports.createUser = async (req, res, next) =>
     res.savedUser = await user.save();
     return next();
   }
-  catch (e)
-  {
+  catch (e) {
     let errors_array = {};
     
     if (typeof e.errors.username !== 'undefined')
@@ -94,10 +87,8 @@ exports.createUser = async (req, res, next) =>
 /* ------------------------ ACTIVATE ACCOUNT ------------------------ */
 // Updates the user, defining it as active.
 
-exports.activateAccount = async (req, res) =>
-{
-  try
-  {
+exports.activateAccount = async (req, res) => {
+  try {
     // Fetches the user from the db, if it exists.
     const oUserId = ObjectId(req.body.id);
     const foundUser = await UserModel.findOne({ _id: oUserId, active: false });
@@ -124,10 +115,7 @@ exports.activateAccount = async (req, res) =>
 /* ------------------------ SIGNIN (step 1) ------------------------ */
 // Checks that the input fields (username & password) are valid.
 
-exports.loginInputsValidation = (req, res, next) =>
-{
-  console.log('here');
-
+exports.loginInputsValidation = (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -141,10 +129,7 @@ exports.loginInputsValidation = (req, res, next) =>
 // Generates user token and returns it (jsonwebtoken's sign() creates
 // a crypted token using the data given in payload and a secret string).
 
-exports.generateLogToken = function(userInstance)
-{
-  console.log('here2');
-
+exports.generateLogToken = function(userInstance) {
   const token = jwt.sign(
     {
       userId: userInstance._id,
@@ -161,12 +146,8 @@ exports.generateLogToken = function(userInstance)
 /* ------------------------ SIGNIN (step 2) ------------------------ */
 // Checks that the input fields match a user and returns a token.
 
-exports.login = async (req, res) =>
-{
-  console.log('here3');
-  
-  try
-  {
+exports.login = async (req, res) => {
+  try {
     // Fetches the user from the db, if it exists.
     const foundUser = await UserModel.findOne({ username: req.body.username });
     if (!foundUser)
@@ -191,10 +172,8 @@ exports.login = async (req, res) =>
 /* ------------------------ FORGOTTEN PASSWORD ------------------------ */
 // Assigns a random string to the user, to be used in RESET PASSWORD.
 
-exports.createRandomStr = async (req, res, next) =>
-{
-  try
-  {
+exports.createRandomStr = async (req, res, next) => {
+  try {
     // Fetches the user from the db, if it exists.
     req.user = await UserModel.findOne({ username: req.body.username });
     if (!req.user)
@@ -219,10 +198,8 @@ exports.createRandomStr = async (req, res, next) =>
 /* ------------------------ RESET PASSWORD (step 1) ------------------------ */
 // Fetches the user for the password reset, if it exists.
 
-exports.checkIdAndHash = async (req, res, next) =>
-{
-  try
-  {
+exports.checkIdAndHash = async (req, res, next) => {
+  try {
     const foundUser = await UserModel.findOne({ _id: req.body.id, randomStr: req.body.hash });
     if (!foundUser)
       return res.status(401).json({ message: 'Oops! Something went wrong' });
@@ -234,8 +211,7 @@ exports.checkIdAndHash = async (req, res, next) =>
 /* ------------------------ RESET PASSWORD (step 2) ------------------------ */
 // Checks the new password is valid.
 
-exports.checkPassword = (req, res, next) =>
-{
+exports.checkPassword = (req, res, next) => {
   const password = req.body.formData.password;
   const confirmPassword = req.body.formData.confirmPassword;
 
@@ -251,10 +227,8 @@ exports.checkPassword = (req, res, next) =>
 /* ------------------------ RESET PASSWORD (step 3) ------------------------ */
 // Hashes and saves the user's new password.
 
-exports.resetPwd = async (req, res) =>
-{
-  try
-  {
+exports.resetPwd = async (req, res) => {
+  try {
     const hashPwd = await cryptPwd(req.body.formData.password);
 
     await UserModel.updateOne(
