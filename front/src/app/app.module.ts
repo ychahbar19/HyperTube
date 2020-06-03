@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
-import { MatVideoModule } from 'mat-video';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 // Base components
 import { AppComponent } from './app.component';
@@ -52,7 +52,7 @@ import { CommentsComponent } from './E-video/comments/comments.component';
     NgBootstrapFormValidationModule.forRoot(), NgBootstrapFormValidationModule,
     NgbModule,
     AppRoutingModule,
-    MatVideoModule,
+    InfiniteScrollModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

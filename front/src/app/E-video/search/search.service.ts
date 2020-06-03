@@ -51,7 +51,7 @@ export class SearchService {
   // through the object returned with the private function addToResults()
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
-  getResults(encodedSearchParams) {
+  getResults(encodedSearchParams: string) {
     this.allResults = [];
     this.allResultsIndex = 0;
     // ---> dont reset results if calling page 2+ (for infinite loading to push more results)
