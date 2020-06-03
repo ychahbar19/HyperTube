@@ -1,4 +1,5 @@
-<div class="container-fluid">
+<div class="spinner" *ngIf="isLoading"></div>
+<div class="container-fluid" *ngIf="!isLoading">
 
   <!-- SEARCH FORM -->
   <form #searchParams="ngForm" (ngSubmit)="getSearchResults(searchParams)" class="mb-3" novalidate>
