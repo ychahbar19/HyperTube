@@ -60,7 +60,6 @@ export class SearchService {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
         .then(async response => {
-          // if (encodedSearchParams.includes('sort_by=title') || encodedSearchParams.includes('sort_by=year')) {
           for (const values of Object.entries(response)) {
             console.log(values[1]);
             await this.addToResults(values[0], values[1]);
