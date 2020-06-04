@@ -22,13 +22,13 @@ export class VideoCardComponent implements OnInit {
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
   public txt = {
-    'With':           { en: 'With', fr: 'Avec' },
-    'By':             { en: 'By', fr: 'Par' },
+    With:             { en: 'With', fr: 'Avec' },
+    By:               { en: 'By', fr: 'Par' },
     'Upload year':    { en: 'Upload year', fr: 'Année d\'upload' },
-    'Size':           { en: 'Size', fr: 'Taille' },
-    'Seeds':          { en: 'Seeds', fr: 'Seeds' },
-    'Peers':          { en: 'Peers', fr: 'Peers' },
-    'Play':           { en: 'Play', fr: 'Regarder' }
+    Size:             { en: 'Size', fr: 'Taille' },
+    Seeds:            { en: 'Seeds', fr: 'Seeds' },
+    Peers:            { en: 'Peers', fr: 'Peers' },
+    Play:             { en: 'Play', fr: 'Regarder' }
   };
 
   // 2) Defines the variables imdb_id and yts_id by taking the values in the URL.

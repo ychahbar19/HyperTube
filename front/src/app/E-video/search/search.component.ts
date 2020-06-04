@@ -9,15 +9,14 @@ import { NgForm } from '@angular/forms';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit
-{
+export class SearchComponent implements OnInit {
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
   public txt = {
     Genre:        { en: 'Genre', fr: 'Genre' },
     Search:       { en: 'Search...', fr: 'Rechercher...' },
     'Sort by':    { en: 'Sort by', fr: 'Ordre' },
-    Popularity:   { en: 'Popularity (best > worst)', fr: 'Popularité (top > pire)' },
+    Popularity:   { en: 'Popularity (best > worst)', fr: 'Popularité (meilleur > pire)' },
     Title:        { en: 'Title (A > Z)', fr: 'Titre (A > Z)' },
     Year:         { en: 'Year (most > least recent)', fr: 'Année (plus > moins récent)' },
     All:          { en: 'All', fr: 'Tous' },
@@ -33,6 +32,7 @@ export class SearchComponent implements OnInit
 
   public results: any;
   public isLoading = true;
+  public changeOrder = false;
 
   constructor(private searchService: SearchService) { }
 
@@ -45,10 +45,15 @@ export class SearchComponent implements OnInit
   // 3) Fetches the search results from the API (back) and saves them
   // in the array 'results' for output.
   async getSearchResults(searchParams: NgForm) {
+    this.results = null;
     let encodedSearchParams = '?';
 
     if (searchParams.value.query_term) {
       encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
+      // this.changeOrder = true;
+    }
+    if (!searchParams.value.query_term) {
+      // this.changeOrder = false;
     }
     if (searchParams.value.genre) {
       encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre) + '&';
@@ -60,7 +65,10 @@ export class SearchComponent implements OnInit
       encodedSearchParams += 'page=' + encodeURIComponent(searchParams.value.page) + '&';
     }
 
+    // Remove last '&' char
     encodedSearchParams = encodedSearchParams.substring(0, encodedSearchParams.length - 1);
+    // this.isLoading = true;
     this.results = await this.searchService.getResults(encodedSearchParams);
+    // this.isLoading = false;
   }
 }

@@ -34,8 +34,11 @@ async function searchMovies(query)
   let sort_by = ((query.sort_by != undefined) ? query.sort_by : '');
   let page = ((query.page != undefined) ? query.page : '');
   
-  if (query_term)
+  if (query_term) {
     yts_url += '&query_term=' + query_term;
+    if (sort_by == '')
+      sort_by = 'title';
+  }
 
   if (genre)
     yts_url += '&genre=' + genre;
@@ -49,13 +52,16 @@ async function searchMovies(query)
 
   if (page)
     yts_url += '&page=' + page;
-  
+
   await axios.get(yts_url)
     .then(results =>
     {
       const ytsResults = new YtsResultsModel(results.data);
       hypertubeResults = {};
-      ytsResults.data.movies.forEach(movie => addToHypertubeResults(movie.imdb_code, movie.title, movie.id/*, ''*/));
+      ytsResults.data.movies.forEach((movie) => {
+        // console.log(movie.title);
+        addToHypertubeResults(movie.imdb_code, movie.title, movie.id /*, ''*/)
+      });
     })
     .catch(error => res.status(400).json({ error }));
 };
@@ -82,7 +88,6 @@ async function searchTVShows()
 //Calls the different sources and returns their combined results.
 async function search(req, res)
 {
-  console.log(req.query);
   await searchMovies(req.query)
     .then(() =>
     {

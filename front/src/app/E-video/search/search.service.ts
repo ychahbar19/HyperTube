@@ -27,9 +27,9 @@ export class SearchService {
   // and combine them with the data from YTS.
   // Adds the complete video card to 'allResults'.
   private async addToResults(imdb_id, contents) {
-    let videoInfo = await this.getVideoInfo(imdb_id);
+    const videoInfo = await this.getVideoInfo(imdb_id);
     this.allResults[this.allResultsIndex] = {
-      imdb_id: imdb_id,
+      imdb_id,
       Poster: videoInfo['Poster'],
       Title: videoInfo['Title'],
       Year: videoInfo['Year'],
@@ -59,8 +59,15 @@ export class SearchService {
     return new Promise((resolve, reject) => {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
-        .then(response => {
-          Object.entries(response).forEach(values => this.addToResults(values[0], values[1]));
+        .then(async response => {
+          // if (encodedSearchParams.includes('sort_by=title') || encodedSearchParams.includes('sort_by=year')) {
+          for (const values of Object.entries(response)) {
+            console.log(values[1]);
+            await this.addToResults(values[0], values[1]);
+          }
+          // } else {
+            // Object.entries(response).forEach(values => { this.addToResults(values[0], values[1]); });
+          // }
           resolve(this.allResults);
         },
         error => { reject(error); });

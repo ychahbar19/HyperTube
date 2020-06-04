@@ -11,8 +11,7 @@ import { ErrorService } from 'src/app/error/error.service';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss']
 })
-export class ForgotPasswordComponent implements OnInit, OnDestroy
-{
+export class ForgotPasswordComponent implements OnInit, OnDestroy {
   /* ------------------------------------------------------- *\
       User language & translations for the static text.
   \* ------------------------------------------------------- */
@@ -26,7 +25,9 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy
     'New password':           { en: 'New password', fr: 'Nouveau mot de passe' },
     Password:                 { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
+    // tslint:disable-next-line: max-line-length
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
+                                // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit contenir minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
     'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }

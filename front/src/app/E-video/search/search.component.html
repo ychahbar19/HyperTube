@@ -31,8 +31,10 @@
       <div class="col-sm-4 col-md-3 form-group dropdw">
         <label>{{ txt['Sort by'][lg] }}</label>
         <select class="form-control bg-dark" ngModel name="sort_by" (change)="getSearchResults(searchParams)">
-          <option value="" selected>{{ txt['Popularity'][lg] }}</option>
-          <option value="title">{{ txt['Title'][lg] }}</option>
+          <option value="" selected *ngIf="!changeOrder">{{ txt['Popularity'][lg] }}</option>
+          <option value="title" *ngIf="!changeOrder">{{ txt['Title'][lg] }}</option>
+          <!-- <option value="title" selected *ngIf="changeOrder">{{ txt['Title'][lg] }}</option>
+          <option value="" *ngIf="changeOrder">{{ txt['Popularity'][lg] }}</option> -->
           <option value="year">{{ txt['Year'][lg] }}</option>
         </select>
         <i class="fas fa-sort-down text-warning"></i>
@@ -43,7 +45,8 @@
   </form>
 
   <!-- SEARCH RESULTS -->
-  <div class="row">
+  <div class="spinner" *ngIf="!results"></div>
+  <div class="row" *ngIf="results">
 
     <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
       <div class="card bg-dark">
