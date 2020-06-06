@@ -30,9 +30,11 @@ export class SearchComponent implements OnInit {
                           'Court-métrage', 'Sport', 'Super-héro', 'Thriller', 'Guerre', 'Western' ]}
   };
 
-  public results: any;
+  public results: Array<object>;
   public isLoading = true;
   public changeOrder = false;
+  private page = 1;
+  private encodedSearchParams = '?';
 
   constructor(private searchService: SearchService) { }
 
@@ -46,29 +48,39 @@ export class SearchComponent implements OnInit {
   // in the array 'results' for output.
   async getSearchResults(searchParams: NgForm) {
     this.results = null;
-    let encodedSearchParams = '?';
+    this.encodedSearchParams = '?';
+    this.page = 1;
 
     if (searchParams.value.query_term) {
-      encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
-      // this.changeOrder = true;
+      this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
+      this.changeOrder = true;
     }
     if (!searchParams.value.query_term) {
-      // this.changeOrder = false;
+      this.changeOrder = false;
     }
     if (searchParams.value.genre) {
-      encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre) + '&';
+      this.encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre) + '&';
     }
     if (searchParams.value.sort_by) {
-      encodedSearchParams += 'sort_by=' + encodeURIComponent(searchParams.value.sort_by) + '&';
-    }
-    if (searchParams.value.page) {
-      encodedSearchParams += 'page=' + encodeURIComponent(searchParams.value.page) + '&';
+      this.encodedSearchParams += 'sort_by=' + encodeURIComponent(searchParams.value.sort_by) + '&';
     }
 
     // Remove last '&' char
-    encodedSearchParams = encodedSearchParams.substring(0, encodedSearchParams.length - 1);
-    // this.isLoading = true;
-    this.results = await this.searchService.getResults(encodedSearchParams);
-    // this.isLoading = false;
+    this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
+    this.results = await this.searchService.getResults(this.encodedSearchParams);
+  }
+
+  async onScroll() {
+    this.page++;
+    const pageChar = this.page.toString();
+    if (this.encodedSearchParams === '?') {
+      this.encodedSearchParams += 'page=' + pageChar;
+    } else if (this.encodedSearchParams.includes('page=')) {
+      this.encodedSearchParams = this.encodedSearchParams.replace(/page=[0-9]*/g, 'page=' + pageChar);
+    } else {
+      this.encodedSearchParams += '&page=' + this.page.toString();
+    }
+    console.log(this.encodedSearchParams);
+    this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
   }
 }
