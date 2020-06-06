@@ -19,18 +19,20 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   public lg = AppComponent.userLanguage;
   public txt = {
     'Forgotten password':     { en: 'Forgot password?', fr: 'Mot de passe oublié?' },
-    Username:                 { en: 'Username', fr: 'Pseudo' },
+    'Username':               { en: 'Username', fr: 'Pseudo' },
     'Username error':         { en: 'Invalid username.', fr: 'Pseudo invalide.' },
     'Reset password':         { en: 'Reset password', fr: 'Réinitialiser le mot de passe' },
     'New password':           { en: 'New password', fr: 'Nouveau mot de passe' },
-    Password:                 { en: 'Password', fr: 'Mot de passe' },
+    'Password':               { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
-    // tslint:disable-next-line: max-line-length
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
-                                // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit contenir minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
-    'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
+    'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' },
+    'reset success msg 1':    { en: 'Please check your email: we just sent you a link to choose your new password.',
+                                fr: 'Vérifiez vos emails svp : nous venons de vous envoyer un lien pour définir votre nouveau mot de passe.' },
+    'reset success msg 2':    { en: 'Your password has been successfully changed! You may now log in with your new password',
+                                fr: 'Votre nouveau mot de passe a bien été enregistré ! Vous pouvez maintenant vous connecter avec celui-ci.' }
   };
 
   /* ------------------------------------------------------- *\
@@ -66,11 +68,12 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
               private errorService: ErrorService,
               private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
     // Listens to know when auth.service is ready (=when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
-      .subscribe(sub => { this.successMessage = this.authService.resetPasswordSuccessMessage;
+      .subscribe(sub => { this.successMessage = this.txt['reset success msg ' + this.authService.resetPasswordSuccessMessage][this.lg];
                           this.isLoading = false; });
 
     // When the URL contains an id and hash,

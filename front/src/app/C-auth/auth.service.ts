@@ -24,7 +24,7 @@ export class AuthService
 
   /* ----- ???? -----*/
 
-  public resetPasswordSuccessMessage: string;
+  public resetPasswordSuccessMessage: number;
   
   constructor(private http: HttpClient,
               private router: Router) {}
@@ -141,16 +141,8 @@ export class AuthService
     // sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/forgotPassword', formData)
       .subscribe(
-        response =>
-        {
-          this.resetPasswordSuccessMessage = 'We just sent you an email to the email address associated to this account. Check it and follow the steps';
-          this.authServiceWorkingListener.next(false);
-        },
-        error =>
-        {
-          this.resetPasswordSuccessMessage = '';
-          this.authServiceWorkingListener.next(false);
-        }
+        response => { this.resetPasswordSuccessMessage = 1; this.authServiceWorkingListener.next(false); },
+        error =>    { this.resetPasswordSuccessMessage = 0; this.authServiceWorkingListener.next(false); }
       );
   }
 
@@ -167,20 +159,11 @@ export class AuthService
     
     // Calls the back's resetPassword process.
     // If the reset is a success, sets the resetPasswordSuccessMessage.
-    // And in any case, once the process is done,
-    // sets authServiceWorkingListener to FALSE.
+    // And in any case, once the process is done, sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/resetPassword', datas)
       .subscribe(
-        response =>
-        {
-          this.resetPasswordSuccessMessage = 'Your password has been successfully changed! You may now log in with your new password';
-          this.authServiceWorkingListener.next(false);
-        },
-        error =>
-        {
-          this.resetPasswordSuccessMessage = '';
-          this.authServiceWorkingListener.next(false);
-        }
+        response => { this.resetPasswordSuccessMessage = 2; this.authServiceWorkingListener.next(false); },
+        error =>    { this.resetPasswordSuccessMessage = 0; this.authServiceWorkingListener.next(false); }
       );
   }
 

@@ -12,9 +12,8 @@ export class AppComponent implements OnInit {
   // 1) Defines the user language. This is inherited by all other
   // components to show the content in the right language.
   constructor(private authService: AuthService) {
-    if (localStorage.getItem('userLanguage') === null) {
+    if (localStorage.getItem('userLanguage') === null)
       localStorage.setItem('userLanguage', 'en');
-    }
     AppComponent.userLanguage = localStorage.getItem('userLanguage');
   }
 
