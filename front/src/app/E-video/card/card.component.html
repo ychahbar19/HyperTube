@@ -13,14 +13,18 @@
         <span class="star-rating">
           <span class="back-stars">
             <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-            <span class="front-stars" [style.width]="videoInfos['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+            <span class="front-stars" [style.width]="videoInfos['imdbRating']*10+'%'">
+              <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+            </span>
           </span>
-          {{ videoInfos['imdbRating'] / 2 }}/5 ({{ videoInfos['imdbVotes'] }} votes) | {{ videoInfos['Year'] }} | {{ videoInfos['Runtime'] }} | {{ videoInfos['Genre'] }}
+          <span class="details">
+            {{ videoInfos['rating_average'] }} {{ videoInfos['ratings_count'] }} | {{ videoInfos['Year'] }} | {{ videoInfos['Runtime'] }} | {{ videoInfos['Genre'] }}
+          </span>
         </span>
       </p>
       <p>{{ videoInfos['Plot'] }}</p>
-      <p class="small">With {{ videoInfos['Actors'] }}.</p>
-      <p class="small">By {{ videoInfos['Director'] }}, {{ videoInfos['Writer'] }}, {{ videoInfos['Production'] }} (producer).</p>
+      <p class="small">{{ txt['With'][lg] }} {{ videoInfos['Actors'] }}.</p>
+      <p class="small">{{ txt['By'][lg] }} {{ videoInfos['Director'] }}, {{ videoInfos['Writer'] }}, {{ videoInfos['Production'] }}.</p>
     </div>
   </div>
 

@@ -19,16 +19,29 @@ let videoInfo = {};
     2) Private functions.
 \* -------------------------------------------------------------------------- */
 
-// Gets the video's info from The Open Movie Database (OMDb)'s API.
-async function getInfo(imdb_id)
+// Gets the video's info from The Open Movie Database (OMDb) and The Movie Database (TMBD).
+async function getInfo(user_language, imdb_id)
 {
   await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + imdb_id)
-    .then(results =>
+    .then(async results =>
     {
       videoInfo = new VideoModel(results.data);
+      videoInfo['Director'] = videoInfo['Director'].replace(/ *\([^)]*\) */g, "");
+      videoInfo['Writer'] = videoInfo['Writer'].replace(/ *\([^)]*\) */g, "");
+      if (user_language == 'fr')
+      {
+        await axios.get('https://api.themoviedb.org/3/find/' + imdb_id + '?external_source=imdb_id&language=fr-FR&api_key=d3cba2eda31968ee058ffc7166dbfad9')
+        .then(results =>
+          {
+            videoInfo['title'] = results.data.movie_results[0]['title'];
+            videoInfo['overview'] = results.data.movie_results[0]['overview'];
+          })
+          .catch(error => error )
+      }
     })
-    .catch(error => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
+    .catch(error => error );
 };
+
 
 // Gets the video's torrents from YTS' API.
 async function getTorrents(yts_id)
@@ -54,7 +67,7 @@ async function getTorrents(yts_id)
 // and returns their combined results.
 exports.getVideoInfo = async function getVideoInfo(req, res)
 {
-  await getInfo(req.params.imdb_id);
+  await getInfo(req.params.user_language, req.params.imdb_id);
   if (req.params.yts_id)
     await getTorrents(req.params.yts_id);
   res.status(200).send(videoInfo);

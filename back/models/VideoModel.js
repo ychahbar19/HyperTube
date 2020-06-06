@@ -20,8 +20,8 @@ var VideoTorrentsSchema = new mongoose.Schema(
 var VideoSchema = new mongoose.Schema(
 {
   imdbID: String,
-  Type: String,
   Title: String,
+  title: String, //Translated title, from TMDB
   Poster: String,
   imdbRating: Number,
   imdbVotes: String,
@@ -29,6 +29,7 @@ var VideoSchema = new mongoose.Schema(
   Year: String,
   Runtime: String,
   Plot: String,
+  overview: String, //Translated plot, from TMDB
   Director: String,
   Writer: String,
   Production: String,
