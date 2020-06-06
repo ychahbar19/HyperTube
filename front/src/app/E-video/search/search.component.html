@@ -34,7 +34,7 @@
           <option value="" selected *ngIf="!changeOrder">{{ txt['Popularity'][lg] }}</option>
           <option value="title" *ngIf="!changeOrder">{{ txt['Title'][lg] }}</option>
           <option value="title" selected *ngIf="changeOrder">{{ txt['Title'][lg] }}</option>
-          <option value="" *ngIf="changeOrder">{{ txt['Popularity'][lg] }}</option>
+          <option value="popularity" *ngIf="changeOrder">{{ txt['Popularity'][lg] }}</option>
           <option value="year">{{ txt['Year'][lg] }}</option>
         </select>
         <i class="fas fa-sort-down text-warning"></i>

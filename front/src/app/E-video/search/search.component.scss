@@ -58,9 +58,18 @@ form select
 
 /* -------- Video thumbnails -------- */
 
+.card {
+  height: 100%;
+}
+
+.card-img-top {
+  height: 68%;
+}
+
 .card-body
 {
   text-align: center;
+  height: 32%;
 }
 .card-body p:last-of-type
 {
