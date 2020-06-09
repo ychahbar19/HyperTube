@@ -16,9 +16,9 @@ export class SearchComponent implements OnInit {
     Genre:        { en: 'Genre', fr: 'Genre' },
     Search:       { en: 'Search...', fr: 'Rechercher...' },
     'Sort by':    { en: 'Sort by', fr: 'Ordre' },
-    Popularity:   { en: 'Popularity (best > worst)', fr: 'Popularité (meilleur > pire)' },
+    Popularity:   { en: 'Popularity (descending)', fr: 'Popularité (décroissant)' },
     Title:        { en: 'Title (A > Z)', fr: 'Titre (A > Z)' },
-    Year:         { en: 'Year (most > least recent)', fr: 'Année (plus > moins récent)' },
+    Year:         { en: 'Year (descending)', fr: 'Année (décroissant)' },
     All:          { en: 'All', fr: 'Tous' },
     genres:       { en: [ 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
                           'Documentary', 'Drama', 'Family', 'Fantasy', 'Film Noir', 'History',
@@ -83,7 +83,6 @@ export class SearchComponent implements OnInit {
     } else {
       this.encodedSearchParams += '&page=' + this.page.toString();
     }
-    console.log(this.encodedSearchParams);
     this.isLoadingPage = true;
     this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
     this.isLoadingPage = false;
