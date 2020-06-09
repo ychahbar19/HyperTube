@@ -3,9 +3,11 @@ import { Subscription } from 'rxjs';
 import { AppComponent } from '../../app.component';
 // import { Router } from '@angular/router';
 import { AuthService } from '../../C-auth/auth.service';
+import { UserService } from 'src/app/D-user/user.service';
 
 @Component({
   selector: 'app-header',
+  providers: [UserService],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -25,6 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       Variables
   \* ------------------------------------------------------- */
 
+  public user: any;
   public userIsAuthenticated = false;
   private authListenerSubs: Subscription;
 
@@ -32,16 +35,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
       Initialisation
   \* ------------------------------------------------------- */
 
-  constructor(private authService: AuthService/*,
-              private router: Router*/) {}
+  constructor(private authService: AuthService, private userService: UserService) {}
 
   // 2) Defines whether the user is authenticated or not
   // (to output the right navigation links).
   ngOnInit() {
     this.userIsAuthenticated = this.authService.getIsAuth();
     this.authListenerSubs = this.authService.getAuthServiceWorkingListener()
-                              .subscribe(isAuthenticated => {
+                              .subscribe(async isAuthenticated => {
                                 this.userIsAuthenticated = isAuthenticated;
+                                if (isAuthenticated) {
+                                  this.user = await this.userService.getUserInfo(undefined);
+                                }
                               });
   }
   /* displaySignInButton() { return (this.router.url !== '/signin' && !this.userIsAuthenticated); }
