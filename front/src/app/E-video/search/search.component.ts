@@ -32,6 +32,7 @@ export class SearchComponent implements OnInit {
 
   public results: Array<object>;
   public isLoading = true;
+  public isLoadingPage = false;
   public changeOrder = false;
   private page = 1;
   private encodedSearchParams = '?';
@@ -67,7 +68,9 @@ export class SearchComponent implements OnInit {
 
     // Remove last '&' char
     this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
+    this.isLoading = true;
     this.results = await this.searchService.getResults(this.encodedSearchParams);
+    this.isLoading = false;
   }
 
   async onScroll() {
@@ -81,6 +84,8 @@ export class SearchComponent implements OnInit {
       this.encodedSearchParams += '&page=' + this.page.toString();
     }
     console.log(this.encodedSearchParams);
+    this.isLoadingPage = true;
     this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
+    this.isLoadingPage = false;
   }
 }

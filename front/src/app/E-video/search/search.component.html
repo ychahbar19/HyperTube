@@ -1,5 +1,5 @@
-<div class="spinner" *ngIf="isLoading"></div>
-<div class="container-fluid" *ngIf="!isLoading">
+<!-- <div class="spinner" *ngIf="isLoading"></div> -->
+<div class="container-fluid">
 
   <!-- SEARCH FORM -->
   <form #searchParams="ngForm" (ngSubmit)="getSearchResults(searchParams)" class="mb-3" novalidate>
@@ -45,11 +45,13 @@
   </form>
 
   <!-- SEARCH RESULTS -->
-  <div class="spinner" *ngIf="!results"></div>
-  <div *ngIf="results">
+  <div>
+    <div class="spinner" *ngIf="!results"></div>
+    <!-- <ngx-spinner name="page_spinner"></ngx-spinner> -->
 
     <!-- Inifnite scroll div -->
     <div
+    *ngIf="results"
     class="row"
     infiniteScroll
     [infiniteScrollDistance]="2"
@@ -79,7 +81,7 @@
           </div>
         </div>
       </div>
+      <div class="spinner" *ngIf="isLoadingPage"></div>
     </div>
-
   </div>
 </div>
