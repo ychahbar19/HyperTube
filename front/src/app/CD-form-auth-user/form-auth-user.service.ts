@@ -12,50 +12,45 @@ export class FormAuthUserService
 
   private form = new FormGroup({});
 
-  private validPatterns =
-  {
-    name: "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{2,30}$",
+  private validPatterns = {
+    name: '^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$',
     username: '^[a-zA-Z0-9]{4,20}$',
     email: '^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$',
     password: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[&@#!?,;.:+=*\-\/\\_$£<>%])[a-zA-Z0-9&@#!?,;.:+=*\-\/\\_$£<>%]{8,}$',
-  }
+  };
 
-  private addAvatar()
-  {
+  private addAvatar() {
     this.form.addControl('avatar', new FormControl(null,
       {
         validators: [Validators.required], asyncValidators: [mimeType]
       }));
   }
 
-  private addName(whichName) // Common for firstName and lastName
-  {
+  // Common for firstName and lastName
+  private addName(whichName)  {
     this.form.addControl(whichName, new FormControl(null,
       {
         validators: [Validators.required, Validators.pattern(this.validPatterns.name)]
       }));
   }
 
-  private addUsername()
-  {
+  private addUsername() {
     this.form.addControl('username', new FormControl(null,
       {
         validators: [Validators.required, Validators.pattern(this.validPatterns.username)]
       }));
   }
 
-  private addEmail()
-  {
+  private addEmail() {
     this.form.addControl('email', new FormControl(null,
       {
         validators: [Validators.required, Validators.pattern(this.validPatterns.email)]
       }));
   }
 
-  private addPassword(whichPassword) // Common for password and confirmPassword
-  {
-    this.form.addControl(whichPassword, new FormControl(null,
-      {
+  // Common for password and confirmPassword
+  private addPassword(whichPassword) {
+    this.form.addControl(whichPassword, new FormControl(null, {
         validators: [Validators.required, Validators.pattern(this.validPatterns.password)]
       }));
   }
@@ -68,10 +63,8 @@ export class FormAuthUserService
       - validation rules applied to those fileds.
   \* ------------------------------------------------------------- */
 
-  defineValidFormGroup(scope)
-  {
-    if (scope == 'signup' || scope == 'edit')
-    {
+  defineValidFormGroup(scope: string) {
+    if (scope === 'signup' || scope === 'edit') {
       this.addAvatar();
       this.addName('firstName');
       this.addName('lastName');
@@ -79,9 +72,7 @@ export class FormAuthUserService
       this.addEmail();
       this.addPassword('password');
       this.addPassword('confirmPassword');
-    }
-    else if (scope == 'signin')
-    {
+    } else if (scope === 'signin') {
       this.addUsername();
       this.addPassword('password');
     }
