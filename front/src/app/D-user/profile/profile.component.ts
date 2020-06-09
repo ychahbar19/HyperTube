@@ -9,8 +9,7 @@ import { UserService } from '../user.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit
-{
+export class ProfileComponent implements OnInit {
   private user_id;
 
   public profile = {};
@@ -20,15 +19,13 @@ export class ProfileComponent implements OnInit
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
   public txt = {
-    'Edit': { en: 'Edit my profile', fr: 'Editer mon profil' },
+    Edit: { en: 'Edit my profile', fr: 'Editer mon profil' },
   };
-  
+
   // 2) Defines the variable user_id by taking the value in the URL.
   constructor(private userService: UserService,
-              private route: ActivatedRoute)
-  {
-    this.route.params.subscribe(params =>
-    {
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
       this.user_id = params['user_id'];
     });
   }
@@ -36,8 +33,7 @@ export class ProfileComponent implements OnInit
   // 3) Calls getUserInfo() (in user.service.ts) to fetch the user's info
   // from the API (back), and saves them in the array 'profile' for output
   // in profile.component.html.
-  async ngOnInit()
-  {
+  async ngOnInit() {
     this.profile = await this.userService.getUserInfo(this.user_id);
     // if (this.user_id === undefined || this.user_id == /* active user id*/ )
       this.showEdit = true;
