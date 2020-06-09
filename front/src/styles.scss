@@ -26,16 +26,15 @@ html, body
 }
 body
 {
-  height: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  // max-width: 1200px;
+  // margin: 0 auto;
   color: white;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-.container
-{
-  overflow: auto;
-}
+// .container
+// {
+//   overflow: auto;
+// }
 
 /* ---------------------------------------------- *\
     Loading
@@ -45,13 +44,12 @@ body
 {
   content: '';
   box-sizing: border-box;
-  position: absolute;
-  top: 30%;
-  left: 50%;
+  position: fixed;
+  margin: auto;
+  right: 50%;
+  margin-right: -30px;
   height: 60px;
   width: 60px;
-  // margin-top: -30px;
-  margin-left: -30px;
   border-radius: 50%;
   border-top: 3px solid rgb(243,220,0);
   border-right: 3px solid rgb(243,220,0);

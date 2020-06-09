@@ -7,7 +7,7 @@
 form input,
 form select
 {
-  border: none;
+  border: 0.5px solid dimgray;
   outline:0px !important;
   -webkit-appearance:none;
   box-shadow: none !important;
@@ -20,11 +20,13 @@ form select
 {
   position: relative;
 }
+
 .search input[type="text"]
 {
   padding: 1.8rem 1.5rem;
   border-radius: 2rem;
 }
+
 .search .btn
 {
   position: absolute;
@@ -39,17 +41,24 @@ form select
 {
   position: relative;
 }
+
 .dropdw label
 {
   margin: 12px 0 2px 5px;
   color: grey;
   font-size: 0.9rem;
 }
+
 .dropdw .fas
 {
   position: absolute;
   bottom: 0.8rem;
   right: 1.8rem;
+}
+
+.dropdw select
+{
+  cursor: pointer;
 }
 
 /* ---------------------------------------------------- *\
@@ -58,10 +67,36 @@ form select
 
 /* -------- Video thumbnails -------- */
 
+.card
+{
+  height: 100%;
+  border: 1px solid dimgray;
+}
+
+.card-title
+{
+  margin-bottom: 0;
+}
+
+.stretched-link
+{
+  color: #949494;
+}
+
+.card-img-top
+{
+  height: 68%;
+}
+
 .card-body
 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
+  height: 32%;
 }
+
 .card-body p:last-of-type
 {
   margin: 0;
@@ -70,13 +105,17 @@ form select
 .star-rating
 {
   display: flex;
+  flex-direction: column;
 }
+
 .back-stars
 {
   display: flex;
   position: relative;
   color: LightGray;
+  margin: auto;
 }
+
 .front-stars
 {
   display: flex;
