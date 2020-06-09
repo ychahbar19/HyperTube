@@ -69,6 +69,9 @@ form select
 
 .card-body
 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
   height: 32%;
 }
@@ -80,12 +83,14 @@ form select
 .star-rating
 {
   display: flex;
+  flex-direction: column;
 }
 .back-stars
 {
   display: flex;
   position: relative;
   color: LightGray;
+  margin: auto;
 }
 .front-stars
 {
