@@ -19,22 +19,22 @@ $animate: all 0.2s ease-in-out;
   margin: 0;
   padding: 0;
 }
+
 html, body
 {
   height: 100%;
   background-color: rgb(20, 20, 20);
 }
+
 body
 {
+  // min-height: 100%;
   // max-width: 1200px;
   // margin: 0 auto;
+  width: 100%;
   color: white;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-// .container
-// {
-//   overflow: auto;
-// }
 
 /* ---------------------------------------------- *\
     Loading
