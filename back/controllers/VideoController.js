@@ -8,10 +8,21 @@ const MovieHistoryModel = require('../models/MovieHistoryModel');
 const path = require('path');
 const fs = require('fs');
 
+const http = require('http');
 const axios = require('axios');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const torrentStream = require('torrent-stream');
+// OpenSubtitles
+
+const OS = require('opensubtitles-api');
+const OpenSubtitles = new OS('ychahbar');
+const zlib = require('zlib');
+const iconv = require('iconv-lite');
+const unzipper = require('unzipper');
+const srt2vtt = require('srt-to-vtt');
+var stringSimilarity = require('string-similarity');
+
 
 let videoInfo = {};
 
@@ -172,6 +183,75 @@ const downloadTorrent = (req, res, datas, paths) => {
   }
 };
 
+const subFilter = async (subArray, fileName) => {
+  const language = ['English', 'French'];
+  let result = [];
+
+  let name = fileName.substr(0, fileName.lastIndexOf('.'));
+  for (let index = 0; language[index]; index++)
+  {
+    target = [];
+    targetStrings = [];
+    for(let i = 0; subArray[i]; i++)
+    {
+      for (let j = 0; subArray[i][j]; j++)
+      { 
+        if (subArray[i][j].LanguageName === language[index])
+        { 
+          targetStrings.push(subArray[i][j].MovieReleaseName);
+          target.push(subArray[i][j]);
+        }
+      }
+    }
+    Matches = stringSimilarity.findBestMatch(name, targetStrings);
+    result.push(target[Matches.bestMatchIndex]);
+  }
+  return result;
+};
+
+const downloadSubtitles = async (subArray, hash) => {
+  const converterStream = iconv.decodeStream('iso-8859-5');
+
+  for (let i = 0; subArray[i]; i++)
+  {
+    const path = './assets/subtitles/' + hash;
+    let language;
+
+    if ( subArray[i].LanguageName === 'French')
+      language = 'fr';
+    else
+      language = 'en';
+    
+    if (!fs.existsSync(path))
+      fs.mkdirSync(path);
+    const output = fs.createWriteStream('./assets/subtitles/' + hash + '/' + hash +  '.' + language +'.vtt');
+    const request =  http.get(subArray[i].SubDownloadLink, (response) => {
+      response
+      .pipe(zlib.createGunzip())
+      .pipe(srt2vtt())
+      .pipe(output);
+    });
+  }
+};
+
+const SubtitlesManager = async (hash, imdbId, fileName) => {
+  if (!fs.existsSync('./assets/subtitles/' + hash + '/'))
+  { 
+    // 1. Connect to the Subtitle API and generate the access token
+    const SubLogin =  await OpenSubtitles.api.LogIn('ychahbar', 'qwerty1994*', 'en', 'ychahbar');
+    // 2. Search for Subtitles with the right IMDB ID
+    const subObject =  await OpenSubtitles.api.SearchSubtitles(SubLogin.token, [{ imdbid :  imdbId.replace('tt', '')}]);
+    // 3. Transform our big object with all the results to an array of array
+    let subArray = Object.values(subObject);
+    for (let i = 0; subArray[i]; i++)
+      subArray[i] = Object.values(subArray[i]);
+    // 4. Match the right Subtitles results (quality, encoding type, ..)
+    subArray = await subFilter(subArray, fileName);
+    // 5. Download the right Subtitles
+    await downloadSubtitles(subArray, hash);
+  }
+};
+
 //  Download parts asked by the browser
 const startEngine = (req, res, next, positions, paths) => {
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash });
@@ -183,6 +263,8 @@ const startEngine = (req, res, next, positions, paths) => {
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
         paths.uncomplete += ('.' + ext);
         paths.complete += ('.' + ext);
+        // manage the Subtitles from Opensubtitles's API
+        await SubtitlesManager(req.params.hash, req.params.imdbId, file.name);
         //  1. Create object with datas needed to stream the movie.
         const start = parseInt(positions[0], 10);
         const end = positions[1] ? parseInt(positions[1], 10) : file.length - 1;

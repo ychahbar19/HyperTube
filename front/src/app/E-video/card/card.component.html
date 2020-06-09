@@ -55,10 +55,13 @@
           <!-- <div *ngIf="stream"> -->
             <td colspan="6" *ngIf="stream">
               <!-- <video controls appVideoEvents [torrentHash]="torrentHash" [status]="stream.status" #videoPlayer> -->
-              <video controls #videoPlayer>
+              <video controls #videoPlayer crossorigin="anonymous">
                 <source src="{{ stream }}" type="video/mp4">
                 <source src="{{ stream }}" type="video/ogg">
                 <source src="{{ stream }}" type="video/webm">
+                <track label="English" kind="subtitles" src="{{ this.subEnPath }}" srclang="en"/>
+                <track label="French" kind="subtitles" src="{{ this.subFrPath }}" srclang="fr"/>
+                
                 Your browser doesn't support HTML videos
               </video>
           </td>

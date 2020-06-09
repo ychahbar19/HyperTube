@@ -18,6 +18,8 @@ export class VideoCardComponent implements OnInit {
   public torrentHash: object;
   public stream: any;
   public isLoading = true;
+  public subEnPath: any;
+  public subFrPath: any;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
@@ -63,10 +65,12 @@ export class VideoCardComponent implements OnInit {
   async streamVideo(index: number) {
     // tslint:disable-next-line: no-string-literal
     const torrentHash = this.videoInfos['Torrents'][index].hash;
-    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash;
+    this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + this.imdbId;
     setTimeout(() => {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
+    this.subEnPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.en.vtt';
+    this.subFrPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.fr.vtt';
   }
 }
