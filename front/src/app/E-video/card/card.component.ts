@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoCardService } from './card.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-video',
@@ -35,6 +36,7 @@ export class VideoCardComponent implements OnInit {
 
   // 2) Defines the variables imdb_id and yts_id by taking the values in the URL.
   constructor(private videoCardService: VideoCardService,
+              private http: HttpClient,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
       // tslint:disable-next-line: no-string-literal
@@ -63,6 +65,10 @@ export class VideoCardComponent implements OnInit {
   // by sending its torrent hash to videoCardService.streamVideo()
   // and getting the video's source url in return.
   async streamVideo(index: number) {
+    // register the video as seen in the DB
+    // const seen = this.http.get('http://localhost:3000/api/video/seenVideo');
+    // console.log(seen);
+    
     // tslint:disable-next-line: no-string-literal
     const torrentHash = this.videoInfos['Torrents'][index].hash;
     this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + this.imdbId;

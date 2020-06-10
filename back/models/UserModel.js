@@ -19,7 +19,8 @@ const userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   language: { type: String, default: 'en' },
-  randomStr: { type: String }
+  randomStr: { type: String },
+  seenMovieHistory: { type: Array, default: null }
 });
 
 // 3) Add the plugins
