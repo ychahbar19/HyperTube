@@ -80,12 +80,53 @@ form select
 
 .stretched-link
 {
-  color: #949494;
+  color: #f5dd01;
+}
+
+.stretched-link:link
+{
+  text-decoration: none;
+}
+
+.stretched-link:visited
+{
+  text-decoration: none;
+}
+
+.container-poster
+{
+  height: 68%;
+  position: relative;
 }
 
 .card-img-top
 {
-  height: 68%;
+  height: 100%;
+  opacity: 1;
+  transition: .3s ease;
+}
+
+.card:hover .card-img-top {
+  opacity: 0.4;
+}
+
+.middle
+{
+  transition: .3s ease;
+  opacity: 0;
+  position: absolute;
+  top: calc(50% - 35px);
+  left: calc(50% - 33px);
+}
+
+.middle img
+{
+  height: 70px;
+  width: 70px;
+}
+
+.card:hover .middle {
+  opacity: 1;
 }
 
 .card-body
