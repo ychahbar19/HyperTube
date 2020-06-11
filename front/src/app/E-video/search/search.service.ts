@@ -27,9 +27,14 @@ export class SearchService {
   // Takes an imdb_id and the contents returned by YTS API to fetch the info from IMDB
   // (using getVideoInfo() above) and combine them with the data from YTS.
   // Adds the complete video card to 'allResults'.
-  private async addToResults(user_language, imdb_id, contents)
+  private async addToResults(user_language, imdb_id, contents, lg, translated_genres)
   {
     const videoInfo = await this.getVideoInfo(user_language, imdb_id);
+
+    if (lg == 'fr')
+      for (let i = 0; i < translated_genres['en'].length; i++)
+        videoInfo['Genre'] = videoInfo['Genre'].replace(translated_genres['en'][i], translated_genres['fr'][i]);
+
     this.allResults[this.allResultsIndex] = {
       imdb_id,
       Poster: videoInfo['Poster'],
@@ -38,9 +43,7 @@ export class SearchService {
       imdbRating: videoInfo['imdbRating'],
       imdbVotes: videoInfo['imdbVotes'],
       Genre: videoInfo['Genre'],
-      yts_title: contents.title,
-      yts_id: contents.yts_id,
-      eztv_id: contents.eztv_id
+      yts_id: contents.yts_id
     };
     this.allResultsIndex++;
   }
@@ -53,11 +56,10 @@ export class SearchService {
   // through the object returned with the private function addToResults()
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
-  getResults(encodedSearchParams: string)
+  getResults(encodedSearchParams: string, lg, translated_genres)
   {
     this.allResults = [];
     this.allResultsIndex = 0;
-    // ---> dont reset results if calling page 2+ (for infinite loading to push more results)
 
     return new Promise((resolve, reject) =>
     {
@@ -66,12 +68,8 @@ export class SearchService {
         .then(async response => {
           for (const values of Object.entries(response))
           {
-            console.log(values[1]);
-            await this.addToResults('en', values[0], values[1]);
+            await this.addToResults('en', values[0], values[1], lg, translated_genres);
           }
-          // } else {
-            // Object.entries(response).forEach(values => { this.addToResults(values[0], values[1]); });
-          // }
           resolve(this.allResults);
         },
         error => { reject(error); });

@@ -16,15 +16,15 @@ export class SearchComponent implements OnInit {
     Genre:        { en: 'Genre', fr: 'Genre' },
     Search:       { en: 'Search...', fr: 'Rechercher...' },
     'Sort by':    { en: 'Sort by', fr: 'Ordre' },
-    Popularity:   { en: 'Popularity (best > worst)', fr: 'Popularité (meilleur > pire)' },
-    Title:        { en: 'Title (A > Z)', fr: 'Titre (A > Z)' },
-    Year:         { en: 'Year (most > least recent)', fr: 'Année (plus > moins récent)' },
+    Popularity:   { en: 'Popularity)', fr: 'Popularité' },
+    Title:        { en: 'Title', fr: 'Titre' },
+    Year:         { en: 'Year', fr: 'Année' },
     All:          { en: 'All', fr: 'Tous' },
     genres:       { en: [ 'Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime',
                           'Documentary', 'Drama', 'Family', 'Fantasy', 'Film Noir', 'History',
                           'Horror', 'Music', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
                           'Short Film', 'Sport', 'Superhero', 'Thriller', 'War', 'Western' ],
-                    fr: [ 'Action', 'Aventure', 'Animation', 'Biographie', 'Comedie', 'Crime',
+                    fr: [ 'Action', 'Aventure', 'Animation', 'Biographie', 'Comédie', 'Crime',
                           'Documentaire', 'Drame', 'Famille', 'Fantaisie', 'Film Noir', 'Histoire',
                           'Horreur', 'Musique', 'Comédie musicale', 'Mystère', 'Romance', 'Sci-Fi',
                           'Court-métrage', 'Sport', 'Super-héro', 'Thriller', 'Guerre', 'Western' ]}
@@ -38,7 +38,7 @@ export class SearchComponent implements OnInit {
 
   // 2) Triggers getSearchResults() on init.
   async ngOnInit() {
-    this.results = await this.searchService.getResults('');
+    this.results = await this.searchService.getResults('', this.lg, this.txt['genres']);
     this.isLoading = false;
   }
 
@@ -68,7 +68,7 @@ export class SearchComponent implements OnInit {
     // Remove last '&' char
     encodedSearchParams = encodedSearchParams.substring(0, encodedSearchParams.length - 1);
     // this.isLoading = true;
-    this.results = await this.searchService.getResults(encodedSearchParams);
+    this.results = await this.searchService.getResults(encodedSearchParams, this.lg, this.txt['genres']);
     // this.isLoading = false;
   }
 }
