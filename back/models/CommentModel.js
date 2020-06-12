@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 var CommentSchema = new mongoose.Schema(
 {
   imdb_id: String,
+  yts_id: String,
   posted_datetime: Date,
   content: String,
   language: String,

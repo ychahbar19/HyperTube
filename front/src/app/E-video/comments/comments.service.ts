@@ -8,10 +8,8 @@ export class CommentsService
 
   // Fetches the comments for the given video from the API (back)
   // and returns them as an array.
-  fetchComments(imdb_id, language)
-  {
-    return new Promise((resolve, reject) =>
-    {
+  fetchComments(imdb_id, language) {
+    return new Promise((resolve, reject) => {
       this.http.get<[{}]>('http://localhost:3000/api/comments/read/' + imdb_id + '/' + language)
         .toPromise()
         .then(response => { resolve(response); },
@@ -21,15 +19,13 @@ export class CommentsService
 
   // Posts a new comment to the API (back) and returns an object with
   // 'message: OK' if the comment was properly saved in the database.
-  postComment(imdb_id, comment, language)
-  {
-    return new Promise((resolve, reject) =>
-    {
-      let postedData =
-      {
-        imdb_id: imdb_id,
+  postComment(imdb_id, yts_id, comment, language) {
+    return new Promise((resolve, reject) => {
+      const postedData = {
+        imdb_id,
+        yts_id,
         content: comment.Comment,
-        language: language
+        language
       };
       this.http.post('http://localhost:3000/api/comments/create', postedData)
         .toPromise()
