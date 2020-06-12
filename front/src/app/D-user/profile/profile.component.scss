@@ -1,20 +1,24 @@
-.profile--main{
+.profile--main {
   background-color: rgba(77, 77, 77, 0.3);
   // background: linear-gradient(0deg, rgba(1,1,1,1) 0%, rgba(17,17,17,1) 35%, rgba(19,19,19,0.8911939775910365) 100%);
 }
 
-.profile--main p{
+.profile--main p {
   text-align: center;
   // font-weight: 700;
   font-size: 1.2rem;
   margin-bottom: 0;
 }
 
-.name--p{
+.name--p {
   color: grey;
 }
 
-.username--p{
+#link-to-edit {
+  font-size: 1rem;
+}
+
+.username--p {
   color: #f3dc00;
 }
 
@@ -25,7 +29,7 @@
   border-radius: 100%;
 }
 
-.historic--card{
+.historic--card {
   background-color: rgba(77, 77, 77, 0.3);
   height: 100px;
 }
@@ -40,8 +44,21 @@
   width: auto;
 }
 
-.card-body{
+.card {
+  height: 100%;
+  border: 1px solid dimgray;
+}
+
+.card-header .movie-title a {
+  color: #f5dd01;
+}
+.card-header .movie-title a:link {
+  text-decoration: none;
+}
+
+.card-body {
   padding: 1px 30px;
+  font-size: 1rem;
 }
 
 .card-body h5 {

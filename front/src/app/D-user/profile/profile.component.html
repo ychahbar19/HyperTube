@@ -3,7 +3,7 @@
   <div class="row justify-content-center profile--main">
     <div class="col-12 col-md-10 mt-5">
 
-      <div class="justify-content-center">
+      <div>
         <img class="avatar-img"src="{{ profile['avatar'] }}" alt="profile-pic" width="100px">
       </div>
 
@@ -12,7 +12,7 @@
           {{ profile['username'] }}
           <span class="name--p">({{ profile['firstName'] }} {{ profile['lastName'] }})</span>
         </p>
-        <p><a routerLink="/edit" *ngIf="showEdit">{{ txt['Edit'][lg] }}</a></p>
+        <p id="link-to-edit"><a routerLink="/edit" *ngIf="showEdit">{{ txt['Edit'][lg] }}</a></p>
       </div>
 
       <div>
@@ -23,7 +23,7 @@
           <div class="col-8 col-md-10">
             <div class="card bg-dark text-white">
                 <p class="card-header">
-                  <b><a href="/video/{{ comment.imdb_id }}/{{ comment.videoInfo.yts_id }}">{{ comment.videoInfo.Title }}</a></b>
+                  <b class="movie-title"><a href="/video/{{ comment.imdb_id }}/{{ comment.yts_id }}">{{ comment.videoInfo.Title }}</a></b>
                   <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
                 </p>
                 <p class="card-body">{{ comment.content }}</p>
