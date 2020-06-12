@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 const axios = require('axios');
+const rarbgApi = require('rarbg-api')
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const torrentStream = require('torrent-stream');
@@ -36,27 +37,47 @@ async function getInfo(user_language, imdb_id)
             videoInfo['title'] = results.data.movie_results[0]['title'];
             videoInfo['overview'] = results.data.movie_results[0]['overview'];
           })
-          .catch(error => error )
+          .catch(error => error)
       }
     })
-    .catch(error => error );
+    .catch(error => error);
 };
 
-
 // Gets the video's torrents from YTS' API.
-async function getTorrents(yts_id)
+async function getYtsTorrents(yts_id)
 {
   await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
     .then(results =>
     {
-      videoInfo.Torrents = results.data.data.movie.torrents;
+      console.log('here')
+      videoInfo.Torrents = results.data.movie.torrents;
       Object.entries(videoInfo.Torrents).forEach(item =>
       {
+        item[1].title = 'YIFY ' + item[1].quality + ' ' + item[1].type;
         let date = new Date(item[1].date_uploaded_unix * 1000);
         item[1].year_uploaded = date.getFullYear();
       });
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => console.log('error: ', error));
+};
+
+// Gets the video's torrents from rargb' API.
+async function getRargbTorrents(imdb_id)
+{
+  await rarbgApi.search(imdb_id, null, 'imdb')
+    .then(results =>
+    {
+      results.forEach(result => {
+        videoInfo.Torrents = {
+          peers: result.leechers,
+          seeds: result.seeders,
+          size: result.size,
+          year_uploaded: result.pubdate.substring(0, 4),
+          title: result.title
+        };
+      });
+    })
+    .catch(error => console.log('error: ', error));
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -68,8 +89,13 @@ async function getTorrents(yts_id)
 exports.getVideoInfo = async function getVideoInfo(req, res)
 {
   await getInfo(req.params.user_language, req.params.imdb_id);
-  if (req.params.yts_id)
-    await getTorrents(req.params.yts_id);
+  if (req.params.yts_id != undefined)
+  {
+    if (req.params.yts_id != 0)
+      await getYtsTorrents(req.params.yts_id);
+    else
+      await getRargbTorrents(req.params.imdb_id);
+  }
   res.status(200).send(videoInfo);
 };
 

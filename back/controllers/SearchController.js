@@ -16,7 +16,7 @@ let hypertubeResults = {};
 //Fetches results from YTS' API.
 async function searchYTSMovies(query_term, genre, sort_by, page)
 {
-  let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=50';
+  let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=25';
   if (query_term)
   {
     yts_url += '&query_term=' + query_term;

@@ -44,7 +44,7 @@
 
       <tbody *ngFor="let torrent of videoInfos['Torrents']; let i = index;">
         <tr class="bg-dark">
-          <td>YIFY {{ torrent.quality }} {{ torrent.type }}</td>
+          <td>{{ torrent.title }}</td>
           <td>{{ torrent.year_uploaded }}</td>
           <td>{{ torrent.size }}</td>
           <td>{{ torrent.seeds }}</td>
