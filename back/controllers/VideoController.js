@@ -49,7 +49,6 @@ async function getYtsTorrents(yts_id)
   await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
     .then(results =>
     {
-      console.log('here')
       videoInfo.Torrents = results.data.movie.torrents;
       Object.entries(videoInfo.Torrents).forEach(item =>
       {

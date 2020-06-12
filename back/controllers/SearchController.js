@@ -4,8 +4,8 @@
 
 const axios = require('axios');
 const rarbgApi = require('rarbg-api');
-
 const YtsResultsModel = require('../models/YtsResultsModel');
+const VideoModel = require('../models/VideoModel');
 
 let hypertubeResults = {};
 
@@ -38,24 +38,24 @@ async function searchYTSMovies(query_term, genre, sort_by, page)
 };
 
 //Fetches results from rarbg' API.
-async function searchRarbgMovies(query_term, genre, sort_by, page)
+async function searchRarbgMovies(query_term)
 {
-  if (query_term != '')
-  {
-    const options = {
-      category: rarbgApi.CATEGORY.MOVIES,
-      limit: 25, //25, 50, 100
-      sort: 'leechers', //last, seeders, leechers
-      format: 'json_extended'
-    }
-
-    await rarbgApi.search(query_term, options)
-      .then(results =>
-      {
-        results.forEach((movie) => { hypertubeResults[movie.episode_info.imdb] = { yts_id: 0 }; });
-      })
-      .catch(error => {console.log('error0'); res.status(400).json({ error })});
+  const options = {
+    category: rarbgApi.CATEGORY.MOVIES,
+    limit: 25,
+    sort: 'last',
+    format: 'json_extended'
   }
+  await rarbgApi.search(query_term, options)
+    .then(results =>
+    {
+      results.forEach((movie) =>
+      {
+        if (!(movie.episode_info.imdb in hypertubeResults))
+          hypertubeResults[movie.episode_info.imdb] = { yts_id: 0 };
+      });
+    })
+    .catch(error => {console.log('error0'); res.status(400).json({ error })});
 }
 
 /* -------------------------------------------------------------------------- *\
@@ -66,15 +66,56 @@ async function searchRarbgMovies(query_term, genre, sort_by, page)
 async function search(req, res)
 {
   hypertubeResults = {}
-  let query_term = ((req.query.query_term != undefined) ? req.query.query_term : ''); //String
-  let genre = ((req.query.genre != undefined) ? req.query.genre : ''); //String
-  let sort_by = ((req.query.sort_by != undefined) ? req.query.sort_by : ''); // 'title' or 'year'
+  let query_term = ((req.query.query_term != undefined) ? req.query.query_term : '');
+  let genre = ((req.query.genre != undefined) ? req.query.genre : '');
+  let sort_by = ((req.query.sort_by != undefined) ? req.query.sort_by : ''); // '', 'title' or 'year'
   let page = ((req.query.page != undefined) ? req.query.page : '');
 
   await searchYTSMovies(query_term, genre, sort_by, page).catch(error => res.status(400).json({ error }));
-  await searchRarbgMovies(query_term, genre, sort_by, page).catch(error => res.status(400).json({ error }));
+  if (query_term != '' && page == '')
+    await searchRarbgMovies(query_term).catch(error => res.status(400).json({ error }));
+  
+  hypertubeCompleteResults = []
+  for (const values of Object.entries(hypertubeResults))
+  {
+    await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + values[0])
+      .then(results =>
+      {
+        videoInfo = new VideoModel(results.data);
+        hypertubeCompleteResults.push({
+          imdb_id: values[0],
+          Poster: videoInfo['Poster'],
+          Title: videoInfo['Title'],
+          Year: videoInfo['Year'],
+          imdbRating: videoInfo['imdbRating'],
+          imdbVotes: videoInfo['imdbVotes'],
+          Genre: videoInfo['Genre'],
+          yts_id: values[1].yts_id
+        });
+      })
+    .catch(error => error);
+  }
 
-  res.status(200).send(hypertubeResults);
+  // Manually sort/filter if results include Rargb
+  if (query_term != '' && page == '')
+  {
+    // Only keep results that match 'genre'
+    if (genre != '')
+      hypertubeCompleteResults.forEach((values, key) =>
+      {
+        if (!(values['Genre'].includes(genre)))
+          hypertubeCompleteResults.splice(key, 1);
+      });
+    // Filter based on 'sort_by'
+    if (sort_by == '')
+      hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1)
+    else if (sort_by == 'title')
+      hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1)
+    else if (sort_by == 'year')
+      hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1)
+  }
+
+  res.status(200).send(hypertubeCompleteResults);
 };
 
 module.exports.search = search;

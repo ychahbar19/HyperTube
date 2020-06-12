@@ -12,6 +12,7 @@ export class SearchService {
       Private functions
   \* --------------------------------------------------------- */
 
+  /*
   // Fetches and returns the given film's info from IMDB's API (back).
   private getVideoInfo(user_language, imdb_id)
   {
@@ -23,13 +24,14 @@ export class SearchService {
               error => { reject(error); });
     });
   }
-
+*/
   // Takes an imdb_id and the contents returned by YTS API to fetch the info from IMDB
   // (using getVideoInfo() above) and combine them with the data from YTS.
   // Adds the complete video card to 'allResults'.
-  private async addToResults(user_language, imdb_id, contents, lg, translated_genres)
+  /*
+  private async addToResults(lg, imdb_id, contents, translated_genres)
   {
-    const videoInfo = await this.getVideoInfo(user_language, imdb_id);
+    const videoInfo = await this.getVideoInfo(lg, imdb_id);
 
     if (lg == 'fr')
       for (let i = 0; i < translated_genres['en'].length; i++)
@@ -47,6 +49,7 @@ export class SearchService {
     };
     this.allResultsIndex++;
   }
+*/
 
   /* --------------------------------------------------------- *\
       Public function
@@ -65,12 +68,17 @@ export class SearchService {
     {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
-        .then(async response => {
-          for (const values of Object.entries(response))
+        .then(/*async*/ response => {
+          /*for (const values of Object.entries(response))
           {
-            await this.addToResults('en', values[0], values[1], lg, translated_genres);
+            await this.addToResults(lg, values[0], values[1], translated_genres);
           }
           resolve(this.allResults);
+          */
+
+          console.log('response', response)
+
+         resolve(response);
         },
         error => { reject(error); });
     });
