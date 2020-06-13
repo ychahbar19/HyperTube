@@ -70,7 +70,13 @@ export class VideoCardComponent implements OnInit {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    this.subEnPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.en.vtt';
-    this.subFrPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.fr.vtt';
+    this.subEnPath =
+      'http://localhost:3000/assets/subtitles/' +
+      this.videoInfos['Torrents'][index].hash + '/' +
+      this.videoInfos['Torrents'][index].hash + '.en.vtt';
+    this.subFrPath =
+      'http://localhost:3000/assets/subtitles/' +
+      this.videoInfos['Torrents'][index].hash + '/'
+      + this.videoInfos['Torrents'][index].hash + '.fr.vtt';
   }
 }
