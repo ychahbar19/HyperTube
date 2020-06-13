@@ -29,7 +29,11 @@
     <table class="table table-striped table-dark" id="accordion">
       <thead>
         <tr>
-          <th> </th>
+          <th>   
+              <div *ngIf="this.isSeen">
+                <img src="../../../assets/img/vision.svg" alt="seenMovie" width="25" height="25">
+              </div>
+          </th>
           <th>{{ txt['Upload year'][lg] }}</th>
           <th>{{ txt['Size'][lg] }}</th>
           <th>{{ txt['Seeds'][lg] }}</th>

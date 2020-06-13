@@ -34,14 +34,20 @@ export class SearchComponent implements OnInit {
   public isLoading = true;
   public isLoadingPage = false;
   public changeOrder = false;
+  // public movieIsSeen: boolean;
   private page = 1;
   private encodedSearchParams = '?';
+  public user: any;
+
 
   constructor(private searchService: SearchService) { }
 
   // 2) Triggers getSearchResults() on init.
   async ngOnInit() {
     this.results = await this.searchService.getResults('');
+    // this.user = await this.userService.getUserInfo('');
+    // console.log(this.user.movieHistory);
+    
     this.isLoading = false;
   }
 
@@ -87,4 +93,18 @@ export class SearchComponent implements OnInit {
     this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
     this.isLoadingPage = false;
   }
+
+  // async movieIsSeen(result) {
+  //   const isSeen = await this.user.movieHistory.includes(result.imdb_id);
+  //   // console.log(result.imdb_id);
+  //   console.log(result.imdb_id + ' : ' + isSeen);
+    
+    
+  //   // console.log(result.imdbId + ' : ' + isSeen);
+    
+  //   return isSeen;
+  //   // console.log(this.user.movieHistory);
+    
+  //   // console.log(result);
+  // }
 }

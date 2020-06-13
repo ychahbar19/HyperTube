@@ -21,6 +21,7 @@ export class VideoCardComponent implements OnInit {
   public isLoading = true;
   public subEnPath: any;
   public subFrPath: any;
+  public isSeen: any;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
@@ -51,6 +52,9 @@ export class VideoCardComponent implements OnInit {
   // in video.component.html.
   async ngOnInit() {
     this.videoInfos = await this.videoCardService.getVideoInfo(this.imdbId, this.ytsId);
+    this.isSeen = await this.videoCardService.checkIfSeen(this.imdbId);
+    console.log('seen : ' + this.isSeen);
+    
     this.isLoading = false;
   }
 
@@ -66,8 +70,10 @@ export class VideoCardComponent implements OnInit {
   // and getting the video's source url in return.
   async streamVideo(index: number) {
     // register the video as seen in the DB
-    // const seen = this.http.get('http://localhost:3000/api/video/seenVideo');
-    // console.log(seen);
+    this.http.get('http://localhost:3000/api/video/seenMovie/' + this.imdbId).subscribe(response => {
+      console.log(response);
+      
+    });
     
     // tslint:disable-next-line: no-string-literal
     const torrentHash = this.videoInfos['Torrents'][index].hash;
@@ -76,8 +82,6 @@ export class VideoCardComponent implements OnInit {
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    // this.subEnPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.en.vtt';
-    // this.subFrPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.fr.vtt';
     this.subEnPath = 'http://localhost:3000/api/video/subtitles/' + 'en' + '/' + torrentHash;
     this.subFrPath = 'http://localhost:3000/api/video/subtitles/' + 'fr' + '/' + torrentHash;
   }

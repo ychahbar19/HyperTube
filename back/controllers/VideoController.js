@@ -5,7 +5,7 @@
 const VideoModel = require('../models/VideoModel');
 const MovieHistoryModel = require('../models/MovieHistoryModel');
 const UserModel = require('../models/UserModel');
-const ObjectId = require('mongodb').ObjectId;
+// const ObjectId = require('mongodb').ObjectId;
 
 const path = require('path');
 const fs = require('fs');
@@ -68,7 +68,7 @@ async function getTorrents(yts_id)
 // Fetches the video info from the different sources
 // and returns their combined results.
 exports.getVideoInfo = async function getVideoInfo(req, res)
-{
+{ 
   await getInfo(req.params.imdb_id);
   if (req.params.yts_id)
     await getTorrents(req.params.yts_id);
@@ -338,7 +338,7 @@ exports.streamSubtitles = (req, res, next) => {
   // res.setHeader('Access-Control-Allow-Origin', '*');
   // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  // res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('content-type', 'text/vtt');
 
   if (fs.existsSync(path)) {
@@ -350,44 +350,37 @@ exports.streamSubtitles = (req, res, next) => {
 exports.setSeenMovie = async (req, res, next) => {
   try {
     const imdbId = req.params.imdbId;
-    const hash = req.params.imdbId;
-
-    console.log(req.userToken);
-    
 
     // find the current user
     const oUserId = ObjectId(req.userToken.userId);
     const user = await UserModel.findOne({ _id: oUserId });
 
-    // let movieHistory = [];
-    // movieHistory.push(imdbId);
+    // security check
     if (!user)
       return res.status(401).json({ message: 'Oops, user not found !' });
-    await UserModel.updateOne({ _id: oUserId }, { $push: { movieHistory:  imdbId} });
-    next();
+    // update the movieHistory array if imdbId is not includes
+    if (user.movieHistory.includes(imdbId) === false)
+      await UserModel.updateOne({ _id: oUserId }, { $push: { movieHistory:  imdbId} });
   }
   catch (e) {
     console.log('Could not set the movie as seen in the DB !');
-exports.setSeenMovie = async (req, res, next) => {
-  try {
-    const imdbId = req.params.imdbId;
-    const hash = req.params.hash;
-    console.log(req.userToken.userId);
-    
-    // const oUserId = ObjectId(req.userToken.userId);
-    // const user = await UserModel.findOne({ _id: oUserId });
-    // let updateData = new Object;
-
-    // updateData.imdbId.push(imdbId);
-    // updateData.hash.push(hash);
-
-    // if (!userInfo)
-    //   return res.status(401).json({ message: "Oops ! User not found !" });
-    // await UserModel.updateOne({_id: oUserId }, { $push: { seenMovieHistory:  imdbId }});
-    // next();
+    console.log(e);
   }
-  catch (e) {
-    console.log('Could not set movie as seen in the DB');
+};
+
+exports.isSeen = async (req, res, next) => {
+  try {
+    const imdbId = req.params.movie;
+    const oUserId = ObjectId(req.userToken.userId);
+    const user = await UserModel.findOne({ _id: oUserId , movieHistory: { $all: [imdbId] }});
+    
+    if (user !== null)
+      status = true;
+    else
+      status = false;
+    return res.status(200).send(status);
+  } catch (e) {
+    console.log('Could not see if movie is seen');
     console.log(e);
   }
 };
