@@ -17,7 +17,10 @@ const router = express.Router();
 router.get('/:imdb_id/:yts_id?', VideoController.getVideoInfo);
 
 /* ----- Download movie and stream ----- */
-router.get('/stream/:hash/:imdbId', VideoController.streamManager);
+router.get('/stream/:hash/:imdbId', VideoController.setSeenMovie, VideoController.streamManager);
+
+/* ----- Read Subtitles as a Stream ----- */
+router.get('/subtitles/:lang/:hash', VideoController.streamSubtitles);
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>

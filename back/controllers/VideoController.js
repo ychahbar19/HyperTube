@@ -4,6 +4,7 @@
 
 const VideoModel = require('../models/VideoModel');
 const MovieHistoryModel = require('../models/MovieHistoryModel');
+const UserModel = require('../models/UserModel');
 
 const path = require('path');
 const fs = require('fs');
@@ -13,15 +14,17 @@ const axios = require('axios');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const torrentStream = require('torrent-stream');
-// OpenSubtitles
 
+// OpenSubtitles
 const OS = require('opensubtitles-api');
 const OpenSubtitles = new OS('ychahbar');
 const zlib = require('zlib');
 const iconv = require('iconv-lite');
-const unzipper = require('unzipper');
 const srt2vtt = require('srt-to-vtt');
 var stringSimilarity = require('string-similarity');
+
+//ObjectId
+const ObjectId = require('mongodb').ObjectId;
 
 
 let videoInfo = {};
@@ -322,4 +325,48 @@ exports.streamManager = async (req, res, next) => {
 
   //  6.  Download torrent
   startEngine(req, res, next, positions, paths);
+};
+
+exports.streamSubtitles = (req, res, next) => {
+  const hash = req.params.hash;
+  const language = req.params.lang;
+  const path = './assets/subtitles/' + hash + '/' + hash + '.' + language + '.vtt';
+
+  //	3.	Send the custom header
+  // res.writeHead(206, head);
+  // res.setHeader('Access-Control-Allow-Origin', '*');
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  // res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('content-type', 'text/vtt');
+
+  if (fs.existsSync(path)) {
+    fs.createReadStream(path)
+      .pipe(res);
+  }
+};
+
+exports.setSeenMovie = async (req, res, next) => {
+  try {
+    const imdbId = req.params.imdbId;
+    const hash = req.params.imdbId;
+
+    console.log(req.userToken);
+    
+
+    // find the current user
+    const oUserId = ObjectId(req.userToken.userId);
+    const user = await UserModel.findOne({ _id: oUserId });
+
+    // let movieHistory = [];
+    // movieHistory.push(imdbId);
+    if (!user)
+      return res.status(401).json({ message: 'Oops, user not found !' });
+    await UserModel.updateOne({ _id: oUserId }, { $push: { movieHistory:  imdbId} });
+    next();
+  }
+  catch (e) {
+    console.log('Could not set the movie as seen in the DB !');
+    console.log(e);
+  }
 };

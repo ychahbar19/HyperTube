@@ -9,6 +9,7 @@ const expressSession = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const passport = require('passport');
+const cors = require('cors');
 
 require('./config/database');
 require('./config/authentification');
@@ -45,9 +46,14 @@ app.use(expressSession(
     }
 }));
 */
+app.use(cors());
+
 app.use((req, res, next) => // Allows access to our API from any origin, with any method and any header.
-{
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
+{  if (req.params.lang)
+    console.log('ici');
+    
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Credentials', true); 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*, Authorization');
   next();
