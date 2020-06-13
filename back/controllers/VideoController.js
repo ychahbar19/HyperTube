@@ -42,19 +42,17 @@ async function getInfo(imdb_id)
 };
 
 // Gets the video's torrents from YTS' API.
-async function getTorrents(yts_id)
-{
-  await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
-    .then(results =>
-    {
+async function getTorrents(yts_id) {
+  await axios
+    .get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
+    .then((results) => {
       videoInfo.Torrents = results.data.data.movie.torrents;
-      Object.entries(videoInfo.Torrents).forEach(item =>
-      {
+      Object.entries(videoInfo.Torrents).forEach((item) => {
         let date = new Date(item[1].date_uploaded_unix * 1000);
         item[1].year_uploaded = date.getFullYear();
       });
     })
-    .catch(error => res.status(400).json({ error }));
+    .catch((error) => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -160,6 +158,7 @@ const downloadTorrent = (req, res, datas, paths) => {
     const sizeUncomplete = fs.statSync(paths.uncomplete).size;
     const sizeTorrentStream = datas.file.length;
 
+    console.log(sizeUncomplete, sizeTorrentStream);
     if (sizeUncomplete === sizeTorrentStream) {
       //  Move from uncomplete to complete
       fs.rename(paths.uncomplete, paths.complete, err => {
