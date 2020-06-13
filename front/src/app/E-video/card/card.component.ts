@@ -50,11 +50,10 @@ export class VideoCardComponent implements OnInit {
   // 3) Calls getVideoInfo() (in video.service.ts) to fetch the video's info
   // from the API (back), and saves them in the array 'video' for output
   // in video.component.html.
+  // and also check if the movie is actually already seen
   async ngOnInit() {
     this.videoInfos = await this.videoCardService.getVideoInfo(this.imdbId, this.ytsId);
     this.isSeen = await this.videoCardService.checkIfSeen(this.imdbId);
-    console.log('seen : ' + this.isSeen);
-    
     this.isLoading = false;
   }
 
