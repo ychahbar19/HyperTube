@@ -5,6 +5,7 @@
 const VideoModel = require('../models/VideoModel');
 const MovieHistoryModel = require('../models/MovieHistoryModel');
 const UserModel = require('../models/UserModel');
+const ObjectId = require('mongodb').ObjectId;
 
 const path = require('path');
 const fs = require('fs');
@@ -367,6 +368,26 @@ exports.setSeenMovie = async (req, res, next) => {
   }
   catch (e) {
     console.log('Could not set the movie as seen in the DB !');
+exports.setSeenMovie = async (req, res, next) => {
+  try {
+    const imdbId = req.params.imdbId;
+    const hash = req.params.hash;
+    console.log(req.userToken.userId);
+    
+    // const oUserId = ObjectId(req.userToken.userId);
+    // const user = await UserModel.findOne({ _id: oUserId });
+    // let updateData = new Object;
+
+    // updateData.imdbId.push(imdbId);
+    // updateData.hash.push(hash);
+
+    // if (!userInfo)
+    //   return res.status(401).json({ message: "Oops ! User not found !" });
+    // await UserModel.updateOne({_id: oUserId }, { $push: { seenMovieHistory:  imdbId }});
+    // next();
+  }
+  catch (e) {
+    console.log('Could not set movie as seen in the DB');
     console.log(e);
   }
 };
