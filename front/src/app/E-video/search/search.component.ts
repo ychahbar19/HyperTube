@@ -75,13 +75,8 @@ export class SearchComponent implements OnInit {
     // this.isLoading = true;
     this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
     // this.isLoading = false;
+  }
 
-    /*
-    this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
-    this.isLoading = true;
-    this.results = await this.searchService.getResults(this.encodedSearchParams);
-    this.isLoading = false;
-    */
    /*
    async onScroll() {
      this.page++;
@@ -97,18 +92,4 @@ export class SearchComponent implements OnInit {
       this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
       this.isLoadingPage = false;
     }*/
-  }
-  // async movieIsSeen(result) {
-    //   const isSeen = await this.user.movieHistory.includes(result.imdb_id);
-    //   // console.log(result.imdb_id);
-  //   console.log(result.imdb_id + ' : ' + isSeen);
-
-
-  //   // console.log(result.imdbId + ' : ' + isSeen);
-
-  //   return isSeen;
-  //   // console.log(this.user.movieHistory);
-
-  //   // console.log(result);
-  // }
 }
