@@ -46,7 +46,7 @@ app.use(expressSession(
     }
 }));
 */
-// app.use(cors());
+app.use(cors());
 
 app.use((req, res, next) => // Allows access to our API from any origin, with any method and any header.
 {  if (req.params.lang)
