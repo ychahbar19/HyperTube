@@ -72,7 +72,7 @@ async function search(req, res)
   await searchYTSMovies(query_term, genre, sort_by, page).catch(error => res.status(400).json({ error }));
   if (query_term != '' && page == '')
     await searchRarbgMovies(query_term).catch(error => res.status(400).json({ error }));
-  
+
   hypertubeCompleteResults = []
   for (const values of Object.entries(hypertubeResults))
   {

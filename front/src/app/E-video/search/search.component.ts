@@ -48,9 +48,11 @@ export class SearchComponent implements OnInit {
 
   // 3) Fetches the search results from the API (back) and saves them
   // in the array 'results' for output.
-  async getSearchResults(searchParams: NgForm) {
+  async getSearchResults(searchParams: NgForm)
+  {
     this.results = null;
     this.page = 1;
+    this.encodedSearchParams = '?'
 
     if (searchParams.value.query_term) {
       this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
