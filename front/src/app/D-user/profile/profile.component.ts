@@ -26,7 +26,6 @@ export class ProfileComponent implements OnInit {
   constructor(private userService: UserService,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
-      // tslint:disable-next-line: no-string-literal
       this.userId = params['user_id'];
     });
   }
