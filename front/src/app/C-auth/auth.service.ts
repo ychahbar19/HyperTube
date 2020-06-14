@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class AuthService
-{
+export class AuthService {
   /* ------------------------------------------------------- *\
       Private and public variables.
   \* ------------------------------------------------------- */
@@ -24,8 +23,8 @@ export class AuthService
 
   /* ----- ???? -----*/
 
-  public resetPasswordSuccessMessage: string;
-  
+  public resetPasswordSuccessMessage: { en: string, fr: string };
+
   constructor(private http: HttpClient,
               private router: Router) {}
 
@@ -38,12 +37,13 @@ export class AuthService
   getResetStatusListener()        { return this.resetStatusListener.asObservable(); }
   getIsAuth()                     { return this.isAuthenticated; }
   getToken()                      { return this.token; }
-  
+
   /* ------------------------------------------------------------------ *\
       SIGNUP
   \* ------------------------------------------------------------------ */
 
-  signup(formData: // Takes the 'signup' form input as parameter.
+  // Takes the 'signup' form input as parameter.
+  signup(formData:
     {
       avatar: File;
       firstName: string;
@@ -52,9 +52,9 @@ export class AuthService
       email: string;
       password: string;
       confirmPassword: string;
-    })
-  {
-    const authData = new FormData(); // Translates the input into another format.
+    }) {
+    // Translate the input into another format.
+    const authData = new FormData();
     authData.append('photoUrl', formData.avatar);
     authData.append('firstName', formData.firstName);
     authData.append('lastName', formData.lastName);
@@ -68,8 +68,7 @@ export class AuthService
     // sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/signup', authData)
       .subscribe(
-        response =>
-        {
+        response => {
           this.signupSuccessListener.next(true);
           this.authServiceWorkingListener.next(false);
         },
@@ -81,19 +80,18 @@ export class AuthService
       ACTIVATE ACCOUNT
   \* ------------------------------------------------------------------ */
 
-  activateAccount(id: string) //Takes the user id as parameter.
-  {
+  // Takes the user id as parameter.
+  activateAccount(id: string) {
     // Calls the API's (back) activateAccount process,
     // and returns its confirmation message          ?????????????
     return this.http.post('http://localhost:3000/api/auth/activateAccount', { id });
   }
-  
+
   /* ------------------------------------------------------------------ *\
       SIGNIN
   \* ------------------------------------------------------------------ */
 
-  applySuccessSignin(response)
-  {
+  applySuccessSignin(response) {
     const now = new Date();
     const expirationDate = new Date(now.getTime() + response.expiresIn * 1000);
     const expiresInDuration = response.expiresIn;
@@ -103,37 +101,33 @@ export class AuthService
     localStorage.setItem('token', this.token);
     localStorage.setItem('expiration', expirationDate.toISOString());
 
-    this.authServiceWorkingListener.next(true); /////////////////
+    this.authServiceWorkingListener.next(true);
     this.router.navigate(['/search']);
   }
-  
-  login(formData: // Takes the 'signin' form input as parameter.
-    {
-      username: string;
-      password: string
-    })
-  {
+
+  // Takes the 'signin' form input as parameter.
+  login(formData: { username: string, password: string }) {
     // Calls the API (back) for the signin process.
     // If the signin is a success, gets the token and token expiration in response,
     // calls applySuccessSignin(), and redirects to /search.
     this.http.post<{ token: string; expiresIn: number }>('http://localhost:3000/api/auth/signin', formData)
       .subscribe(
-        response =>
-        {
+        response => {
           this.token = response.token;
-          if (this.token)
+          if (this.token) {
             this.applySuccessSignin(response);
+          }
         },
         error => { this.authServiceWorkingListener.next(false); }
       );
   }
-  
+
   /* ------------------------------------------------------------------ *\
       FORGOTTEN PASSWORD
   \* ------------------------------------------------------------------ */
-  
-  forgotPassword(formData: { username: string }) // Takes the 'forgot password' form input as parameter.
-  {
+
+  // Takes the 'forgot password' form input as parameter.
+  forgotPassword(formData: { username: string }) {
     // Calls the API's (back) forgotPassword process.
     // If the call is a success (i.e. email is sent to rest password),
     // sets the resetPasswordSuccessMessage.
@@ -141,14 +135,15 @@ export class AuthService
     // sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/forgotPassword', formData)
       .subscribe(
-        response =>
-        {
-          this.resetPasswordSuccessMessage = 'We just sent you an email to the email address associated to this account. Check it and follow the steps';
+        response => {
+          this.resetPasswordSuccessMessage = {
+            en: 'We just sent an email to the email address associated to this account. Check it and follow the steps.',
+            fr: 'Nous avons envoyé un email à l\'adresse email associée à ce compte. Ouvrez-le et suivez les étapes.'
+          };
           this.authServiceWorkingListener.next(false);
         },
-        error =>
-        {
-          this.resetPasswordSuccessMessage = '';
+        error => {
+          this.resetPasswordSuccessMessage = { en: '', fr: '' };
           this.authServiceWorkingListener.next(false);
         }
       );
@@ -158,27 +153,30 @@ export class AuthService
       RESET PASSWORD
   \* ------------------------------------------------------------------ */
 
-  resetPassword( // Takes the user id/hash and reset password form data as parameter.
+  // Takes the user id/hash and reset password form data as parameter.
+  resetPassword(
     id: string,
     hash: string,
-    formData: { password: string; confirmPassword: string })
-  {
-    const datas = { id, hash, formData }; // Translates the input into another format.
-    
+    formData: { password: string; confirmPassword: string }) {
+
+    // Translate the input into another format.
+    const datas = { id, hash, formData };
+
     // Calls the back's resetPassword process.
     // If the reset is a success, sets the resetPasswordSuccessMessage.
     // And in any case, once the process is done,
     // sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/resetPassword', datas)
       .subscribe(
-        response =>
-        {
-          this.resetPasswordSuccessMessage = 'Your password has been successfully changed! You may now log in with your new password';
+        response => {
+          this.resetPasswordSuccessMessage = {
+            en: 'Your password has been successfully changed! You may now log in with your new password.',
+            fr: 'Votre mot de passe a été changé avec succès! Vous pouvez vous connecter avec votre nouveau mot de passe.'
+          };
           this.authServiceWorkingListener.next(false);
         },
-        error =>
-        {
-          this.resetPasswordSuccessMessage = '';
+        error => {
+          this.resetPasswordSuccessMessage = { en: '', fr: '' };
           this.authServiceWorkingListener.next(false);
         }
       );
@@ -188,8 +186,7 @@ export class AuthService
       LOGOUT
   \* ------------------------------------------------------------------ */
 
-  logout()
-  {
+  logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
     this.isAuthenticated = false;
@@ -202,68 +199,23 @@ export class AuthService
   /* ------------------------------------------------------------------ *\
       S
   \* ------------------------------------------------------------------ */
-/*
-  // update a user informations such as firstname, lastname, username and email
-  updateUser(
-    formData: {
-      avatar: File | string,
-      firstName: string,
-      lastName: string,
-      username: string,
-      email: string
-    }
-  ) {
-    const updateData = new FormData();
-    updateData.append('photoUrl', formData.avatar);
-    updateData.append('firstName', formData.firstName);
-    updateData.append('lastName', formData.lastName);
-    updateData.append('username', formData.username);
-    updateData.append('email', formData.email);
-    // this.isLoading.next(true);
-    return this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/api/user/editProfile', updateData)
-      .subscribe(response => {
-        // update du cookie dans le localStorage pour une duree set en back
-        // this.isLoading.next(false);
-        const token = response.token;
-        this.token = token;
-        if (this.token) {
-          const expiresInDuration = response.expiresIn;
-          this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
-          this.isAuthenticated = true;
-          this.authStatusListener.next(true);
-          const now = new Date();
-          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          localStorage.setItem('token', this.token);
-          localStorage.setItem('expiration', expirationDate.toISOString());
-        }
-      }, error => {
-        this.authStatusListener.next(false);
-      });
-  }
-  */
-
-  /* ------------------------------------------------------------------ *\
-      S
-  \* ------------------------------------------------------------------ */
 
   // Auto authenticate user if token exists and is still valid (duration wise)
-  autoAuthUser()
-  {
-        let authInformation;
-        const token = localStorage.getItem('token');
-        const expirationDate = localStorage.getItem('expiration');
-        if (!token || !expirationDate)
-          authInformation = null;
-        else
-          authInformation = { token, expirationDate: new Date(expirationDate) };
+  autoAuthUser() {
+    let authInformation: any;
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('expiration');
+    if (!token || !expirationDate) {
+      authInformation = null;
+    } else {
+      authInformation = { token, expirationDate: new Date(expirationDate) };
+    }
 
-    if (!authInformation)
-      return;
+    if (!authInformation) { return; }
 
     const now = new Date();
     const expiresInDuration = authInformation.expirationDate.getTime() - now.getTime();
-    if (expiresInDuration > 0)
-    {
+    if (expiresInDuration > 0) {
       this.token = authInformation.token;
       this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
       this.isAuthenticated = true;

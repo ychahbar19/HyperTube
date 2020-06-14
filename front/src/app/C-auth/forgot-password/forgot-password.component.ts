@@ -30,7 +30,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
                                 // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit contenir minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
-    'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' }
+    'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' },
+    'Login link':             { en: 'Back to login page', fr: 'Retourner à la page de connexion' }
   };
 
   /* ------------------------------------------------------- *\
@@ -45,10 +46,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   \* ------------------------------------------------------- */
 
   public isLoading = false;
-  public resetStatus = false;
   public errorMessage: string;
   public successMessage: string;
   public secondForm = false;
+  public activateLink = false;
 
   /* ------------------------------------------------------- *\
       U
@@ -56,7 +57,6 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
   @ViewChild('f', { static: false }) forgotForm: NgForm;
   @ViewChild('f2', { static: false }) resetForm: NgForm;
-  response: Observable<any>;
 
   /* ------------------------------------------------------- *\
       Initialisation
@@ -70,8 +70,11 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     // Listens to know when auth.service is ready (=when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
-      .subscribe(sub => { this.successMessage = this.authService.resetPasswordSuccessMessage;
-                          this.isLoading = false; });
+      .subscribe(sub => {
+        this.successMessage = this.authService.resetPasswordSuccessMessage[this.lg];
+        this.isLoading = false;
+        this.activateLink = true;
+      });
 
     // When the URL contains an id and hash,
     // shows the second form to choose a new password
