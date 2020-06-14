@@ -29,15 +29,14 @@ exports.startJob = async () => {
     '0 0 * * *',
     async () => {
       const now = Date.now();
-      console.log(now);
       const oneMonthAgo = now - 2628000000;
       const moviesToDelete = await MovieHistoryModel.find({
         lastSeen: { $lte: oneMonthAgo }
       });
-      if (moviesToDelete) {
+      if (Array.isArray(moviesToDelete) && moviesToDelete.length > 0) {
         deleteMovies(moviesToDelete);
       } else {
-        console.log('No movie to be deleted !'.yellow);
+        console.log("No movies to be deleted !".yellow);
       }
     },
     null,

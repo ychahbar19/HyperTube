@@ -1,5 +1,4 @@
-<div class="spinner" *ngIf="isLoading"></div>
-<div class="container-fluid" *ngIf="!isLoading">
+<div class="container-fluid">
 
   <!-- SEARCH FORM -->
   <form #searchParams="ngForm" (ngSubmit)="getSearchResults(searchParams)" class="mb-3" novalidate>
@@ -33,8 +32,8 @@
         <select class="form-control bg-dark" ngModel name="sort_by" (change)="getSearchResults(searchParams)">
           <option value="" selected *ngIf="!changeOrder">{{ txt['Popularity'][lg] }}</option>
           <option value="title" *ngIf="!changeOrder">{{ txt['Title'][lg] }}</option>
-          <!-- <option value="title" selected *ngIf="changeOrder">{{ txt['Title'][lg] }}</option>
-          <option value="" *ngIf="changeOrder">{{ txt['Popularity'][lg] }}</option> -->
+          <option value="title" selected *ngIf="changeOrder">{{ txt['Title'][lg] }}</option>
+          <option value="popularity" *ngIf="changeOrder">{{ txt['Popularity'][lg] }}</option>
           <option value="year">{{ txt['Year'][lg] }}</option>
         </select>
         <i class="fas fa-sort-down text-warning"></i>
@@ -45,33 +44,50 @@
   </form>
 
   <!-- SEARCH RESULTS -->
-  <div class="spinner" *ngIf="!results"></div>
-  <div class="row" *ngIf="results">
+  <div>
+    <div class="spinner" *ngIf="!results"></div>
 
-    <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
-      <div class="card bg-dark">
-        <img class="card-img-top" src="{{ result['Poster'] }}">
-        <div class="card-body">
-          <h6 class="card-title">
-            <a href="/video/{{ result.imdb_id }}/{{ result.yts_id }}" class="stretched-link">
-              {{ result.Title }} ({{ result['Year'] }})
-            </a>
-          </h6>
-          <p>
-            <span class="star-rating">
-              <span class="back-stars">
-                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-                <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+    <!-- Inifnite scroll div --
+    <div
+    *ngIf="results"
+    class="row"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="50"
+    (scrolled)="onScroll()"> -->
+    <div
+    *ngIf="results"
+    class="row">
+      <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
+        <div class="card bg-dark">
+          <div class="container-poster">
+            <img class="card-img-top" src="{{ result['Poster'] }}">
+            <div class="middle">
+              <img src="../../../assets/img/play-button.svg" alt="">
+            </div>
+          </div>
+          <div class="card-body">
+            <h6 class="card-title">
+              <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}" class="stretched-link">
+                {{ result['Title'] }} ({{ result['Year'] }})
+              </a>
+            </h6>
+            <div>
+              <span class="star-rating">
+                <span class="back-stars">
+                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                  <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+                </span>
+                <span class="small">
+                  {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
+                </span>
               </span>
-              <span class="small">
-                {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
-              </span>
-            </span>
-          </p>
-          <p>{{ result['Genre'] }}</p>
+            </div>
+            <p>{{ result['Genre'] }}</p>
+          </div>
         </div>
       </div>
+      <div class="spinner" *ngIf="isLoadingPage"></div>
     </div>
-
   </div>
 </div>

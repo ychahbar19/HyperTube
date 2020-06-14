@@ -17,11 +17,7 @@ let hypertubeResults = {};
 async function searchYTSMovies(query_term, genre, sort_by, page)
 {
   let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=25';
-  if (query_term)
-  {
-    yts_url += '&query_term=' + query_term;
-    if (sort_by == '') { sort_by = 'title'; }
-  }
+  if (query_term)             { yts_url += '&query_term=' + query_term; }
   if (genre)                  { yts_url += '&genre=' + genre; }
   if (sort_by == 'title')     { yts_url += '&sort_by=title&order_by=asc'; }
   else if (sort_by == 'year') { yts_url += '&sort_by=year&order_by=desc'; }
@@ -68,8 +64,10 @@ async function search(req, res)
   hypertubeResults = {}
   let query_term = ((req.query.query_term != undefined) ? req.query.query_term : '');
   let genre = ((req.query.genre != undefined) ? req.query.genre : '');
-  let sort_by = ((req.query.sort_by != undefined) ? req.query.sort_by : ''); // '', 'title' or 'year'
+  let sort_by = ((req.query.sort_by != undefined) ? req.query.sort_by : '');
   let page = ((req.query.page != undefined) ? req.query.page : '');
+  if (query_term != '' && sort_by == '')
+    sort_by = 'title';
 
   await searchYTSMovies(query_term, genre, sort_by, page).catch(error => res.status(400).json({ error }));
   if (query_term != '' && page == '')
