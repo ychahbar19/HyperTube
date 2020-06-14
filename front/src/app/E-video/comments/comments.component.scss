@@ -33,3 +33,26 @@
 {
     margin: 0;
 }
+
+// .btn-div {
+//   position: relative;
+// }
+
+.btn-div .btn {
+  // position: absolute;
+  // right: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.btn-div .btn:active, .btn-div .btn:focus {
+  outline: none !important;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    .btn-div .btn {
+        width:100%;
+    }
+}

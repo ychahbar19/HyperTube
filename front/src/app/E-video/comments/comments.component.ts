@@ -24,7 +24,8 @@ export class CommentsComponent implements OnInit {
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
   public txt = {
-    'Add a comment':  { en: 'Add a comment', fr: 'Ajoutez un commentaire' },
+    Title:            { en: 'Add a comment', fr: 'Ajoutez un commentaire'},
+    Comment:          { en: 'Your comment...', fr: 'Votre commentaire...' },
     Send:             { en: 'Send', fr: 'Envoyer' }
   };
 
