@@ -6,11 +6,11 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   // Fetches the video info from the API (back) and returns it.
-  getUserInfo(user_id) {
+  getUserInfo(userId: string) {
     return new Promise((resolve, reject) => {
-      user_id = (user_id !== undefined) ? user_id : '';
+      userId = (userId !== undefined) ? userId : '';
 
-      this.http.get<{}>('http://localhost:3000/api/user/profile/' + user_id)
+      this.http.get<{}>('http://localhost:3000/api/user/profile/' + userId)
         .toPromise()
         .then(response => { resolve(response); },
               error => { reject(error); });

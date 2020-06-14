@@ -11,8 +11,7 @@ import { FormAuthUserService } from '../../CD-form-auth-user/form-auth-user.serv
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit, OnDestroy
-{
+export class SignupComponent implements OnInit, OnDestroy {
   /* ------------------------------------------------------- *\
       User language & translations for the static text.
   \* ------------------------------------------------------- */
@@ -20,7 +19,7 @@ export class SignupComponent implements OnInit, OnDestroy
   public lg = AppComponent.userLanguage;
   public txt = {
     'Sign up':                { en: 'Sign up', fr: 'Inscription' },
-    'with':                   { en: 'with', fr: 'avec' },
+    with:                     { en: 'with', fr: 'avec' },
     'Creation success alert': { en: 'A confirmation email has been sent to your address. Please check it to activate your account.',
                                 fr: 'Un email de confirmation vous a été envoyé. Veuillez le consulter pour activer votre compte.' },
     'Creation error alert':   { en: 'Oops, something is wrong. Please correct your info then submit it again.',
@@ -30,45 +29,47 @@ export class SignupComponent implements OnInit, OnDestroy
     'Name required':          { en: 'Full name is required.', fr: 'Le nom complet est requis.' },
     'Name format':            { en: 'Your name must be 2-30 characters long (letters and -,\'. only)',
                                 fr: 'Votre nom doit contenir 2 à 30 caractères (lettres et -,\'. uniquement).' },
-    'Username':               { en: 'Username', fr: 'Pseudo' },
+    Username:                 { en: 'Username', fr: 'Pseudo' },
     'Username required':      { en: 'Username is required.', fr: 'Le pseudo est requis.' },
     'Username format':        { en: 'Your username must be 4-20 characters long (letters and numbers only)',
                                 fr: 'Votre pseudo doit contenir 4 à 20 caractères (lettres et chiffres uniquement).' },
     'Username unique':        { en: 'This username is taken.', fr: 'Ce pseudo est déjà pris.' },
-    'Email':                  { en: 'Email', fr: 'Email' },
+    Email:                    { en: 'Email', fr: 'Email' },
     'Email required':         { en: 'Email is required.', fr: 'L\'email est requis.' },
     'Email format':           { en: 'Please enter a valid email address.',
                                 fr: 'Veuillez entrer une adresse email valide.' },
     'Email unique':           { en: 'This email address is taken.', fr: 'Cette adresse email est déjà prise.' },
-    'Password':               { en: 'Password', fr: 'Mot de passe' },
+    Password:                 { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
+                                // tslint:disable-next-line: max-line-length
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
+                                // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
-    'Submit':                 { en: 'Submit', fr: 'Envoyer' },
+    Submit:                   { en: 'Submit', fr: 'Envoyer' },
     'Have account':           { en: 'Already have an account?', fr: 'Déjà inscrit ?' },
     'Sign in':                { en: 'Sign in', fr: 'Connexion' }
   };
 
   /* ------------------------------------------------------- *\
-      Listeners for status changes. 
+      Listeners for status changes.
   \* ------------------------------------------------------- */
 
-  private authServiceWorkingSub: Subscription; //Tracks if auth.service is running/done.
-  private signupSuccessSub: Subscription; //Tracks if the signup process is a success.
-  private errorStatusSub: Subscription; //Gets any error from the API (back).
-  
+  private authServiceWorkingSub: Subscription; // Tracks if auth.service is running/done.
+  private signupSuccessSub: Subscription; // Tracks if the signup process is a success.
+  private errorStatusSub: Subscription; // Gets any error from the API (back).
+
   /* ------------------------------------------------------- *\
       Public variables.
   \* ------------------------------------------------------- */
 
-  public isLoading = false; //Used to show the spinner during execution times.
-  public form: FormGroup; //Contains the signup form.
-  public avatarPreview: string; //Preview of the uploaded avatar.
+  public isLoading = false; // Used to show the spinner during execution times.
+  public form: FormGroup; // Contains the signup form.
+  public avatarPreview: string; // Preview of the uploaded avatar.
   public usernameNotUnique = false;
   public emailNotUnique = false;
-  public signupSuccess = false; //Used to hide/show the 'successful signup' message.
-  public errorMessage = false; //Used to hide/show the 'error signup' message.
+  public signupSuccess = false; // Used to hide/show the 'successful signup' message.
+  public errorMessage = false; // Used to hide/show the 'error signup' message.
 
   /* ------------------------------------------------------- *\
       Initialisation
@@ -78,8 +79,7 @@ export class SignupComponent implements OnInit, OnDestroy
               private errorService: ErrorService,
               private formAuthUserService: FormAuthUserService) {}
 
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
     // Creates the form with all the necessary validation rules.
     this.form = this.formAuthUserService.defineValidFormGroup('signup');
 
@@ -98,13 +98,10 @@ export class SignupComponent implements OnInit, OnDestroy
     // Listens to errors from the API's signup process
     // and translates them into field specific field errors.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      errors_array =>
-      {
+      errorsArray => {
         this.errorMessage = true;
-        if (typeof errors_array['username'] !== 'undefined')
-          this.usernameNotUnique = true;
-        if (typeof errors_array['email'] !== 'undefined')
-          this.emailNotUnique = true;
+        if (typeof errorsArray['username'] !== 'undefined') { this.usernameNotUnique = true; }
+        if (typeof errorsArray['email'] !== 'undefined') { this.emailNotUnique = true; }
       }
     );
   }
@@ -115,12 +112,11 @@ export class SignupComponent implements OnInit, OnDestroy
 
   // When a file (= avatar) is uploaded, adds its info to the
   // form object and reads it to output the avatar preview.
-  onAvatarPicked(event: Event)
-  {
+  onAvatarPicked(event: Event) {
     const file = (event.target as HTMLInputElement).files[0];
     this.form.patchValue({ avatar: file });
-    this.form.get('avatar').updateValueAndValidity(); //Recalculates the value and validation status of the control.
-    
+    this.form.get('avatar').updateValueAndValidity(); // Recalculates the value and validation status of the control.
+
     const reader = new FileReader();
     reader.onload = () => { this.avatarPreview = reader.result as string; };
     reader.readAsDataURL(file);
@@ -128,10 +124,8 @@ export class SignupComponent implements OnInit, OnDestroy
 
   // When the form is updated, if it's valid, sets the loading status as true
   // while authService.signup connects to the API (back) to signup the user.
-  onSignup()
-  {
-    if (this.form.invalid)
-      return;
+  onSignup() {
+    if (this.form.invalid) { return; }
     this.isLoading = true;
     this.usernameNotUnique = false;
     this.emailNotUnique = false;
@@ -142,8 +136,7 @@ export class SignupComponent implements OnInit, OnDestroy
       End
   \* ------------------------------------------------------- */
 
-  ngOnDestroy()
-  {
+  ngOnDestroy() {
     this.authServiceWorkingSub.unsubscribe();
     this.signupSuccessSub.unsubscribe();
     this.errorStatusSub.unsubscribe();

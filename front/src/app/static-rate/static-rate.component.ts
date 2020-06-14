@@ -7,10 +7,8 @@ import { NgbRatingConfig } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./static-rate.component.scss'],
   providers: [NgbRatingConfig]
 })
-export class StaticRateComponent
-{
-  constructor(config: NgbRatingConfig)
-  {
+export class StaticRateComponent {
+  constructor(config: NgbRatingConfig) {
     config.max = 10;
     config.readonly = true;
   }

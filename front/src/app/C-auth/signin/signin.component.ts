@@ -11,8 +11,7 @@ import { ErrorService } from 'src/app/error/error.service';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent implements OnInit, OnDestroy
-{
+export class SigninComponent implements OnInit, OnDestroy {
   /* ------------------------------------------------------- *\
       User language & translations for the static text.
   \* ------------------------------------------------------- */
@@ -20,25 +19,25 @@ export class SigninComponent implements OnInit, OnDestroy
   public lg = AppComponent.userLanguage;
   public txt = {
     'Sign in':            { en: 'Sign in', fr: 'Connexion' },
-    'with':               { en: 'with', fr: 'avec' },
-    'Username':           { en: 'Username', fr: 'Pseudo' },
+    with:                 { en: 'with', fr: 'avec' },
+    Username:             { en: 'Username', fr: 'Pseudo' },
     'Username error':     { en: 'Invalid username.', fr: 'Pseudo invalide.' },
-    'Password':           { en: 'Password', fr: 'Mot de passe' },
+    Password:             { en: 'Password', fr: 'Mot de passe' },
     'Password error':     { en: 'Invalid password.', fr: 'Mot de passe invalide.' },
     'Remember me':        { en: 'Remember me', fr: 'Rester connecté' },
     'Forgotten password': { en: 'Forgotten password?', fr: 'Mot de passe oublié ?' },
-    'Submit':             { en: 'Submit', fr: 'Envoyer' },
+    Submit:               { en: 'Submit', fr: 'Envoyer' },
     'No account yet':     { en: 'Don\'t have an account?', fr: 'Pas encore de compte ?' },
     'Sign up':            { en: 'Sign up', fr: 'Inscription' }
   };
 
   /* ------------------------------------------------------- *\
-      Listeners for status changes. 
+      Listeners for status changes.
   \* ------------------------------------------------------- */
 
-  private authServiceWorkingSub: Subscription; //Tracks if auth.service is running/done.
-  private accountStatusSub: Subscription; //Tracks .....
-  private errorStatusSub: Subscription; //Gets any error from the API (back).
+  private authServiceWorkingSub: Subscription; // Tracks if auth.service is running/done.
+  private accountStatusSub: Subscription; // Tracks .....
+  private errorStatusSub: Subscription; // Gets any error from the API (back).
 
   /* ------------------------------------------------------- *\
       Public variables.
@@ -63,27 +62,23 @@ export class SigninComponent implements OnInit, OnDestroy
               private errorService: ErrorService,
               private route: ActivatedRoute) {}
 
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
     // Listens to know when auth.service is ready (=when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
       .subscribe(sub => { this.isLoading = false; }
     );
-    //------>>>> same as signup
+    // ------>>>> same as signup
 
     // When the URL contains an id, triggers the service's activateAccount() function.
-    if (this.route.snapshot.queryParams.id)
-    {
+    if (this.route.snapshot.queryParams.id) {
       this.isLoading = true;
       this.accountStatusSub = this.authService.activateAccount(this.route.snapshot.queryParams.id).subscribe(
-        success =>
-        {
+        success => {
           this.isLoading = false;
           this.successSignup = true;
         },
-        error =>
-        {
+        error => {
           this.isLoading = false;
           this.errorMessage = error.error.message;
         }
@@ -91,15 +86,14 @@ export class SigninComponent implements OnInit, OnDestroy
     }
 
     // When the URL contains a token, triggers the service's applySuccessSignin() function.
-    if (this.route.snapshot.queryParams.token)
-    {
+    if (this.route.snapshot.queryParams.token) {
       this.isLoading = true;
       this.authService.applySuccessSignin(this.route.snapshot.queryParams);
     }
 
     // Listens to errors from the signin API process.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      errors_array => { this.errorMessage = errors_array['message']; }
+      errorsArray => { this.errorMessage = errorsArray['message']; }
     );
   }
 
@@ -110,24 +104,22 @@ export class SigninComponent implements OnInit, OnDestroy
   // When the form is submitted, if it's valid, sets the loading status
   // as true while authService.signin connects to the API (back) to
   // signin the user.
-  onLogin()
-  {
-    if (this.signInForm.invalid)
-      return;
+  onLogin() {
+    if (this.signInForm.invalid) { return; }
     this.isLoading = true;
     this.authService.login(this.signInForm.value);
   }
-  //------>>>> compare with signup wording
+  // ------>>>> compare with signup wording
 
   /* ------------------------------------------------------- *\
       End
   \* ------------------------------------------------------- */
 
-  ngOnDestroy()
-  {
+  ngOnDestroy() {
     this.authServiceWorkingSub.unsubscribe();
-    if (this.accountStatusSub)
+    if (this.accountStatusSub) {
       this.accountStatusSub.unsubscribe();
+    }
     this.errorStatusSub.unsubscribe();
   }
 }

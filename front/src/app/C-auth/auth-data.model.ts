@@ -1,5 +1,4 @@
-export interface AuthData
-{
+export interface AuthData {
   avatar?: File;
   firstName?: string;
   lastName?: string;

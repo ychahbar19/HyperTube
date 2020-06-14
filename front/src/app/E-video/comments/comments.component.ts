@@ -11,8 +11,8 @@ import { CommentsService } from './comments.service';
   styleUrls: ['./comments.component.scss']
 })
 export class CommentsComponent implements OnInit {
-  private imdb_id;
-  private yts_id;
+  private imdbId;
+  private ytsId;
 
   public comments;
   public formGroup = new FormGroup(
@@ -33,8 +33,8 @@ export class CommentsComponent implements OnInit {
   constructor(private commentsService: CommentsService,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
-      this.imdb_id = params['imdb_id'];
-      this.yts_id = params['yts_id'];
+      this.imdbId = params['imdb_id'];
+      this.ytsId = params['yts_id'];
     });
   }
 
@@ -47,14 +47,14 @@ export class CommentsComponent implements OnInit {
   // from the API (back), and saves them in the array 'comments' for output
   // in comments.component.html.
   async fetchComments() {
-    this.comments = await this.commentsService.fetchComments(this.imdb_id, this.lg);
+    this.comments = await this.commentsService.fetchComments(this.imdbId, this.lg);
   }
 
   // 4) Calls postComment() (in comments.service.ts) to save a new comment in the db,
   // and (if it went OK) calls fetchComments() again to output the new comment,
   // plus resets the form.
   async postComment() {
-    this.postResponse = await this.commentsService.postComment(this.imdb_id, this.yts_id, this.formGroup.value, this.lg);
+    this.postResponse = await this.commentsService.postComment(this.imdbId, this.ytsId, this.formGroup.value, this.lg);
     if (this.postResponse.message === 'OK') {
       await this.fetchComments();
       this.formGroup.reset();

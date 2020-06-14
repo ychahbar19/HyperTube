@@ -3,8 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { mimeType } from '../mime-type.validator';
 
 @Injectable({ providedIn: 'root' })
-export class FormAuthUserService
-{
+export class FormAuthUserService {
   /* ------------------------------------------------------------- *\
     1) Private variables and functions to support
       defineValidFormGroup() below.

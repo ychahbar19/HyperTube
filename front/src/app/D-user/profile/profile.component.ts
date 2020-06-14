@@ -10,7 +10,7 @@ import { UserService } from '../user.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  private user_id;
+  private userId: string;
 
   public profile = {};
   public profileComments = [];
@@ -22,11 +22,12 @@ export class ProfileComponent implements OnInit {
     Edit: { en: 'Edit my profile', fr: 'Editer mon profil' },
   };
 
-  // 2) Defines the variable user_id by taking the value in the URL.
+  // 2) Defines the variable userId by taking the value in the URL.
   constructor(private userService: UserService,
               private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
-      this.user_id = params['user_id'];
+      // tslint:disable-next-line: no-string-literal
+      this.userId = params['user_id'];
     });
   }
 
@@ -34,8 +35,8 @@ export class ProfileComponent implements OnInit {
   // from the API (back), and saves them in the array 'profile' for output
   // in profile.component.html.
   async ngOnInit() {
-    this.profile = await this.userService.getUserInfo(this.user_id);
-    // if (this.user_id === undefined || this.user_id == /* active user id*/ )
-      this.showEdit = true;
+    this.profile = await this.userService.getUserInfo(this.userId);
+    // if (this.userId === undefined || this.userId == /* active user id*/ )
+    this.showEdit = true;
   }
 }

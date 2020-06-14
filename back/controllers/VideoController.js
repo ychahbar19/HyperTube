@@ -4,24 +4,29 @@
 
 const VideoModel = require('../models/VideoModel');
 const MovieHistoryModel = require('../models/MovieHistoryModel');
+const UserModel = require('../models/UserModel');
+// const ObjectId = require('mongodb').ObjectId;
 
 const path = require('path');
 const fs = require('fs');
 
 const http = require('http');
 const axios = require('axios');
+const rarbgApi = require('rarbg-api')
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const torrentStream = require('torrent-stream');
-// OpenSubtitles
 
+// OpenSubtitles
 const OS = require('opensubtitles-api');
 const OpenSubtitles = new OS('ychahbar');
 const zlib = require('zlib');
 const iconv = require('iconv-lite');
-const unzipper = require('unzipper');
 const srt2vtt = require('srt-to-vtt');
 var stringSimilarity = require('string-similarity');
+
+//ObjectId
+const ObjectId = require('mongodb').ObjectId;
 
 
 let videoInfo = {};
@@ -30,29 +35,63 @@ let videoInfo = {};
     2) Private functions.
 \* -------------------------------------------------------------------------- */
 
-// Gets the video's info from The Open Movie Database (OMDb)'s API.
-async function getInfo(imdb_id)
+// Gets the video's info from The Open Movie Database (OMDb) and The Movie Database (TMBD).
+async function getInfo(user_language, imdb_id)
 {
   await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + imdb_id)
-    .then(results =>
+    .then(async results =>
     {
       videoInfo = new VideoModel(results.data);
+      videoInfo['Director'] = videoInfo['Director'].replace(/ *\([^)]*\) */g, "");
+      videoInfo['Writer'] = videoInfo['Writer'].replace(/ *\([^)]*\) */g, "");
+      if (user_language == 'fr')
+      {
+        await axios.get('https://api.themoviedb.org/3/find/' + imdb_id + '?external_source=imdb_id&language=fr-FR&api_key=d3cba2eda31968ee058ffc7166dbfad9')
+        .then(results =>
+          {
+            videoInfo['title'] = results.data.movie_results[0]['title'];
+            videoInfo['overview'] = results.data.movie_results[0]['overview'];
+          })
+          .catch(error => error)
+      }
     })
-    .catch(error => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
+    .catch(error => error);
 };
 
 // Gets the video's torrents from YTS' API.
-async function getTorrents(yts_id) {
-  await axios
-    .get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
-    .then((results) => {
+async function getYtsTorrents(yts_id)
+{
+  await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
+    .then(results =>
+    {
       videoInfo.Torrents = results.data.data.movie.torrents;
-      Object.entries(videoInfo.Torrents).forEach((item) => {
+      Object.entries(videoInfo.Torrents).forEach(item =>
+      {
+        item[1].title = 'YIFY ' + item[1].quality + ' ' + item[1].type;
         let date = new Date(item[1].date_uploaded_unix * 1000);
         item[1].year_uploaded = date.getFullYear();
       });
     })
-    .catch((error) => res.status(400).json({ error })); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
+    .catch(error => console.log('error: ', error)); // si erreur : res is not defined. Devrait return error pour que getVideoInfo send status 400
+};
+
+// Gets the video's torrents from rargb' API.
+async function getRargbTorrents(imdb_id)
+{
+  await rarbgApi.search(imdb_id, null, 'imdb')
+    .then(results =>
+    {
+      results.forEach(result => {
+        videoInfo.Torrents = {
+          peers: result.leechers,
+          seeds: result.seeders,
+          size: result.size,
+          year_uploaded: result.pubdate.substring(0, 4),
+          title: result.title
+        };
+      });
+    })
+    .catch(error => console.log('error: ', error));
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -63,9 +102,14 @@ async function getTorrents(yts_id) {
 // and returns their combined results.
 exports.getVideoInfo = async function getVideoInfo(req, res)
 {
-  await getInfo(req.params.imdb_id);
-  if (req.params.yts_id)
-    await getTorrents(req.params.yts_id);
+  await getInfo(req.params.user_language, req.params.imdb_id);
+  if (req.params.yts_id != undefined)
+  {
+    if (req.params.yts_id != 0)
+      await getYtsTorrents(req.params.yts_id);
+    else
+      await getRargbTorrents(req.params.imdb_id);
+  }
   res.status(200).send(videoInfo);
 };
 
@@ -209,7 +253,7 @@ const subFilter = async (subArray, fileName) => {
 };
 
 const downloadSubtitles = async (subArray, hash) => {
-  const converterStream = iconv.decodeStream('iso-8859-5');
+  iconv.decodeStream('iso-8859-5');
 
   for (let i = 0; subArray[i]; i++)
   {
@@ -224,7 +268,7 @@ const downloadSubtitles = async (subArray, hash) => {
     if (!fs.existsSync(path))
       fs.mkdirSync(path);
     const output = fs.createWriteStream('./assets/subtitles/' + hash + '/' + hash +  '.' + language +'.vtt');
-    const request =  http.get(subArray[i].SubDownloadLink, (response) => {
+    http.get(subArray[i].SubDownloadLink, (response) => {
       response
       .pipe(zlib.createGunzip())
       .pipe(srt2vtt())
@@ -321,4 +365,58 @@ exports.streamManager = async (req, res, next) => {
 
   //  6.  Download torrent
   startEngine(req, res, next, positions, paths);
+};
+
+exports.streamSubtitles = (req, res, next) => {
+  const hash = req.params.hash;
+  const language = req.params.lang;
+  const path = './assets/subtitles/' + hash + '/' + hash + '.' + language + '.vtt';
+
+  //	3.	Send the custom header
+  // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('content-type', 'text/vtt');
+
+  if (fs.existsSync(path)) {
+    fs.createReadStream(path)
+      .pipe(res);
+  }
+};
+
+exports.setSeenMovie = async (req, res, next) => {
+  try {
+    const imdbId = req.params.imdbId;
+
+    // find the current user
+    const oUserId = ObjectId(req.userToken.userId);
+    const user = await UserModel.findOne({ _id: oUserId });
+
+    // security check
+    if (!user)
+      return res.status(401).json({ message: 'Oops, user not found !' });
+    // update the movieHistory array if imdbId is not includes
+    if (user.movieHistory.includes(imdbId) === false)
+      await UserModel.updateOne({ _id: oUserId }, { $push: { movieHistory:  imdbId} });
+  }
+  catch (e) {
+    console.log('Could not set the movie as seen in the DB !');
+    console.log(e);
+  }
+};
+
+exports.isSeen = async (req, res, next) => {
+  try {
+    const imdbId = req.params.movie;
+    const oUserId = ObjectId(req.userToken.userId);
+    const user = await UserModel.findOne({ _id: oUserId , movieHistory: { $all: [imdbId] }});
+    
+    if (user !== null)
+      status = true;
+    else
+      status = false;
+    return res.status(200).send(status);
+  } catch (e) {
+    console.log('Could not see if movie is seen');
+    console.log(e);
+  }
 };

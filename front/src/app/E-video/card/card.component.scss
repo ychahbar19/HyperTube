@@ -17,11 +17,22 @@
     overflow: hidden;
     color: gold;
 }
+.details
+{
+  padding-left: 0.5em;
+  font-size: 0.9em;
+}
 
 // VIDEO TORRENTS
 td
 {
   width: auto;
+}
+
+.seenLogo img
+{
+  display: block;
+  margin-left: 10px;
 }
 
 td.min
