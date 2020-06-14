@@ -16,4 +16,17 @@ export class VideoCardService
               error => { reject(error); });
     });
   }
+
+  async checkIfSeen(imdbId) {
+    return new Promise((resolve, reject) => {
+      this.http.get<any>('http://localhost:3000/api/video/isSeen/' + imdbId)
+        .toPromise()
+        .then(response => { 
+          setTimeout(() => {
+            resolve(response); 
+          }, 1500);
+        },
+        error => { reject(error); });
+    });
+  }
 }

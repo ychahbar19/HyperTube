@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { ActivatedRoute } from '@angular/router';
 import { VideoCardService } from './card.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-video',
@@ -21,6 +22,7 @@ export class VideoCardComponent implements OnInit
   public isLoading = true;
   public subEnPath: any;
   public subFrPath: any;
+  public isSeen: any;
 
   // 1) Defines the translations for the static text.
   public lg = AppComponent.userLanguage;
@@ -36,10 +38,10 @@ export class VideoCardComponent implements OnInit
 
   // 2) Defines the variables imdb_id and yts_id by taking the values in the URL.
   constructor(private videoCardService: VideoCardService,
-              private route: ActivatedRoute)
-  {
-    this.route.params.subscribe(params =>
-    {
+              private http: HttpClient,
+              private route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      // tslint:disable-next-line: no-string-literal
       this.imdbId = params['imdb_id'];
       this.ytsId = params['yts_id'];
     });
@@ -48,9 +50,12 @@ export class VideoCardComponent implements OnInit
   // 3) Calls getVideoInfo() (in video.service.ts) to fetch the video's info
   // from the API (back), and saves them in the array 'video' for output
   // in video.component.html.
+  // and also check if the movie is actually already seen
   async ngOnInit()
   {
     this.videoInfos = await this.videoCardService.getVideoInfo(this.lg, this.imdbId, this.ytsId);
+    this.isSeen = await this.videoCardService.checkIfSeen(this.imdbId);
+    this.isLoading = false;
     this.videoInfos['rating_average'] = this.videoInfos['imdbRating'] / 2 +'/5';
     this.videoInfos['ratings_count'] = '(' + this.videoInfos['imdbVotes'] + ' votes)';
     if (this.lg == 'fr')
@@ -77,7 +82,6 @@ export class VideoCardComponent implements OnInit
         .replace('War', 'Guerre');
       this.videoInfos['Plot'] = this.videoInfos['overview'];
     }
-    this.isLoading = false;
   }
 
   // 4)
@@ -91,6 +95,12 @@ export class VideoCardComponent implements OnInit
   // by sending its torrent hash to videoCardService.streamVideo()
   // and getting the video's source url in return.
   async streamVideo(index: number) {
+    // register the video as seen in the DB
+    this.http.get('http://localhost:3000/api/video/seenMovie/' + this.imdbId).subscribe(response => {
+      console.log(response);
+      
+    });
+    
     // tslint:disable-next-line: no-string-literal
     const torrentHash = this.videoInfos['Torrents'][index].hash;
     this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + this.imdbId;
@@ -98,7 +108,7 @@ export class VideoCardComponent implements OnInit
       // pour atteindre la variable videoPlayer une fois qu'elle est set
       console.log(this.videoPlayer);
     });
-    this.subEnPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.en.vtt';
-    this.subFrPath = "http://localhost:3000/assets/subtitles/" + this.videoInfos['Torrents'][index].hash + '/' + this.videoInfos['Torrents'][index].hash + '.fr.vtt';
+    this.subEnPath = 'http://localhost:3000/api/video/subtitles/' + 'en' + '/' + torrentHash;
+    this.subFrPath = 'http://localhost:3000/api/video/subtitles/' + 'fr' + '/' + torrentHash;
   }
 }

@@ -45,6 +45,7 @@ exports.getUserInfo = async (req, res) =>
       lastName: userInfo.lastName,
       username: userInfo.username,
       email: userInfo.email,
+      movieHistory: userInfo.movieHistory,
       //humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
       //message: 'get user successfully !'
       comments: userComments

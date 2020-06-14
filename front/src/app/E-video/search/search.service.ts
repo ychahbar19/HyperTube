@@ -31,4 +31,17 @@ export class SearchService
         error => { reject(error); });*/
     });
   }
+
+  isSeen(result) {
+    return new Promise((resolve, reject) => {
+      this.http.get<{}>('http://localhost:3000/api/video/isSeen/' + result)
+        .toPromise()
+        .then(async response => {
+          console.log(response);
+          
+          resolve(response);
+        },
+        error => { reject(error); });
+    });
+  }
 }

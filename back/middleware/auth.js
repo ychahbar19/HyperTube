@@ -8,6 +8,7 @@ module.exports = (req, res, next) =>
 {
   try
   {
+    
     // Gets the token from the Authorization header
     // (i.e. the element after the space: "Authorization: Bearer eyJhbGciO...")
     // and decodes it (i.e. turns it back it a JS element, usable as such).
