@@ -20,8 +20,8 @@ router.get('/profile/:user_id?', authCheck, UserController.getUserInfo);
 // , authCheck, UserController.getInfoById
 
 // router.all('/', authCheck);
-router.get('/edit-profile', authCheck, UserController.getUserInfo);
-router.post('/edit-profile', authCheck, multer({storage: ImageController.storage}).single('photoUrl'), UserController.updateUser, UserController.updateToken);
+router.get('/editProfile', authCheck, UserController.getUserInfo);
+router.post('/editProfile', authCheck, multer({storage: ImageController.storage}).single('photoUrl'), UserController.updateUser, UserController.updateToken);
 // , authCheck, UserController.getInfoById
 
 /* ----- Fallback function ----- */

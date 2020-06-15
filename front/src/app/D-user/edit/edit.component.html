@@ -19,7 +19,7 @@
           <div class="form-row">
 
             <div class="form-group col-12">
-              <div *ngIf="avatarPreview && (avatarPreview !== '') && form.get('avatar').valid" class="avatar-preview col-12 mx-auto">
+              <div *ngIf="avatarPreview && (avatarPreview !== '')" class="avatar-preview col-12 mx-auto">
                 <img [src]="avatarPreview" [alt]="avatarPreview" class="mx-auto">
               </div>
               <button type="button" (click)="avatar.click()" class="file--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-2">

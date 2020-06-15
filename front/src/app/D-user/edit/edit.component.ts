@@ -80,6 +80,8 @@ export class EditComponent implements OnInit {
     this.http.get('http://localhost:3000/api/user/editProfile')
       .subscribe(response => {
         this.userData = response;
+        console.log(response);
+        
         this.form.patchValue(
         {
           firstName: this.userData.firstName,
@@ -92,6 +94,7 @@ export class EditComponent implements OnInit {
       error => {
         // a voir apres le merge
       });
+      this.form.valid = true;
   }
 
   // 3)
@@ -114,6 +117,6 @@ export class EditComponent implements OnInit {
   onEdit() {
     if (this.form.invalid) { return; }
     // this.isLoading = true;
-    // this.authService.updateUser(this.form.value);
+    this.authService.updateUser(this.form.value);
   }
 }

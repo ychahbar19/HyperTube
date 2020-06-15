@@ -203,4 +203,44 @@ export class AuthService {
       this.authServiceWorkingListener.next(true);
     }
   }
+    /* ------------------------------------------------------------------ *\
+      UPDATE USER (ON EDIT)
+    \* ------------------------------------------------------------------ */
+  updateUser(
+    formData: {
+      avatar: File | string,
+      firstName: string,
+      lastName: string,
+      username: string,
+      email: string
+    }
+  ){
+    const updateData = new FormData();
+    updateData.append('photoUrl', formData.avatar);
+    updateData.append('firstName', formData.firstName);
+    updateData.append('lastName', formData.lastName);
+    updateData.append('username', formData.username);
+    updateData.append('email', formData.email);
+    // this.loading.next(true);
+    return this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/editProfile', updateData)
+      .subscribe(response => {
+        // update du cookie dans le localStorage
+        // this.isLoading.next(false);
+        const token = response.token;
+        this.token = token;
+        if (token) {
+          const expiresInDuration = response.expiresIn;
+          // ne marche plus comme avant pour update le token
+          // this.setAuthTimer(expiresInDuration);
+          this.isAuthenticated = true;
+          this.authServiceWorkingListener.next(true);
+          const now = Date();
+          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          this.saveAuthData(token, expirationDate);
+        }
+
+      }, error => {
+        this.authServiceWorkingListener.next(false);
+      });
+  }
 }
