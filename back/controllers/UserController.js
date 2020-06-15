@@ -85,6 +85,7 @@ exports.updateUser = async (req, res, next) =>
     if (!updateData)
       return res.status(403).json({ message: 'An error occured !' });
     await UserModel.updateOne({_id: oUserId}, { $set: updateData });
+    
     // to remove the email key from my object (don't need it in my updated Token)
     delete updateData.email; 
     res.updatedDataToToken = updateData;

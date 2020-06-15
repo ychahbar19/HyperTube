@@ -31,7 +31,9 @@ export class EditComponent implements OnInit {
     Email:                    { en: 'Email (example@mail.com)', fr: 'Email (exemple@mail.com)' },
     'Email required':         { en: 'Email is required.', fr: 'L\'email est requis.' },
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
-    Submit:                   { en: 'Submit', fr: 'Envoyer' }
+    Submit:                   { en: 'Submit', fr: 'Envoyer' },
+    Success:                  { en: 'Profile updated successfully !', fr: 'Le profile a été correctement mis a jour !'},
+    Error:                    { en: 'Oops an error has occured ! Please try again', fr: 'Oups une erreur est survenue ! Merci de bien vouloir réessayer' }
   };
 
   /* ------------------------------------------------------- *\
@@ -44,10 +46,11 @@ export class EditComponent implements OnInit {
       Public variables.
   \* ------------------------------------------------------- */
 
-  public isLoading = false;
+  public isLoading = true;
   public form: FormGroup;
   public avatarPreview: string;
-  public errorMessage: string;
+  public errorMessage: boolean;
+  public successMessage: boolean;
   public user: object;
   public userData: any;
 
@@ -70,7 +73,7 @@ export class EditComponent implements OnInit {
     const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$';
     this.form = new FormGroup(
       {
-        avatar: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType] }),
+        avatar: new FormControl(null, { validators: [], asyncValidators: [mimeType] }),
         firstName: new FormControl(null, { validators: [Validators.required, Validators.pattern(validNamePattern)]}),
         lastName: new FormControl(null, { validators: [Validators.required, Validators.pattern(validNamePattern)]}),
         username: new FormControl(null, { validators: [Validators.required, Validators.pattern(validUsernamePattern)]}),
@@ -80,8 +83,6 @@ export class EditComponent implements OnInit {
     this.http.get('http://localhost:3000/api/user/editProfile')
       .subscribe(response => {
         this.userData = response;
-        console.log(response);
-        
         this.form.patchValue(
         {
           firstName: this.userData.firstName,
@@ -90,11 +91,18 @@ export class EditComponent implements OnInit {
           email: this.userData.email
         });
         this.avatarPreview = this.userData.avatar;
+        this.isLoading = false;
       },
       error => {
         // a voir apres le merge
       });
-      this.form.valid = true;
+    this.errorStatusSub = this.authService.getAuthServiceWorkingListener().subscribe(response => {
+      this.successMessage = true;
+      this.errorMessage = false;
+    }, error => {
+      this.successMessage = false;
+      this.errorMessage = true;
+    });
   }
 
   // 3)
@@ -116,7 +124,8 @@ export class EditComponent implements OnInit {
 
   onEdit() {
     if (this.form.invalid) { return; }
-    // this.isLoading = true;
+    this.isLoading = true;
     this.authService.updateUser(this.form.value);
+    this.isLoading = false;
   }
 }

@@ -222,25 +222,28 @@ export class AuthService {
     updateData.append('username', formData.username);
     updateData.append('email', formData.email);
     // this.loading.next(true);
-    return this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/editProfile', updateData)
+    return this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/api/user/editProfile', updateData)
       .subscribe(response => {
         // update du cookie dans le localStorage
         // this.isLoading.next(false);
+        console.log(response);
+        
         const token = response.token;
         this.token = token;
         if (token) {
           const expiresInDuration = response.expiresIn;
           // ne marche plus comme avant pour update le token
           // this.setAuthTimer(expiresInDuration);
-          this.isAuthenticated = true;
+          //   this.isAuthenticated = true;
           this.authServiceWorkingListener.next(true);
-          const now = Date();
-          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          this.saveAuthData(token, expirationDate);
-        }
+          //   const now = Date();
+          //   const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          //   this.saveAuthData(token, expirationDate);
+        // }
 
+      }
       }, error => {
-        this.authServiceWorkingListener.next(false);
-      });
+      this.authServiceWorkingListener.next(false);
+    })
   }
 }
