@@ -48,7 +48,7 @@ function(req, res)
 });
 
 /* ----- Facebook authentification ----- */
-
+/*
 router.get('/facebook', passport.authenticate('facebook', { scope : ['email'] }));
 router.get('/facebook/callback', passport.authenticate('facebook',
 {
@@ -57,6 +57,19 @@ router.get('/facebook/callback', passport.authenticate('facebook',
 function(req, res)
 {
   return authSuccess(req, res, 'facebook');
+});
+*/
+
+/* ----- Github authentification ----- */
+
+router.get('/github', passport.authenticate('github'));
+router.get('/github/callback', passport.authenticate('github',
+{
+  failureRedirect: redirectURL
+}),
+function(req, res)
+{
+  return authSuccess(req, res, 'github');
 });
 
 /* ----- Google authentification ----- */
