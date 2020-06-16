@@ -31,30 +31,30 @@
     Buttons (individual elements)
 \* ----------------------------------------------- */
 
+.github
+{
+  background-color: rgb(255,255,255);
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+.github img
+{
+  width: 35px;
+  height: 35px;
+  border-radius: 15px;
+}
+
 .logo-42
 {
   background-color: rgba(9, 9, 9);
   border-left: 1px solid rgb(75, 75, 75);
-  border-top: 1px solid rgb(75, 75, 75);
   border-right: 1px solid rgb(75, 75, 75);
 }
 .logo-42 img
 {
   width: 42px;
   height: 42px;
-}
-
-.facebook
-{
-  background-color: rgb(66,103,178);
-  border-left: 1px solid rgb(142, 142, 142);
-  border-right: 1px solid rgb(142, 142, 142);
-}
-.facebook img
-{
-  width: 35px;
-  height: 35px;
-  border-radius: 15px;
 }
 
 .google
