@@ -51,15 +51,12 @@ exports.getUserInfo = async (req, res) => {
 /* ------------------------ UPDATE ------------------------ */
 
 // Updates the user's personal information
-exports.updateUser = async (req, res, next) =>
-{
-  try
-  {
+exports.updateUser = async (req, res, next) => {
+  try {
     const url = req.protocol + "://" + req.get("host");
     let userToken;
     let updateData = new Object;
-    if (req.userToken)
-    {
+    if (req.userToken) {
       userToken = req.userToken;
       updateData.userId = userToken.userId;
     }
@@ -88,15 +85,14 @@ exports.updateUser = async (req, res, next) =>
   catch (err) { return res.status(500).send(err); }
 };
 
-// 
+// updates token with new informations about user and takes remaining time for the expiration
 exports.updateToken = async (req, res, next) => {
   const data = req.res.updatedDataToToken;
   try {
-    const token = jwt.sign(data, 'secret_this_should_be_longer', { expiresIn: '10h' });
+    const token = jwt.sign(data, 'secret_this_should_be_longer', { expiresIn: parseInt(req.body.remainingTime, 10) });
     return res.status(200).json({
-      message: 'user updated !',
       token: token,
-      expiresIn: 36000
+      expiresIn: parseInt(req.body.expiresIn, 10)
     });
   } catch (err) {
       return res.status(500).send(err);

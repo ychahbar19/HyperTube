@@ -129,7 +129,7 @@ exports.loginInputsValidation = (req, res, next) => {
 // Generates user token and returns it (jsonwebtoken's sign() creates
 // a crypted token using the data given in payload and a secret string).
 
-exports.generateLogToken = function(userInstance) {
+exports.generateLogToken = userInstance => {
   const token = jwt.sign(
     {
       userId: userInstance._id,
@@ -148,17 +148,17 @@ exports.generateLogToken = function(userInstance) {
 
 exports.login = async (req, res) => {
   try {
-    // Fetches the user from the db, if it exists.
+    //  1. Fetches the user from the db, if it exists.
     const foundUser = await UserModel.findOne({ username: req.body.username });
     if (!foundUser)
       return res.status(401).json({ message: 'The username doesn\'t belong to any account. Please create an account' });
     
-    // Checks the user & signin passwords match.
+    //  2. Checks the user & signin passwords match.
     const samePwds = await isSamePwds(req.body.password, foundUser.password);
     if (!samePwds)
       return res.status(401).json({ message: 'The password is incorrect. Please try again !' });
 
-    // Generates the unique token.
+    //  3. Generates the unique token.
     const token = this.generateLogToken(foundUser);
     return res.status(200).json(token);
   }

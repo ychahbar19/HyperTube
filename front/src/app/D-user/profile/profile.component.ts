@@ -40,7 +40,6 @@ export class ProfileComponent implements OnInit {
   // in profile.component.html.
   async ngOnInit() {
     this.profile = await this.userService.getUserInfo(this.userId);
-    console.log(this.profile);
     this.user = await this.userService.getUserInfo('');
 
     this.ownProfile = (this.profile.user_id === this.user.user_id) ? true : false;

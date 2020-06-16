@@ -31,7 +31,7 @@ router.post('/resetPassword', AuthCtlr.checkIdAndHash, AuthCtlr.checkPassword, A
 function authSuccess(req, res, provider)
 {
   const token = AuthCtlr.generateLogToken(req.user);
-  const token_param = new URLSearchParams(token).toString()
+  const token_param = new URLSearchParams(token).toString();
   res.redirect(redirectURL + '?' + token_param);
 };
 

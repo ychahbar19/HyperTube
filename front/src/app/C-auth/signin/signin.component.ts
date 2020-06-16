@@ -66,8 +66,7 @@ export class SigninComponent implements OnInit, OnDestroy {
     // Listens to know when auth.service is ready (=when it's done running)
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
-      .subscribe(sub => { this.isLoading = false; }
-    );
+      .subscribe(sub => { this.isLoading = false; });
     // ------>>>> same as signup
 
     // When the URL contains an id, triggers the service's activateAccount() function.
@@ -86,10 +85,9 @@ export class SigninComponent implements OnInit, OnDestroy {
     }
 
     // When the URL contains a token, triggers the service's applySuccessSignin() function.
-    if (this.route.snapshot.queryParams.token)
-    {
+    if (this.route.snapshot.queryParams.token) {
       this.isLoading = true;
-      this.authService.applySuccessSignin(this.route.snapshot.queryParams);
+      this.authService.applyOmniauthSignin(this.route.snapshot.queryParams);
     }
 
     // Listens to errors from the signin API process.
