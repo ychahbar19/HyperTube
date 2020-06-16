@@ -86,7 +86,8 @@ export class SigninComponent implements OnInit, OnDestroy {
     }
 
     // When the URL contains a token, triggers the service's applySuccessSignin() function.
-    if (this.route.snapshot.queryParams.token) {
+    if (this.route.snapshot.queryParams.token)
+    {
       this.isLoading = true;
       this.authService.applySuccessSignin(this.route.snapshot.queryParams);
     }

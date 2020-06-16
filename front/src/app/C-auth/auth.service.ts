@@ -91,16 +91,17 @@ export class AuthService {
       SIGNIN
   \* ------------------------------------------------------------------ */
 
-  applySuccessSignin(response) {
+  applySuccessSignin(response)
+  {
     const now = new Date();
-    const expirationDate = new Date(now.getTime() + response.expiresIn * 1000);
-    const expiresInDuration = response.expiresIn;
+    const expiresInDuration = parseInt(response.expiresIn, 10);
+    const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
 
     this.isAuthenticated = true;
     this.tokenTimer = setTimeout(() => { this.logout(); }, expiresInDuration * 1000);
+    this.token = response.token;
     localStorage.setItem('token', this.token);
     localStorage.setItem('expiration', expirationDate.toISOString());
-
     this.authServiceWorkingListener.next(true);
     this.router.navigate(['/search']);
   }

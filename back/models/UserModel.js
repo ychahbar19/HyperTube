@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator'); // Supports 'unique: true' property.
 const findOrCreate = require('mongoose-findorcreate');
 
-/* -------------------------------------------------------------------------- *\
-    2) Creates the model (schema) for objects of this class.
-\* -------------------------------------------------------------------------- */
-
 // 2) Define
 const userSchema = mongoose.Schema({
   active: { type: Boolean, default: false },

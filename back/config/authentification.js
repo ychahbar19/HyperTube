@@ -17,10 +17,11 @@ passport.serializeUser(function(user_object, done)
 });
 
 // Function to allow deserialization of the user id
-// (from the client, as it the cookie sent by the client's browser)
+// (from the client, as the cookie sent by the client's browser)
 // into a UserModel object (for the app).
 passport.deserializeUser(function(user_id, done)
 {
+  console.log('---deserializeUser---')
   UserModel.findById
   (
     user_id,
@@ -39,17 +40,12 @@ passport.deserializeUser(function(user_id, done)
 
 function authSuccess(authProvider, profile, done)
 {
-  /*
-  facebook and google don't give a username, so we can use the display name
-  BUT have to change it to make it valid for hypertube conditions
-  */
   if (profile.username)
     userName = profile.username;
   else
-    userName = profile.displayName;
-  UserModel.findOrCreate
-  (
-    { provider: authProvider, providerId: profile.id },
+    userName = profile.displayName + Math.round(+new Date()/1000); //If no username, we generate one with the timestamp for uniqueness
+  UserModel.findOrCreate(
+    { email: profile.emails[0].value },
     {
       active: true,
       provider: authProvider,
@@ -61,11 +57,14 @@ function authSuccess(authProvider, profile, done)
       username: userName,
       password: 'none' /* --------- does this allow sign in using HT and 'none' password ?? */
     },
-    function (error, user_object)
+    function (error, found_user)
     {
-      return done(error, user_object);
-    }
-  );
+      if (error)
+        return done(error);
+      if (!found_user)
+        return done(null, false, { message: 'NoUser' });
+      return done(null, found_user);
+    });
 }
 
 // ------ 42 authentification ------
