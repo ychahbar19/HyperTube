@@ -4,7 +4,8 @@
 
 const passport = require('passport');
 const Strategy42 = require('passport-42').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
+//const FacebookStrategy = require('passport-facebook').Strategy;
+const GithubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const UserModel = require('../models/UserModel');
 
@@ -44,6 +45,13 @@ function authSuccess(authProvider, profile, done)
     userName = profile.username;
   else
     userName = profile.displayName;
+  if (!profile.name)
+  {
+    profile['name'] = {
+      'givenName': profile.displayName.split(' ').slice(0, -1).join(' '),
+      'familyName': profile.displayName.split(' ').slice(-1).join(' ')
+    }
+  }
   UserModel.findOrCreate(
     { email: profile.emails[0].value },
     {
@@ -92,7 +100,7 @@ function(accessToken, refreshToken, profile, done)
 
 // ------ Facebook authentification ------
 // ID and secret defined at https://developers.facebook.com/apps/1095920914095181/fb-login/settings/
-
+/*
 passport.use(new FacebookStrategy(
 {
   clientID: '1095920914095181',
@@ -107,6 +115,22 @@ passport.use(new FacebookStrategy(
     'emails',
     'displayName'
   ]
+},
+function(accessToken, refreshToken, profile, done)
+{
+  return authSuccess('facebook', profile, done);
+}
+));
+*/
+// ------ Github authentification ------
+// ID and secret defined at https://github.com/settings/applications/1317082
+
+passport.use(new GithubStrategy(
+{
+  clientID: '2ed31b7996f640b25060',
+  clientSecret: '419a9f9e98d35758e7a4e813f312fb05fe132a7c',
+  callbackURL: "http://localhost:3000/api/auth/github/callback",
+  scope: 'user:email'
 },
 function(accessToken, refreshToken, profile, done)
 {
