@@ -14,44 +14,41 @@ let hypertubeResults = {};
 \* -------------------------------------------------------------------------- */
 
 //Fetches results from YTS' API.
-async function searchYTSMovies(query_term, genre, sort_by, page)
-{
+async function searchYTSMovies(query_term, genre, sort_by, page) {
   let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=25';
   if (query_term)             { yts_url += '&query_term=' + query_term; }
   if (genre)                  { yts_url += '&genre=' + genre; }
-  if (sort_by == 'title')     { yts_url += '&sort_by=title&order_by=asc'; }
+  if (sort_by == 'title')     { yts_url += '&sort_by=titl&order_by=asc'; }
   else if (sort_by == 'year') { yts_url += '&sort_by=year&order_by=desc'; }
   else                        { yts_url += '&sort_by=download_count'; }
   if (page)                   { yts_url += '&page=' + page; }
 
-  await axios.get(yts_url)
-    .then(results =>
-    {
-      const ytsResults = new YtsResultsModel(results.data);
-      ytsResults.data.movies.forEach((movie) => { hypertubeResults[movie.imdb_code] = { yts_id: movie.id }; });
-    })
-    .catch(error => res.status(400).json({ error }));
+  try {
+    const results = await axios.get(yts_url);
+    const ytsResults = new YtsResultsModel(results.data);
+    ytsResults.data.movies.forEach(movie => { hypertubeResults[movie.imdb_code] = { yts_id: movie.id }; });
+  } catch (error) {
+    throw error;
+  }
 };
 
 //Fetches results from rarbg' API.
-async function searchRarbgMovies(query_term)
-{
+async function searchRarbgMovies(query_term) {
   const options = {
     category: rarbgApi.CATEGORY.MOVIES,
     limit: 25,
     sort: 'last',
     format: 'json_extended'
   }
-  await rarbgApi.search(query_term, options)
-    .then(results =>
-    {
-      results.forEach((movie) =>
-      {
-        if (!(movie.episode_info.imdb in hypertubeResults))
-          hypertubeResults[movie.episode_info.imdb] = { yts_id: 0 };
-      });
-    })
-    .catch(error => {console.log('error0'); res.status(400).json({ error })});
+  try {
+    const results = await rarbgApi.search(query_term, options);
+    results.forEach(movie => {
+      if (movie.episode_info != null && !(movie.episode_info.imdb in hypertubeResults))
+        hypertubeResults[movie.episode_info.imdb] = { yts_id: 0 };
+    });
+  } catch (error) {
+    throw error;
+  }
 }
 
 /* -------------------------------------------------------------------------- *\
@@ -59,48 +56,44 @@ async function searchRarbgMovies(query_term)
 \* -------------------------------------------------------------------------- */
 
 //Calls the different sources and returns their combined results.
-async function search(req, res)
-{
+async function search(req, res) {
   hypertubeResults = {}
-  let query_term = ((req.query.query_term != undefined) ? req.query.query_term : '');
-  let genre = ((req.query.genre != undefined) ? req.query.genre : '');
-  let sort_by = ((req.query.sort_by != undefined) ? req.query.sort_by : '');
-  let page = ((req.query.page != undefined) ? req.query.page : '');
+  let query_term = (req.query.query_term != undefined) ? req.query.query_term : '';
+  let genre = (req.query.genre != undefined) ? req.query.genre : '';
+  let sort_by = (req.query.sort_by != undefined) ? req.query.sort_by : '';
+  let page = (req.query.page != undefined) ? req.query.page : '';
   if (query_term != '' && sort_by == '')
     sort_by = 'title';
 
-  await searchYTSMovies(query_term, genre, sort_by, page).catch(error => res.status(400).json({ error }));
-  if (query_term != '' && page == '')
-    await searchRarbgMovies(query_term).catch(error => res.status(400).json({ error }));
-
-  hypertubeCompleteResults = []
-  for (const values of Object.entries(hypertubeResults))
-  {
-    await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + values[0])
-      .then(results =>
-      {
-        videoInfo = new VideoModel(results.data);
-        hypertubeCompleteResults.push({
-          imdb_id: values[0],
-          Poster: videoInfo['Poster'],
-          Title: videoInfo['Title'],
-          Year: videoInfo['Year'],
-          imdbRating: videoInfo['imdbRating'],
-          imdbVotes: videoInfo['imdbVotes'],
-          Genre: videoInfo['Genre'],
-          yts_id: values[1].yts_id
-        });
-      })
-    .catch(error => error);
+  try {
+    await searchYTSMovies(query_term, genre, sort_by, page);
+    if (query_term != '' && page == '')
+      await searchRarbgMovies(query_term);
+  
+    hypertubeCompleteResults = [];
+    for (const values of Object.entries(hypertubeResults)) {
+      const results = await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + values[0]);
+      videoInfo = new VideoModel(results.data);
+      hypertubeCompleteResults.push({
+        imdb_id: values[0],
+        Poster: videoInfo["Poster"],
+        Title: videoInfo["Title"],
+        Year: videoInfo["Year"],
+        imdbRating: videoInfo["imdbRating"],
+        imdbVotes: videoInfo["imdbVotes"],
+        Genre: videoInfo["Genre"],
+        yts_id: values[1].yts_id
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({ error });
   }
 
   // Manually sort/filter if results include Rargb
-  if (query_term != '' && page == '')
-  {
+  if (query_term != '' && page == '') {
     // Only keep results that match 'genre'
     if (genre != '')
-      hypertubeCompleteResults.forEach((values, key) =>
-      {
+      hypertubeCompleteResults.forEach((values, key) => {
         if (!(values['Genre'].includes(genre)))
           hypertubeCompleteResults.splice(key, 1);
       });
