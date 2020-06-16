@@ -43,7 +43,7 @@ function authSuccess(authProvider, profile, done)
   if (profile.username)
     userName = profile.username;
   else
-    userName = profile.displayName + Math.round(+new Date()/1000); //If no username, we generate one with the timestamp for uniqueness
+    userName = profile.displayName;
   UserModel.findOrCreate(
     { email: profile.emails[0].value },
     {
@@ -54,7 +54,7 @@ function authSuccess(authProvider, profile, done)
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       email: profile.emails[0].value,
-      username: userName,
+      username: userName + Math.round(+new Date()/1000), //With timestamp for uniqueness
       password: 'none' /* --------- does this allow sign in using HT and 'none' password ?? */
     },
     function (error, found_user)
