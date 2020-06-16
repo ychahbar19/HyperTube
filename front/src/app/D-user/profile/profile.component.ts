@@ -15,11 +15,9 @@ import { User } from '../../shared/UserInterface';
 export class ProfileComponent implements OnInit {
   private userId: string;
   private user: User;
-  
+
   public profile: User;
-  public profileComments = [];
-  public showEdit = false;
-  public userIsAuthenticated: boolean;
+  public ownProfile: boolean;
   public isLoading = true;
 
   // 1) Defines the translations for the static text.
@@ -42,11 +40,11 @@ export class ProfileComponent implements OnInit {
   // in profile.component.html.
   async ngOnInit() {
     this.profile = await this.userService.getUserInfo(this.userId);
+    console.log(this.profile);
     this.user = await this.userService.getUserInfo('');
-    
-    this.userIsAuthenticated = (this.profile.user_id == this.user.user_id) ? true : false;
+
+    this.ownProfile = (this.profile.user_id === this.user.user_id) ? true : false;
     // if (this.userId === undefined || this.userId == /* active user id*/ )
-    this.showEdit = true;
     this.isLoading = false;
   }
 }

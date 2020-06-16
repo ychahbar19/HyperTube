@@ -16,10 +16,8 @@ const VideoModel = require('../models/VideoModel');
 /* ------------------------ READ ------------------------ */
 
 // Gets the user's personal information
-exports.getUserInfo = async (req, res) =>
-{
-  try
-  {
+exports.getUserInfo = async (req, res) => {
+  try {
     const id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
     const userInfo = await UserModel.findOne({ _id: ObjectId(id) });
     if (!userInfo)
@@ -28,14 +26,9 @@ exports.getUserInfo = async (req, res) =>
     let userComments = await CommentModel.find({ author_id: id }).sort({ posted_datetime: -1 });
     const len = userComments.length;
 
-    for (let i = 0; i < len; i++)
-    {
-      await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + userComments[i].imdb_id)
-      .then(results =>
-      {
-        userComments[i].videoInfo = new VideoModel(results.data);
-      })
-      .catch(error => res.status(400).json({ error }))
+    for (let i = 0; i < len; i++) {
+      const results = await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + userComments[i].imdbId);
+      userComments[i].videoInfo = new VideoModel(results.data);
     }
 
     return res.status(200).json({
@@ -50,8 +43,9 @@ exports.getUserInfo = async (req, res) =>
       //message: 'get user successfully !'
       comments: userComments
     });
+  } catch(err) {
+    res.status(500).send(err);
   }
-  catch(err) { res.status(500).send(err); }
 }
 
 /* ------------------------ UPDATE ------------------------ */
