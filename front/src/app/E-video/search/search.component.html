@@ -47,52 +47,53 @@
   <div>
     <div class="spinner" *ngIf="!results"></div>
 
-    <!-- Inifnite scroll div --
+    <!-- Inifnite scroll div -- -->
     <div
     *ngIf="results"
     class="row"
     infiniteScroll
     [infiniteScrollDistance]="2"
     [infiniteScrollThrottle]="50"
-    (scrolled)="onScroll()"> -->
-    <div
-    *ngIf="results"
-    class="row">
-      <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
-        <div class="card bg-dark">
-          <div class="container-poster">
-            <img class="card-img-top" src="{{ result['Poster'] }}">
-            <div class="middle">
-              <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}">
-                <div class="outer-play">
-                  <div class="inner-play"></div>
-                </div>
-              </a>
-              <!-- <img src="../../../assets/img/play-button.svg" alt=""> -->
+    (scrolled)="onScroll()">
+      <div
+      *ngIf="results"
+      class="row">
+        <div class="col-sm-6 col-md-4 col-lg-3 my-3" *ngFor="let result of results">
+          <div class="card bg-dark">
+            <div class="container-poster">
+              <img class="card-img-top" src="{{ result['Poster'] }}">
+              <div class="middle">
+                <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}">
+                  <div class="outer-play">
+                    <div class="inner-play"></div>
+                  </div>
+                </a>
+                <!-- <img src="../../../assets/img/play-button.svg" alt=""> -->
+              </div>
             </div>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">
-              <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}" class="stretched-link">
-                {{ result['Title'] }} ({{ result['Year'] }})
-              </a>
-            </h6>
-            <div>
-              <span class="star-rating">
-                <span class="back-stars">
-                  <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-                  <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+            <div class="card-body">
+              <h6 class="card-title">
+                <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}" class="stretched-link">
+                  {{ result['Title'] }} ({{ result['Year'] }})
+                </a>
+              </h6>
+              <div>
+                <span class="star-rating">
+                  <span class="back-stars">
+                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                    <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
+                  </span>
+                  <span class="small">
+                    {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
+                  </span>
                 </span>
-                <span class="small">
-                  {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
-                </span>
-              </span>
+              </div>
+              <p>{{ result['Genre'] }}</p>
             </div>
-            <p>{{ result['Genre'] }}</p>
           </div>
         </div>
+        <div class="spinner" *ngIf="isLoadingPage"></div>
       </div>
-      <div class="spinner" *ngIf="isLoadingPage"></div>
     </div>
   </div>
 </div>

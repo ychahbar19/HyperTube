@@ -18,7 +18,7 @@ export class CommentsService {
 
   // Posts a new comment to the API (back) and returns an object with
   // 'message: OK' if the comment was properly saved in the database.
-  postComment(imdbId, ytsId, comment, language) {
+  postComment(imdbId: string, ytsId: string, comment: { Comment: string }, language: string) {
     return new Promise((resolve, reject) => {
       const postedData = {
         imdbId,

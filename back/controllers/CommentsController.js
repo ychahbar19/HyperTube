@@ -38,7 +38,7 @@ exports.create = (req, res) =>
 exports.read = async (req, res) =>
 {
   let comments = await CommentModel
-                        .find({ imdb_id: req.params.video_imdb_id, language: req.params.language })
+                        .find({ imdbId: req.params.video_imdb_id, language: req.params.language })
                         .sort({ posted_datetime: -1 });
   const len = comments.length;
 

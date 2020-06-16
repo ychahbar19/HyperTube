@@ -72,24 +72,21 @@ export class SearchComponent implements OnInit {
 
     // Remove last '&' char
     this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
-    // this.isLoading = true;
     this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
-    // this.isLoading = false;
   }
 
-   /*
-   async onScroll() {
-     this.page++;
-     const pageChar = this.page.toString();
-     if (this.encodedSearchParams === '?') {
-       this.encodedSearchParams += 'page=' + pageChar;
-      } else if (this.encodedSearchParams.includes('page=')) {
-        this.encodedSearchParams = this.encodedSearchParams.replace(#page=[0-9]*#g, 'page=' + pageChar);
-      } else {
-        this.encodedSearchParams += '&page=' + this.page.toString();
-      }
-      this.isLoadingPage = true;
-      this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams));
-      this.isLoadingPage = false;
-    }*/
+  async onScroll() {
+    this.page++;
+    const pageChar = this.page.toString();
+    if (this.encodedSearchParams === '?') {
+      this.encodedSearchParams += 'page=' + pageChar;
+    } else if (this.encodedSearchParams.includes('page=')) {
+      this.encodedSearchParams = this.encodedSearchParams.replace(/page=[0-9]*/g, 'page=' + pageChar);
+    } else {
+      this.encodedSearchParams += '&page=' + this.page.toString();
+    }
+    this.isLoadingPage = true;
+    this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']));
+    this.isLoadingPage = false;
+  }
 }
