@@ -226,8 +226,6 @@ export class AuthService {
       .subscribe(response => {
         // update du cookie dans le localStorage
         // this.isLoading.next(false);
-        console.log(response);
-        
         const token = response.token;
         this.token = token;
         if (token) {

@@ -4,6 +4,7 @@ import { AppComponent } from '../../app.component';
 // import { Router } from '@angular/router';
 import { AuthService } from '../../C-auth/auth.service';
 import { UserService } from 'src/app/D-user/user.service';
+import { User } from '../../shared/UserInterface';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       Variables
   \* ------------------------------------------------------- */
 
-  public user: any;
+  public user: User;
   public userIsAuthenticated = false;
   private authListenerSubs: Subscription;
 

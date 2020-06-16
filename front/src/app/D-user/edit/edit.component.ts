@@ -128,4 +128,8 @@ export class EditComponent implements OnInit {
     this.authService.updateUser(this.form.value);
     this.isLoading = false;
   }
+
+  ngOnDestroy(): void{
+    this.errorStatusSub.unsubscribe();
+  }
 }

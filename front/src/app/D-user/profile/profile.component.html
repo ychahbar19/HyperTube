@@ -1,5 +1,5 @@
-<!-- <div class="spinner" *ngIf="isLoading"></div> -->
-<div class="container">
+<div class="spinner" *ngIf="isLoading"></div>
+<div class="container" *ngIf="!isLoading">
   <div class="row justify-content-center profile--main">
     <div class="col-12 col-md-10 mt-5">
 
@@ -12,7 +12,7 @@
           {{ profile['username'] }}
           <span class="name--p">({{ profile['firstName'] }} {{ profile['lastName'] }})</span>
         </p>
-        <p id="link-to-edit"><a routerLink="/edit" *ngIf="showEdit">{{ txt['Edit'][lg] }}</a></p>
+        <p id="link-to-edit" *ngIf="this.userIsAuthenticated"><a routerLink="/edit" *ngIf="showEdit">{{ txt['Edit'][lg] }}</a></p>
       </div>
 
       <div>
