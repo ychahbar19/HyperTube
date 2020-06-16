@@ -26,7 +26,7 @@ router.post('/signin', AuthCtlr.loginInputsValidation, AuthCtlr.login);
 router.post('/forgotPassword', AuthCtlr.createRandomStr, MailCtlr.sendResetPwd);
 router.post('/resetPassword', AuthCtlr.checkIdAndHash, AuthCtlr.checkPassword, AuthCtlr.resetPwd);
 
-// ------ Common function for action on success with external auth provider  ------
+// ------ Common function for action on success/failure with external auth provider  ------
 
 function authSuccess(req, res, provider)
 {
