@@ -92,7 +92,7 @@ exports.updateToken = async (req, res, next) => {
     const token = jwt.sign(data, 'secret_this_should_be_longer', { expiresIn: parseInt(req.body.remainingTime, 10) });
     return res.status(200).json({
       token: token,
-      expiresIn: parseInt(req.body.expiresIn, 10)
+      expiresIn: parseInt(req.body.remainingTime, 10)
     });
   } catch (err) {
       return res.status(500).send(err);

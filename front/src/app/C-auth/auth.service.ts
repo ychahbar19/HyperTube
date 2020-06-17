@@ -229,14 +229,14 @@ export class AuthService {
         updateData
       )
       .subscribe(
-        (response) => {
+        response => {
           console.log(response);
           this.token = response.token;
           if (this.token) {
             this.connectUser(response);
           }
         },
-        (error) => {
+        error => {
           this.authServiceWorkingListener.next(false);
         }
       );
