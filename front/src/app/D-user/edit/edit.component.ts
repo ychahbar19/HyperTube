@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { AuthService } from '../../C-auth/auth.service';
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss']
 })
-export class EditComponent implements OnInit {
+export class EditComponent implements OnInit, OnDestroy {
   /* ------------------------------------------------------- *\
       User language & translations for the static text.
   \* ------------------------------------------------------- */
@@ -33,6 +33,7 @@ export class EditComponent implements OnInit {
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
     Submit:                   { en: 'Submit', fr: 'Envoyer' },
     Success:                  { en: 'Profile updated successfully !', fr: 'Le profile a été correctement mis a jour !'},
+                                // tslint:disable-next-line: max-line-length
     Error:                    { en: 'Oops an error has occured ! Please try again', fr: 'Oups une erreur est survenue ! Merci de bien vouloir réessayer' }
   };
 
@@ -129,7 +130,7 @@ export class EditComponent implements OnInit {
     this.isLoading = false;
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.errorStatusSub.unsubscribe();
   }
 }
