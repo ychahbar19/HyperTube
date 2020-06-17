@@ -70,7 +70,7 @@ export class EditComponent implements OnInit {
     // tslint:disable-next-line: max-line-length
     const validNamePattern = '^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$';
     const validUsernamePattern = '^[a-zA-Z0-9]{4,20}$';
-    const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+$';
+    const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$';
     this.form = new FormGroup(
       {
         avatar: new FormControl(null, { validators: [], asyncValidators: [mimeType] }),

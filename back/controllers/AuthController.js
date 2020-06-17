@@ -9,7 +9,7 @@ const ObjectId = require('mongodb').ObjectId;
 const UserModel = require('../models/UserModel');
 
 // Defines validation patterns and a function to compare inputs with them.
-const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$');
+const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$');
 const usernamePattern = new RegExp('^[a-zA-Z0-9]{6,33}$');
 const passwordPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$');
 
