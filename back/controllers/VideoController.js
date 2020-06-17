@@ -202,7 +202,6 @@ const downloadTorrent = (req, res, datas, paths) => {
     const sizeUncomplete = fs.statSync(paths.uncomplete).size;
     const sizeTorrentStream = datas.file.length;
 
-    console.log(sizeUncomplete, sizeTorrentStream);
     if (sizeUncomplete === sizeTorrentStream) {
       //  Move from uncomplete to complete
       fs.rename(paths.uncomplete, paths.complete, err => {
@@ -397,10 +396,9 @@ exports.setSeenMovie = async (req, res, next) => {
     // update the movieHistory array if imdbId is not includes
     if (user.movieHistory.includes(imdbId) === false)
       await UserModel.updateOne({ _id: oUserId }, { $push: { movieHistory:  imdbId} });
-  }
-  catch (e) {
+  } catch (e) {
     console.log('Could not set the movie as seen in the DB !');
-    console.log(e);
+    console.log(e); // a gerer mieux
   }
 };
 
@@ -417,6 +415,6 @@ exports.isSeen = async (req, res, next) => {
     return res.status(200).send(status);
   } catch (e) {
     console.log('Could not see if movie is seen');
-    console.log(e);
+    console.log(e); // a gerer mieux
   }
 };

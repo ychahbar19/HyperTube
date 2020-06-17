@@ -93,9 +93,7 @@ export class VideoCardComponent implements OnInit {
   // and getting the video's source url in return.
   async streamVideo(index: number) {
     // register the video as seen in the DB
-    this.http.get('http://localhost:3000/api/video/seenMovie/' + this.imdbId).subscribe(response => {
-      console.log(response);
-    });
+    this.http.get('http://localhost:3000/api/video/seenMovie/' + this.imdbId).subscribe(response => {});
 
     const torrentHash = this.videoInfos['Torrents'][index].hash;
     this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + this.imdbId;
