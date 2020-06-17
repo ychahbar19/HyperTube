@@ -129,14 +129,14 @@ export class AuthService {
         formData
       )
       .subscribe(
-        (response) => {
+        response => {
           this.token = response.token;
           if (this.token) {
             this.connectUser(response);
             this.router.navigate(['/search']);
           }
         },
-        (error) => {
+        error => {
           this.authServiceWorkingListener.next(false);
         }
       );

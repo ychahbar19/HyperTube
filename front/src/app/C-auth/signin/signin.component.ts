@@ -28,7 +28,9 @@ export class SigninComponent implements OnInit, OnDestroy {
     'Forgotten password': { en: 'Forgotten password?', fr: 'Mot de passe oublié ?' },
     Submit:               { en: 'Submit', fr: 'Envoyer' },
     'No account yet':     { en: 'Don\'t have an account?', fr: 'Pas encore de compte ?' },
-    'Sign up':            { en: 'Sign up', fr: 'Inscription' }
+    'Sign up':            { en: 'Sign up', fr: 'Inscription' },
+    Welcome:              { en: 'Welcome to HyperTube. Your account has been activated ! You may now log in and enjoy.',
+                            fr: 'Bienvenue dans HyperTube. Votre compte a été activé ! Vous pouvez maintenant vous connecter et profiter.'}
   };
 
   /* ------------------------------------------------------- *\
@@ -92,7 +94,11 @@ export class SigninComponent implements OnInit, OnDestroy {
 
     // Listens to errors from the signin API process.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      errorsArray => { this.errorMessage = errorsArray['message']; }
+      // errorsArray => { this.errorMessage = errorsArray['message']; }
+      error => {
+        this.errorMessage = error;
+        this.successSignup = !this.successSignup;
+      }
     );
   }
 

@@ -9,21 +9,19 @@
           <h4 class="form-yellow-title">{{ txt['Sign in'][lg] }}<br/><small>{{ txt['with'][lg] }} HyperTube</small></h4>
 
           <p *ngIf="successSignup" class="alert alert-success alert-dismissible fade show" role="alert">
-            Welcome to HyperTube.<br />
-            Your account has been activated !<br />
-            You may now log in and enjoy.
+            {{ txt['Welcome'][lg] }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </p>
-          
+
           <p *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ errorMessage }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </p>
-          
+
           <div class="form-group">
             <input
               type="text" name="username" placeholder="{{ txt['Username'][lg] }}"
