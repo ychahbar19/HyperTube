@@ -24,7 +24,9 @@
             <div class="card bg-dark text-white">
                 <p class="card-header">
                   <b class="movie-title"><a routerLink='/video/{{ comment.imdbId }}/{{ comment.ytsId }}'>{{ comment.videoInfo.Title }}</a></b>
-                  <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
+                  <small>
+                    <span class="text-muted"> {{ comment.posted_datetime | date: 'dd/MM/yyyy (h:mm a)' }}</span>
+                  </small>
                 </p>
                 <p class="card-body">{{ comment.content }}</p>
             </div>
