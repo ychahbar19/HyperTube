@@ -14,7 +14,7 @@ const router = express.Router();
 
 /* ----- CRUD functions ----- */
 router.post('/create', authCheck, CommentsController.create);
-router.get('/read/:video_imdb_id/:language', CommentsController.read);
+router.get('/read/:video_imdb_id/:language', authCheck, CommentsController.read);
 // router.put('/update/:comment_id', CommentsController.update);
 // router.delete('/delete/:comment_id', CommentsController.delete);
 
