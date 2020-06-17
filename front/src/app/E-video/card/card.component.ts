@@ -97,10 +97,6 @@ export class VideoCardComponent implements OnInit {
 
     const torrentHash = this.videoInfos['Torrents'][index].hash;
     this.stream = 'http://localhost:3000/api/video/stream/' + torrentHash + '/' + this.imdbId;
-    setTimeout(() => {
-      // pour atteindre la variable videoPlayer une fois qu'elle est set
-      console.log(this.videoPlayer);
-    });
     this.subEnPath = 'http://localhost:3000/api/video/subtitles/' + 'en' + '/' + torrentHash;
     this.subFrPath = 'http://localhost:3000/api/video/subtitles/' + 'fr' + '/' + torrentHash;
   }
