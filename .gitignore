@@ -1,8 +1,6 @@
 back/node_modules
 front/node_modules
 .vscode/*
-back/assets/videos
-# back/assets/subtitles/*
 
 .DS_Store
 ._.DS_Store
