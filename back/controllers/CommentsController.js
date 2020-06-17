@@ -33,18 +33,21 @@ exports.create = (req, res) => {
 
 /* ------------------------ READ ------------------------ */
 
-exports.read = async (req, res) =>
-{
+exports.read = async (req, res) => {
   let comments = await CommentModel
                         .find({ imdbId: req.params.video_imdb_id, language: req.params.language })
                         .sort({ posted_datetime: -1 });
   const len = comments.length;
 
-  for (let i = 0; i < len; i++)
-  {
+  for (let i = 0; i < len; i++) {
     let user = await UserModel.findOne({ _id: ObjectId(comments[i].author_id) })
-    comments[i].author_avatar = user.avatar;
-    comments[i].author_username = user.username;
+    if (user) {
+      comments[i].author_avatar = user.avatar;
+      comments[i].author_username = user.username;
+    } else { // If user is deleted manually -> comments are still in DB
+      comments[i].author_avatar = 'http://localhost:3000/assets/pictures/noun_deleted_user.png';
+      comments[i].author_username = null;
+    }
   }
   res.status(200).json(comments);
 };

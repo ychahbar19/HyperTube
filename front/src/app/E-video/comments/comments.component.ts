@@ -26,7 +26,8 @@ export class CommentsComponent implements OnInit {
   public txt = {
     Title:            { en: 'Add a comment', fr: 'Ajoutez un commentaire'},
     Comment:          { en: 'Your comment...', fr: 'Votre commentaire...' },
-    Send:             { en: 'Send', fr: 'Envoyer' }
+    Send:             { en: 'Send', fr: 'Envoyer' },
+    DeletedUser:      { en: 'Deleted User', fr: 'Utilisateur supprimé' }
   };
 
   // 2) Defines the variable imdb_id and yts_id by taking the value in the URL.

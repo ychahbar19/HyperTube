@@ -23,7 +23,8 @@
   <div class="col">
       <div class="card bg-dark text-white">
           <p class="card-header">
-            <b><a href="/profile/{{ comment.author_id }}">{{ comment.author_username }}</a></b>
+            <b *ngIf="comment.author_username"><a routerLink="/profile/{{ comment.author_id }}">{{ comment.author_username }}</a></b>
+            <b *ngIf="!comment.author_username" style="color: rgb(200, 50, 50);">{{ txt['DeletedUser'][lg] }}</b>
             <span class="text-muted"> {{ comment.posted_datetime | date: 'dd MMM yyyy (h:mm a)' }}</span>
           </p>
           <p class="card-body">{{ comment.content }}</p>
