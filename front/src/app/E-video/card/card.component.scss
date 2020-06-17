@@ -23,7 +23,14 @@
   font-size: 0.9em;
 }
 
+// VIDEO PLAYER
+
+video:focus {
+  outline: none;
+}
+
 // VIDEO TORRENTS
+
 td
 {
   width: auto;
