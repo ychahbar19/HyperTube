@@ -12,13 +12,11 @@ const UserModel = require('../models/UserModel');
 
 /* ------------------------ CREATE ------------------------ */
 
-exports.create = (req, res) =>
-{
+exports.create = (req, res) => {
   const commentPosted = req.body;
 
   //Creates a new object based on the model and from the posted data.
-  const comment = new CommentModel(
-  {
+  const comment = new CommentModel({
     //Copies all the fields from the posted data and uses them to fill the model.
     ...commentPosted,
     //Add the time
