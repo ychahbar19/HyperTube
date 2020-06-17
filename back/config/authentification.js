@@ -134,7 +134,7 @@ passport.use(new GithubStrategy(
 },
 function(accessToken, refreshToken, profile, done)
 {
-  return authSuccess('facebook', profile, done);
+  return authSuccess('GitHub', profile, done);
 }
 ));
 
