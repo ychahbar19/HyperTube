@@ -33,8 +33,8 @@ export class EditComponent implements OnInit, OnDestroy {
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
     Submit:                   { en: 'Submit', fr: 'Envoyer' },
     Success:                  { en: 'Profile updated successfully !', fr: 'Le profile a été correctement mis a jour !'},
-                                // tslint:disable-next-line: max-line-length
-    Error:                    { en: 'Oops an error has occured ! Please try again', fr: 'Oups une erreur est survenue ! Merci de bien vouloir réessayer' }
+    Error:                    { en: 'Oops an error has occured ! Please try again',
+                                fr: 'Oups une erreur est survenue ! Merci de bien vouloir réessayer' }
   };
 
   /* ------------------------------------------------------- *\
