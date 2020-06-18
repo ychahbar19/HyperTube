@@ -49,7 +49,7 @@ import { CommentsComponent } from './E-video/comments/comments.component';
     BrowserModule,
     HttpClientModule,
     FormsModule, ReactiveFormsModule,
-    NgBootstrapFormValidationModule.forRoot(), NgBootstrapFormValidationModule,
+    // NgBootstrapFormValidationModule.forRoot(), NgBootstrapFormValidationModule,
     NgbModule,
     AppRoutingModule,
     InfiniteScrollModule

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AppComponent } from '../../app.component';
 import { mimeType } from '../../mime-type.validator';
 import { AuthService } from '../../C-auth/auth.service';
+import { FormAuthUserService } from 'src/app/CD-form-auth-user/form-auth-user.service';
 
 @Component({
   selector: 'app-edit',
@@ -59,7 +60,8 @@ export class EditComponent implements OnInit {
   \* ------------------------------------------------------- */
 
   constructor(private authService: AuthService,
-              private http: HttpClient) {}
+              private http: HttpClient,
+              private formAuthUserService: FormAuthUserService) {}
 
   // 2) Defines and handles the form's validation.
   /*
@@ -71,14 +73,7 @@ export class EditComponent implements OnInit {
     const validNamePattern = '^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$';
     const validUsernamePattern = '^[a-zA-Z0-9]{4,20}$';
     const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$';
-    this.form = new FormGroup(
-      {
-        avatar: new FormControl(null, { validators: [], asyncValidators: [mimeType] }),
-        firstName: new FormControl(null, { validators: [Validators.required, Validators.pattern(validNamePattern)]}),
-        lastName: new FormControl(null, { validators: [Validators.required, Validators.pattern(validNamePattern)]}),
-        username: new FormControl(null, { validators: [Validators.required, Validators.pattern(validUsernamePattern)]}),
-        email: new FormControl(null, { validators: [Validators.required, Validators.pattern(validEmailPattern)]}),
-      });
+    this.form = this.formAuthUserService.defineValidFormGroup('edit');
 
     this.http.get('http://localhost:3000/api/user/editProfile')
       .subscribe(response => {
@@ -116,6 +111,11 @@ export class EditComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => { this.avatarPreview = reader.result as string; };
     reader.readAsDataURL(file);
+  }
+
+  usernameStatus(){
+   this.form.get('username').updateValueAndValidity();
+    
   }
 
   /* ------------------------------------------------------- *\
