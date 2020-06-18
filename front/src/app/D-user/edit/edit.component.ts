@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AppComponent } from '../../app.component';
-import { mimeType } from '../../mime-type.validator';
 import { AuthService } from '../../C-auth/auth.service';
 import { FormAuthUserService } from 'src/app/CD-form-auth-user/form-auth-user.service';
 
@@ -32,6 +31,10 @@ export class EditComponent implements OnInit, OnDestroy {
     Email:                    { en: 'Email (example@mail.com)', fr: 'Email (exemple@mail.com)' },
     'Email required':         { en: 'Email is required.', fr: 'L\'email est requis.' },
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
+    Password:                 { en: 'New password', fr: 'Nouveau mot de passe' },
+    'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
+                                fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
+    'Password confirmation':  { en: 'New password confirmation', fr: 'Nouveau mot de passe (confirmation)' },
     Submit:                   { en: 'Submit', fr: 'Envoyer' },
     Success:                  { en: 'Profile updated successfully !', fr: 'Le profile a été correctement mis a jour !'},
     Error:                    { en: 'Oops an error has occured ! Please try again',
@@ -65,15 +68,8 @@ export class EditComponent implements OnInit, OnDestroy {
               private formAuthUserService: FormAuthUserService) {}
 
   // 2) Defines and handles the form's validation.
-  /*
-  Same as signup, combine if possible
-  */
   ngOnInit(): void {
     // Defines and applies form validation rules.
-    // tslint:disable-next-line: max-line-length
-    const validNamePattern = '^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$';
-    const validUsernamePattern = '^[a-zA-Z0-9]{4,20}$';
-    const validEmailPattern = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$';
     this.form = this.formAuthUserService.defineValidFormGroup('edit');
 
     this.http.get('http://localhost:3000/api/user/editProfile')
@@ -116,7 +112,6 @@ export class EditComponent implements OnInit, OnDestroy {
 
   usernameStatus(){
    this.form.get('username').updateValueAndValidity();
-    
   }
 
   /* ------------------------------------------------------- *\

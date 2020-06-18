@@ -41,9 +41,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     'Email unique':           { en: 'This email address is taken.', fr: 'Cette adresse email est déjà prise.' },
     Password:                 { en: 'Password', fr: 'Mot de passe' },
     'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
-                                // tslint:disable-next-line: max-line-length
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
-                                // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
     Submit:                   { en: 'Submit', fr: 'Envoyer' },

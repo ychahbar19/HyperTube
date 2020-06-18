@@ -20,7 +20,6 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-         
 
           <div class="form-row">
 
@@ -86,7 +85,29 @@
             </p>
           </div>
 
-          <button type="submit" [disabled]="!form.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+          <div class="form-group">
+            <input
+              type="password" placeholder="{{ txt['Password'][lg] }}"
+              class="form-control" id="inputPassword"
+              #password formControlName="password"
+            >
+            <p *ngIf="form.get('password').touched && form.get('password').invalid" class="error--msg">
+              <span *ngIf="form.get('password').errors.pattern">{{ txt['Password format'][lg] }}</span>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="password" placeholder="{{ txt['Password confirmation'][lg] }}"
+              class="form-control" id="inputConfirmPassword"
+              #confirmPassword formControlName="confirmPassword"
+            >
+            <p *ngIf="form.get('password').touched && form.get('confirmPassword').touched && form.get('password').value != form.get('confirmPassword').value" class="error--msg">
+              Passwords are not the same
+            </p>
+          </div>
+
+          <button type="submit" [disabled]="!form.valid || form.get('password').value != form.get('confirmPassword').value" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
             {{ txt['Submit'][lg] }}
           </button>
         </form>

@@ -2,6 +2,7 @@
     1) Imports and variable definitions.
 \* -------------------------------------------------------------------------- */
 
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const ObjectId = require('mongodb').ObjectId;
@@ -16,8 +17,10 @@ const VideoModel = require('../models/VideoModel');
 /* ------------------------ READ ------------------------ */
 
 // Gets the user's personal information
-exports.getUserInfo = async (req, res) => {
-  try {
+exports.getUserInfo = async (req, res) =>
+{
+  try
+  {
     const id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
     const userInfo = await UserModel.findOne({ _id: ObjectId(id) });
     if (!userInfo)
@@ -25,7 +28,6 @@ exports.getUserInfo = async (req, res) => {
 
     let userComments = await CommentModel.find({ author_id: id }).sort({ posted_datetime: -1 });
     const len = userComments.length;
-
     for (let i = 0; i < len; i++) {
       const results = await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + userComments[i].imdbId);
       userComments[i].videoInfo = new VideoModel(results.data);
@@ -43,20 +45,22 @@ exports.getUserInfo = async (req, res) => {
       //message: 'get user successfully !'
       comments: userComments
     });
-  } catch(err) {
-    res.status(500).send(err);
   }
+  catch(err) { res.status(500).send(err); }
 }
 
 /* ------------------------ UPDATE ------------------------ */
 
 // Updates the user's personal information
-exports.updateUser = async (req, res, next) => {
-  try {
+exports.updateUser = async (req, res, next) =>
+{
+  try
+  {
     const url = req.protocol + "://" + req.get("host");
     let userToken;
     let updateData = new Object;
-    if (req.userToken) {
+    if (req.userToken)
+    {
       userToken = req.userToken;
       updateData.userId = userToken.userId;
     }
@@ -72,13 +76,22 @@ exports.updateUser = async (req, res, next) => {
       updateData.username = req.body.username;
     if (req.body.email)
       updateData.email = req.body.email;
+    if (req.body.password && req.body.password == req.body.confirmPassword)
+    {
+      console.log('here')
+      hashPwd = await bcrypt.hash(req.body.password, 10);
+      updateData.password = hashPwd;
+    }
+
     // error
     if (!updateData)
       return res.status(403).json({ message: 'An error occured !' });
     await UserModel.updateOne({_id: oUserId}, { $set: updateData });
     
-    // to remove the email key from my object (don't need it in my updated Token)
-    delete updateData.email; 
+    // Removes the email & password from the object since we don't need them in the updated Token.
+    delete updateData.email;
+    delete updateData.password;
+    delete updateData.confirmPassword;
     res.updatedDataToToken = updateData;
     return next();
   }
@@ -86,9 +99,11 @@ exports.updateUser = async (req, res, next) => {
 };
 
 // updates token with new informations about user and takes remaining time for the expiration
-exports.updateToken = async (req, res, next) => {
+exports.updateToken = async (req, res, next) =>
+{
   const data = req.res.updatedDataToToken;
-  try {
+  try
+  {
     const token = jwt.sign(data, 'secret_this_should_be_longer', { expiresIn: parseInt(req.body.remainingTime, 10) });
     return res.status(200).json({
       token: token,

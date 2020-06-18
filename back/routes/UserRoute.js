@@ -16,13 +16,8 @@ const router = express.Router();
 
 /* ----- User functions ----- */
 router.get('/profile/:user_id?', authCheck, UserController.getUserInfo);
-// , UserController.checkPassword(), UserController.updateUser());
-// , authCheck, UserController.getInfoById
-
-// router.all('/', authCheck);
 router.get('/editProfile', authCheck, UserController.getUserInfo);
 router.post('/editProfile', authCheck, multer({storage: ImageController.storage}).single('photoUrl'), UserController.updateUser, UserController.updateToken);
-// , authCheck, UserController.getInfoById
 
 /* ----- Fallback function ----- */
 router.use((req, res) =>

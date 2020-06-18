@@ -207,6 +207,8 @@ export class AuthService {
     lastName: string;
     username: string;
     email: string;
+    password: string;
+    confirmPassword: string;
   }) {
     const updateData = new FormData();
     updateData.append('photoUrl', formData.avatar);
@@ -214,6 +216,8 @@ export class AuthService {
     updateData.append('lastName', formData.lastName);
     updateData.append('username', formData.username);
     updateData.append('email', formData.email);
+    updateData.append('password', formData.password);
+    updateData.append('confirmPassword', formData.confirmPassword);
 
     const authInformation = this.getAuthData();
     const now = new Date();
