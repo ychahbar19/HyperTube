@@ -89,7 +89,6 @@ form input, form select {
   position: absolute;
   top: calc(50% - 35px);    // half of image height
   left: calc(50% - 35px);   // half of image width
-  // z-index: 2;
 }
 
 .card:hover .container-poster:hover .card-img-top {
