@@ -96,12 +96,9 @@ export class SignupComponent implements OnInit, OnDestroy {
                           this.errorMessage = false; });
 
     // Listens to errors from the API's signup process
-    // and translates them into field specific field errors.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      errorsArray => {
+      error => {
         this.errorMessage = true;
-        if (typeof errorsArray['username'] !== 'undefined') { this.usernameNotUnique = true; }
-        if (typeof errorsArray['email'] !== 'undefined') { this.emailNotUnique = true; }
       }
     );
   }

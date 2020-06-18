@@ -56,6 +56,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   public successMessage: string;
   public secondForm = false;
   public activateLink = false;
+  public displayForms = true;
 
   /* ------------------------------------------------------- *\
       U
@@ -78,6 +79,9 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
       .subscribe(sub => {
         this.successMessage = this.txt['reset success msg ' + this.authService.resetPasswordSuccessMessage][this.lg];
+        if (this.successMessage === this.txt['reset success msg 2'][this.lg]) {
+          this.displayForms = false;
+        }
         this.isLoading = false;
         this.activateLink = true;
       });

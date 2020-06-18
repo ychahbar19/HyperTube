@@ -62,7 +62,7 @@ function authSuccess(authProvider, profile, done)
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       email: profile.emails[0].value,
-      username: (userName + Math.round(+new Date()/1000)).trim(), // With timestamp for uniqueness
+      username: (userName + Math.round(+new Date()/1000)).replace(' ', ''), // With timestamp for uniqueness
       password: 'none' /* --------- does this allow sign in using HT and 'none' password ?? */
     },
     function (error, found_user)

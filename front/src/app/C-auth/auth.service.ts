@@ -75,11 +75,11 @@ export class AuthService {
     // sets signupSuccessListener to TRUE. And in any case, once the process is done,
     // sets authServiceWorkingListener to FALSE.
     this.http.post('http://localhost:3000/api/auth/signup', authData).subscribe(
-      (response) => {
+      response => {
         this.signupSuccessListener.next(true);
         this.authServiceWorkingListener.next(false);
       },
-      (error) => {
+      error => {
         this.authServiceWorkingListener.next(false);
       }
     );
@@ -156,11 +156,11 @@ export class AuthService {
     this.http
       .post('http://localhost:3000/api/auth/forgotPassword', formData)
       .subscribe(
-        (response) => {
+        response => {
           this.resetPasswordSuccessMessage = 1;
           this.authServiceWorkingListener.next(false);
         },
-        (error) => {
+        error => {
           this.resetPasswordSuccessMessage = 0;
           this.authServiceWorkingListener.next(false);
         }
@@ -230,7 +230,6 @@ export class AuthService {
       )
       .subscribe(
         response => {
-          console.log(response);
           this.token = response.token;
           if (this.token) {
             this.connectUser(response);

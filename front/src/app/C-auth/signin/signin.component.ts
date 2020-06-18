@@ -97,7 +97,7 @@ export class SigninComponent implements OnInit, OnDestroy {
       // errorsArray => { this.errorMessage = errorsArray['message']; }
       error => {
         this.errorMessage = error;
-        this.successSignup = !this.successSignup;
+        this.successSignup = false;
       }
     );
   }

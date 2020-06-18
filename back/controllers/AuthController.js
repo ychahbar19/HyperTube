@@ -22,6 +22,7 @@ async function cryptPwd(password) {
   const cryptedPwd = await bcrypt.hash(password, 10); // Applies bcrypt's hash on the password in 10 steps (=lvls of security.
   return cryptedPwd;
 }
+
 async function isSamePwds(password_input, password_db) {
   const isSame = await bcrypt.compare(password_input, password_db);
   return isSame;
@@ -58,10 +59,10 @@ exports.signupInputsValidation = (req, res, next) => {
 exports.createUser = async (req, res, next) => {
   try {
     const hashPwd = await cryptPwd(req.body.password);
-    const url = req.protocol + "://" + req.get("host");
+    const url = req.protocol + '://' + req.get('host');
 
     const user = new UserModel({
-      avatar: url + "/assets/pictures/" + req.file.filename,
+      avatar: url + '/assets/pictures/' + req.file.filename,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -71,16 +72,8 @@ exports.createUser = async (req, res, next) => {
 
     res.savedUser = await user.save();
     return next();
-  }
-  catch (e) {
-    let errors_array = {};
-    
-    if (typeof e.errors.username !== 'undefined')
-      errors_array.username = e.errors.username.kind;
-    if (typeof e.errors.email !== 'undefined')
-      errors_array.email = e.errors.email.kind;
-
-    return res.status(500).json({ errors_array: errors_array });
+  } catch (e) {
+    return res.status(500).json({ e });
   }
 };
 
@@ -99,12 +92,8 @@ exports.activateAccount = async (req, res) => {
     await UserModel.updateOne({ '_id': oUserId }, { $set: { 'active': true } });
     return res.status(200).json({ message: 'Account activated' });
   }
-  catch (e)
-  {
-    let errors_array = {};
-    console.log('********', e, '--------', e.message)
-    errors_array.message = e;
-    res.status(500).json({ errors_array: errors_array });
+  catch (e) {
+    res.status(500).json({ e });
   }
 };
 
