@@ -21,7 +21,7 @@ export class FormAuthUserService {
   private addAvatar() {
     this.form.addControl('avatar', new FormControl(null,
       {
-        validators: [Validators.required], asyncValidators: [mimeType]
+        validators: [], asyncValidators: [mimeType]
       }));
   }
 
@@ -63,7 +63,7 @@ export class FormAuthUserService {
   \* ------------------------------------------------------------- */
 
   defineValidFormGroup(scope: string) {
-    if (scope === 'signup' || scope === 'edit') {
+    if (scope === 'signup') {
       this.addAvatar();
       this.addName('firstName');
       this.addName('lastName');
@@ -74,6 +74,12 @@ export class FormAuthUserService {
     } else if (scope === 'signin') {
       this.addUsername();
       this.addPassword('password');
+    } else if (scope === 'edit') {
+      this.addAvatar();
+      this.addName('firstName');
+      this.addName('lastName');
+      this.addUsername();
+      this.addEmail();
     }
     /*
     forgotten pw

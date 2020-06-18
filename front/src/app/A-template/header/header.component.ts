@@ -40,15 +40,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   // 2) Defines whether the user is authenticated or not
   // (to output the right navigation links).
-  ngOnInit() {
+  async ngOnInit() {
     this.userIsAuthenticated = this.authService.getIsAuth();
     this.authListenerSubs = this.authService.getAuthServiceWorkingListener()
                               .subscribe(async isAuthenticated => {
                                 this.userIsAuthenticated = isAuthenticated;
-                                if (isAuthenticated) {
-                                  this.user = await this.userService.getUserInfo(undefined);
-                                }
+                                // if (isAuthenticated) {
+                                //   this.user = await this.userService.getUserInfo(undefined);
+                                // }
                               });
+    if (this.userIsAuthenticated) {
+      this.user = await this.userService.getUserInfo(undefined);
+    }
   }
   /* displaySignInButton() { return (this.router.url !== '/signin' && !this.userIsAuthenticated); }
   --> replace with appropriate active status on signin/up? */

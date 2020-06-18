@@ -66,7 +66,7 @@
             <input
               type="text" placeholder="{{ txt['Username'][lg] }}"
               class="form-control" id="inputUsername"
-              #username formControlName="username"
+              #username formControlName="username" (change)="usernameStatus()"
             >
             <p *ngIf="form.get('username').touched && form.get('username').invalid" class="error--msg">
               <span *ngIf="form.get('username').errors.required">{{ txt['Username required'][lg] }}</span>
@@ -86,7 +86,7 @@
             </p>
           </div>
 
-          <button type="submit" [disabled]="form.invalid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
+          <button type="submit" [disabled]="!form.valid" class="sign-in--button btn btn-outline-warning mx-auto d-block col-sm-12 col-md-6">
             {{ txt['Submit'][lg] }}
           </button>
         </form>
