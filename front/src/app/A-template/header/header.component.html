@@ -32,8 +32,10 @@
       </ng-template>
     </ul>
 
-    <button (click)="onLanguageChange('en')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'en', 'btn-outline-warning' : lg != 'en'}">EN</button>
-    <button (click)="onLanguageChange('fr')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'fr', 'btn-outline-warning' : lg != 'fr'}">FR</button>
+    <div class="languages-div">
+      <button (click)="onLanguageChange('en')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'en', 'btn-outline-warning' : lg != 'en'}">EN</button>
+      <button (click)="onLanguageChange('fr')" class="btn btn-sm" [ngClass]="{'btn-warning' : lg == 'fr', 'btn-outline-warning' : lg != 'fr'}">FR</button>
+    </div>
 
   </div>
 </nav>
