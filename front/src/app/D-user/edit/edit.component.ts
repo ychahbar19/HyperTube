@@ -95,7 +95,7 @@ export class EditComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error => {
-        // a voir apres le merge
+        this.errorMessage = true;
       });
     this.errorStatusSub = this.authService.getAuthServiceWorkingListener().subscribe(response => {
       this.successMessage = true;
