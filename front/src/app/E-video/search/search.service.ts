@@ -9,8 +9,10 @@ export class SearchService {
   // through the object returned with the private function addToResults()
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
+
   getResults(encodedSearchParams: string, lg, translatedGenres)
   {
+    const thisClass = this;
     return new Promise((resolve, reject) =>
     {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
@@ -19,9 +21,11 @@ export class SearchService {
           {
             if (lg == 'fr')
             {
-              Object.keys(response).forEach(function(key)
+              Object.keys(response).forEach(async function(key)
               {
                 let vid = response[key];
+                const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
+                vid.isSeen = isSeen;
                 for (let i = 0; i < translatedGenres['en'].length; i++)
                   vid['Genre'] = vid['Genre'].replace(translatedGenres['en'][i], translatedGenres['fr'][i]);
               });
@@ -33,15 +37,29 @@ export class SearchService {
     });
   }
 
-  isSeen(result) {
+  checkIfSeen(imdbId: string) {
     return new Promise((resolve, reject) => {
-      this.http.get<{}>('http://localhost:3000/api/video/isSeen/' + result)
+      
+      this.http.get<any>('http://localhost:3000/api/video/isSeen/' + imdbId)
         .toPromise()
-        .then(async response => {
-          console.log(response);
-          resolve(response);
+        .then(response => {
+          // setTimeout(() => {
+            resolve(response);
+          // }, 1500);
         },
         error => { reject(error); });
     });
   }
+
+  // isSeen(result) {
+  //   return new Promise((resolve, reject) => {
+  //     this.http.get<{}>('http://localhost:3000/api/video/isSeen/' + result)
+  //       .toPromise()
+  //       .then(async response => {
+  //         console.log(response);
+  //         resolve(response);
+  //       },
+  //       error => { reject(error); });
+  //   });
+  // }
 }

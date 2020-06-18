@@ -407,7 +407,6 @@ exports.isSeen = async (req, res, next) => {
     const imdbId = req.params.movie;
     const oUserId = ObjectId(req.userToken.userId);
     const user = await UserModel.findOne({ _id: oUserId , movieHistory: { $all: [imdbId] }});
-    
     if (user !== null)
       status = true;
     else

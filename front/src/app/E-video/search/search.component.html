@@ -72,6 +72,9 @@
               </div>
             </div>
             <div class="card-body">
+              <div *ngIf="result.isSeen" class="seenLogo">
+                <img src="../../../assets/img/sid-view.svg" alt="seenMovie" width="60" height="30">
+              </div>
               <h6 class="card-title">
                 <a href="/video/{{ result['imdb_id'] }}/{{ result['yts_id'] }}" class="stretched-link">
                   {{ result['Title'] }} ({{ result['Year'] }})
