@@ -39,7 +39,6 @@ export class SearchService {
 
   checkIfSeen(imdbId: string) {
     return new Promise((resolve, reject) => {
-      
       this.http.get<any>('http://localhost:3000/api/video/isSeen/' + imdbId)
         .toPromise()
         .then(response => {
