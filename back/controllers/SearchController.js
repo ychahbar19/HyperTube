@@ -89,22 +89,20 @@ async function search(req, res) {
     return res.status(400).json({ error });
   }
 
-  // Manually sort/filter if results include Rargb
-  if (query_term != '' && page == '') {
-    // Only keep results that match 'genre'
-    if (genre != '')
-      hypertubeCompleteResults.forEach((values, key) => {
-        if (!(values['Genre'].includes(genre)))
-          hypertubeCompleteResults.splice(key, 1);
-      });
-    // Filter based on 'sort_by'
+  // Only keep results that match 'genre'
+  if (genre != '')
+  hypertubeCompleteResults.forEach((values, key) => {
+    if (!(values['Genre'].includes(genre)))
+      hypertubeCompleteResults.splice(key, 1);
+  });
+
+  // Sort based on 'sort_by'
     if (sort_by == '')
-      hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1)
+      hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1);
     else if (sort_by == 'title')
-      hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1)
+      hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1);
     else if (sort_by == 'year')
-      hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1)
-  }
+      hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1);
 
   res.status(200).send(hypertubeCompleteResults);
 };

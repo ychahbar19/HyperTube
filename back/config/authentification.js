@@ -45,6 +45,7 @@ function authSuccess(authProvider, profile, done)
     userName = profile.username;
   else
     userName = profile.displayName;
+  userName = (userName + Math.round(+new Date()/1000)).replace(' ', '')
   if (!profile.name)
   {
     profile['name'] = {
@@ -52,17 +53,21 @@ function authSuccess(authProvider, profile, done)
       'familyName': profile.displayName.split(' ').slice(-1).join(' ')
     }
   }
+  if (profile.name.givenName == '')
+    profile.name.givenName = userName;
+  if (profile.name.familyName == '')
+    profile.name.familyName = userName;
   UserModel.findOrCreate(
     { email: profile.emails[0].value },
     {
       active: true,
       provider: authProvider,
       providerId: profile.id,
-      avatar: profile.photos[0].value,
+      avatar: 'http://localhost:3000/assets/pictures/__default-profile-pic.png', //profile.photos[0].value,
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       email: profile.emails[0].value,
-      username: (userName + Math.round(+new Date()/1000)).replace(' ', ''), // With timestamp for uniqueness
+      username: userName, //With timestamp for uniqueness
       password: 'none' /* --------- does this allow sign in using HT and 'none' password ?? */
     },
     function (error, found_user)
@@ -100,28 +105,7 @@ function(accessToken, refreshToken, profile, done)
 
 // ------ Facebook authentification ------
 // ID and secret defined at https://developers.facebook.com/apps/1095920914095181/fb-login/settings/
-/*
-passport.use(new FacebookStrategy(
-{
-  clientID: '1095920914095181',
-  clientSecret: '9fef9706e172ad432ad5ae2501320def',
-  callbackURL: "http://localhost:3000/api/auth/facebook/callback",
-  profileFields:
-  [
-    'id',
-    'picture.type(large)',
-    'first_name',
-    'last_name',
-    'emails',
-    'displayName'
-  ]
-},
-function(accessToken, refreshToken, profile, done)
-{
-  return authSuccess('facebook', profile, done);
-}
-));
-*/
+
 // ------ Github authentification ------
 // ID and secret defined at https://github.com/settings/applications/1317082
 

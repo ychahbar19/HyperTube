@@ -64,7 +64,7 @@ export class VideoCardComponent implements OnInit {
       this.videoInfos['Genre'] = this.videoInfos['Genre']
         .replace('Adventure', 'Aventure')
         .replace('Biography', 'Biographie')
-        .replace('Comedy', 'Comedie')
+        .replace('Comedy', 'Comédie')
         .replace('Documentary', 'Documentaire')
         .replace('Drama', 'Drame')
         .replace('Family', 'Famille')

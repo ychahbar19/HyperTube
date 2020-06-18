@@ -85,7 +85,7 @@ async function getRargbTorrents(imdb_id)
         videoInfo.Torrents = {
           peers: result.leechers,
           seeds: result.seeders,
-          size: result.size,
+          size: (Math.round(result.size / 10000000) / 100).toString() + ' GB',
           year_uploaded: result.pubdate.substring(0, 4),
           title: result.title
         };
