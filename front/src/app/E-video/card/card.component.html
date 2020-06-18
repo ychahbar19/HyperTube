@@ -38,10 +38,10 @@
                 <img src="../../../assets/img/sid-view.svg" alt="seenMovie" width="60" height="30">
               </div>
           </th>
-          <th>{{ txt['Upload year'][lg] }}</th>
-          <th>{{ txt['Size'][lg] }}</th>
-          <th>{{ txt['Seeds'][lg] }}</th>
-          <th>{{ txt['Peers'][lg] }}</th>
+          <th class="d-none d-sm-table-cell">{{ txt['Upload year'][lg] }}</th>
+          <th class="d-none d-sm-table-cell">{{ txt['Size'][lg] }}</th>
+          <th class="d-none d-sm-table-cell">{{ txt['Seeds'][lg] }}</th>
+          <th class="d-none d-sm-table-cell">{{ txt['Peers'][lg] }}</th>
           <th> </th>
         </tr>
       </thead>
@@ -49,10 +49,10 @@
       <tbody *ngFor="let torrent of videoInfos['Torrents']; let i = index;">
         <tr class="bg-dark">
           <td>{{ torrent.title }}</td>
-          <td>{{ torrent.year_uploaded }}</td>
-          <td>{{ torrent.size }}</td>
-          <td>{{ torrent.seeds }}</td>
-          <td>{{ torrent.peers }}</td>
+          <td class="d-none d-sm-table-cell">{{ torrent.year_uploaded }}</td>
+          <td class="d-none d-sm-table-cell">{{ torrent.size }}</td>
+          <td class="d-none d-sm-table-cell">{{ torrent.seeds }}</td>
+          <td class="d-none d-sm-table-cell">{{ torrent.peers }}</td>
           <td class="min">
             <button type="button" class="btn btn-success" data-toggle="collapse" [attr.data-target]="'#collapse_' + i " (click)="streamVideo(i)">
               {{ txt['Play'][lg] }}
