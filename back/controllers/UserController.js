@@ -78,7 +78,6 @@ exports.updateUser = async (req, res, next) =>
       updateData.email = req.body.email;
     if (req.body.password && req.body.password == req.body.confirmPassword)
     {
-      console.log('here')
       hashPwd = await bcrypt.hash(req.body.password, 10);
       updateData.password = hashPwd;
     }

@@ -47,19 +47,6 @@ function(req, res)
   return authSuccess(req, res, '42'); //Function if success
 });
 
-/* ----- Facebook authentification ----- */
-/*
-router.get('/facebook', passport.authenticate('facebook', { scope : ['email'] }));
-router.get('/facebook/callback', passport.authenticate('facebook',
-{
-  failureRedirect: redirectURL
-}),
-function(req, res)
-{
-  return authSuccess(req, res, 'facebook');
-});
-*/
-
 /* ----- Github authentification ----- */
 
 router.get('/github', passport.authenticate('github'));

@@ -8,22 +8,25 @@ const crypto = require('crypto');
 const ObjectId = require('mongodb').ObjectId;
 const UserModel = require('../models/UserModel');
 
-// Defines validation patterns and a function to compare inputs with them.
-const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$');
-const usernamePattern = new RegExp('^[a-zA-Z0-9]{6,33}$');
-const passwordPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$');
+/* - Defines validation patterns and a function to compare inputs with them. - */
 
-function validPattern(str, pattern) {
+const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$');
+const namePattern = new RegExp('^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$');
+const usernamePattern = new RegExp('^[a-zA-Z0-9]{4,20}$');
+//const passwordPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,33}$');
+const passwordPattern = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[&@#!?,;.:+=*\-\/\\_$£<>%])[a-zA-Z0-9&@#!?,;.:+=*\-\/\\_$£<>%]{8,}$');
+
+function validPattern(str, pattern)
+{
   return (pattern.test(str));
 }
-
-// Defines the password crypting and comparison methods
-async function cryptPwd(password) {
+async function cryptPwd(password)
+{
   const cryptedPwd = await bcrypt.hash(password, 10); // Applies bcrypt's hash on the password in 10 steps (=lvls of security.
   return cryptedPwd;
 }
-
-async function isSamePwds(password_input, password_db) {
+async function isSamePwds(password_input, password_db)
+{
   const isSame = await bcrypt.compare(password_input, password_db);
   return isSame;
 }
@@ -35,13 +38,18 @@ async function isSamePwds(password_input, password_db) {
 /* ------------------------ SIGNUP (step 1) ------------------------ */
 // Checks that the input fields (names, email, password) are valid.
 
-exports.signupInputsValidation = (req, res, next) => {
+exports.signupInputsValidation = (req, res, next) =>
+{
   const email = req.body.email;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
   const username = req.body.username;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
   if (email == null || !validPattern(email, emailPattern) ||
+      firstName == null || !validPattern(firstName, namePattern) ||
+      lastName == null || !validPattern(lastName, namePattern) ||
       username == null || !validPattern(username, usernamePattern) ||
       password == null || !validPattern(password, passwordPattern))
     return res.status(403).json({ message: 'An error occured !' });
@@ -233,16 +241,27 @@ exports.resetPwd = async (req, res) => {
 };
 
 /* -------------------------------------------------------------------------- *\
-    5) Defines LOGOUT functions.
+    5) Defines the validation function for editprofile
 \* -------------------------------------------------------------------------- */
 
-/* ------------------------ LOGOUT ------------------------ */
-
-/*
-exports.logout = (req, res) =>
+exports.editInputsValidation = (req, res, next) =>
 {
-  req.logout();
-  req.session.destroy();
-  res.redirect('http://localhost:4200/');
+  const email = req.body.email;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const username = req.body.username;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  if (email == null || !validPattern(email, emailPattern) ||
+      firstName == null || !validPattern(firstName, namePattern) ||
+      lastName == null || !validPattern(lastName, namePattern) ||
+      username == null || !validPattern(username, usernamePattern) ||
+      (password != null && !validPattern(password, passwordPattern)))
+    return res.status(403).json({ message: 'An error occured !' });
+
+  if (password !== confirmPassword)
+    return res.status(403).json({ message: 'Passwords do not match' });
+
+  return next();
 };
-*/
