@@ -39,6 +39,7 @@ export class SearchComponent implements OnInit {
   private page = 1;
   private encodedSearchParams = '?';
   public user: any;
+  public busyLoadingData = false;
 
 
   constructor(private searchService: SearchService) { }
@@ -52,6 +53,7 @@ export class SearchComponent implements OnInit {
   // 3) Fetches the search results from the API (back) and saves them
   // in the array 'results' for output.
   async getSearchResults(searchParams: NgForm) {
+    this.busyLoadingData = true;
     this.results = null;
     this.page = 1;
     this.encodedSearchParams = '?';
@@ -73,9 +75,11 @@ export class SearchComponent implements OnInit {
     // Remove last '&' char
     this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
     this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
+    this.busyLoadingData = false;
   }
 
   async onScroll() {
+    this.busyLoadingData = true;
     this.page++;
     const pageChar = this.page.toString();
     if (this.encodedSearchParams === '?') {
@@ -88,5 +92,6 @@ export class SearchComponent implements OnInit {
     this.isLoadingPage = true;
     this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']));
     this.isLoadingPage = false;
+    this.busyLoadingData = false;
   }
 }
