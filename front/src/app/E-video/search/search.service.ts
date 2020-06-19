@@ -9,21 +9,17 @@ export class SearchService {
   // through the object returned with the private function addToResults()
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
-  getResults(encodedSearchParams: string, lg, translatedGenres)
-  {
-    return new Promise((resolve, reject) =>
-    {
+  getResults(encodedSearchParams: string, lg: any, translatedGenres: any) {
+    return new Promise((resolve, reject) => {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
-        .then(response =>
-          {
-            if (lg == 'fr')
-            {
-              Object.keys(response).forEach(function(key)
-              {
-                let vid = response[key];
-                for (let i = 0; i < translatedGenres['en'].length; i++)
+        .then(response => {
+            if (lg === 'fr') {
+              Object.keys(response).forEach(key => {
+                const vid = response[key];
+                for (let i = 0; i < translatedGenres['en'].length; i++) {
                   vid['Genre'] = vid['Genre'].replace(translatedGenres['en'][i], translatedGenres['fr'][i]);
+                }
               });
             }
             resolve(response);
