@@ -64,7 +64,7 @@ async function getYtsTorrents(yts_id)
   await axios.get('https://yts.mx/api/v2/movie_details.json?movie_id=' + yts_id)
     .then(results =>
     {
-      videoInfo.Torrents = results.data.data.movie.torrents;
+      videoInfo.Torrents = results.data.data.movie.torrents;      
       Object.entries(videoInfo.Torrents).forEach(item =>
       {
         item[1].title = 'YIFY ' + item[1].quality + ' ' + item[1].type;
@@ -81,11 +81,18 @@ async function getRargbTorrents(imdb_id)
   await rarbgApi.search(imdb_id, null, 'imdb')
     .then(results =>
     {
-      results.forEach(result => {
+      results.forEach(result =>
+      {
+        let magnet = decodeURIComponent(result.download);
+        magnet = magnet.replace('magnet:?xt=urn:btih:', '');
+        hash = magnet.split("&")[0].toUpperCase();
         videoInfo.Torrents = {
+          hash: hash,
           peers: result.leechers,
           seeds: result.seeders,
           size: (Math.round(result.size / 10000000) / 100).toString() + ' GB',
+          size_bytes: result.size,
+          date_uploaded: result.pubdate,
           year_uploaded: result.pubdate.substring(0, 4),
           title: result.title
         };
@@ -295,11 +302,18 @@ const SubtitlesManager = async (hash, imdbId, fileName) => {
 };
 
 //  Download parts asked by the browser
-const startEngine = (req, res, next, positions, paths) => {
-  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash });
+const startEngine = (req, res, next, positions, paths) =>
+{
+  console.log('---hash', req.params.hash)
+
+  const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash, dht: true });
+  console.log('---engine defined')
   
-  engine.on('ready', () => {
-    engine.files.forEach(async file => {  
+  engine.on('ready', () =>
+  {
+    console.log('---engine ready')
+    engine.files.forEach(async file =>
+    {  
       let ext = file.name.split('.').pop();
       //  1. Check if ext is a video file.
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {

@@ -36,13 +36,12 @@ exports.getUserInfo = async (req, res) =>
     return res.status(200).json({
       user_id: id,
       avatar: userInfo.avatar,
+      language: userInfo.language,
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
       username: userInfo.username,
       email: userInfo.email,
       movieHistory: userInfo.movieHistory,
-      //humanReadName: userInfo.firstName + ' ' + userInfo.lastName,
-      //message: 'get user successfully !'
       comments: userComments
     });
   }
@@ -65,7 +64,9 @@ exports.updateUser = async (req, res, next) =>
       updateData.userId = userToken.userId;
     }
     const oUserId = ObjectId(userToken.userId);
-    
+
+    if (req.body.language)
+      updateData.language = req.body.language;
     if (req.body.firstName)
       updateData.firstName = req.body.firstName;
     if (req.body.lastName)
@@ -88,6 +89,7 @@ exports.updateUser = async (req, res, next) =>
     await UserModel.updateOne({_id: oUserId}, { $set: updateData });
     
     // Removes the email & password from the object since we don't need them in the updated Token.
+    delete updateData.language;
     delete updateData.email;
     delete updateData.password;
     delete updateData.confirmPassword;

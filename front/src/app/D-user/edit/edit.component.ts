@@ -32,6 +32,7 @@ export class EditComponent implements OnInit, OnDestroy {
     'Email required':         { en: 'Email is required.', fr: 'L\'email est requis.' },
     'Email format':           { en: 'Please enter a valid email address.', fr: 'Veuillez entrer une adresse email valide.' },
     Password:                 { en: 'New password', fr: 'Nouveau mot de passe' },
+    'Password required':      { en: 'Password required.', fr: 'Le mot de passe est requis.' },
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
                                 fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'New password confirmation', fr: 'Nouveau mot de passe (confirmation)' },
@@ -77,6 +78,7 @@ export class EditComponent implements OnInit, OnDestroy {
         this.userData = response;
         this.form.patchValue(
         {
+          language: this.userData.language,
           firstName: this.userData.firstName,
           lastName: this.userData.lastName,
           username: this.userData.username,

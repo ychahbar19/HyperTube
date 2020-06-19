@@ -203,6 +203,7 @@ export class AuthService {
 
   updateUser(formData: {
     avatar: File | string;
+    language: string;
     firstName: string;
     lastName: string;
     username: string;
@@ -212,6 +213,7 @@ export class AuthService {
   }) {
     const updateData = new FormData();
     updateData.append('photoUrl', formData.avatar);
+    updateData.append('language', formData.language);
     updateData.append('firstName', formData.firstName);
     updateData.append('lastName', formData.lastName);
     updateData.append('username', formData.username);

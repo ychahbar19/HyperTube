@@ -22,7 +22,6 @@ passport.serializeUser(function(user_object, done)
 // into a UserModel object (for the app).
 passport.deserializeUser(function(user_id, done)
 {
-  console.log('---deserializeUser---')
   UserModel.findById
   (
     user_id,
