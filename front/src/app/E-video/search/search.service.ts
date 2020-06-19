@@ -16,16 +16,16 @@ export class SearchService {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
         .then(response => {
-          if (lg === 'fr') {
-            Object.keys(response).forEach(async key => {
-              const vid = response[key];
-              const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
-              vid.isSeen = isSeen;
+          Object.keys(response).forEach(async key => {
+            const vid = response[key];
+            const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
+            vid.isSeen = isSeen;
+            if (lg === 'fr') {
               for (let i = 0; i < translatedGenres['en'].length; i++) {
                 vid['Genre'] = vid['Genre'].replace(translatedGenres['en'][i], translatedGenres['fr'][i]);
               }
-            });
-          }
+            }
+          });
           resolve(response);
           },
           error => { reject(error); }
