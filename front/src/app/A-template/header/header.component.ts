@@ -30,7 +30,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   public user: User;
   public userIsAuthenticated = false;
-  public changeHeaderPicListener: Subscription;
   private authListenerSubs: Subscription;
 
   /* ------------------------------------------------------- *\
@@ -42,7 +41,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // 2) Defines whether the user is authenticated or not
   // (to output the right navigation links).
   async ngOnInit() {
-    // this.changeHeaderPicListener =
     this.userIsAuthenticated = this.authService.getIsAuth();
     this.authListenerSubs = this.authService.getAuthServiceWorkingListener()
                               .subscribe(async isAuthenticated => {
