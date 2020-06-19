@@ -54,6 +54,7 @@
     infiniteScroll
     [infiniteScrollDistance]="2"
     [infiniteScrollThrottle]="50"
+    [infiniteScrollDisabled]='busyLoadingData'
     (scrolled)="onScroll()">
       <div
       *ngIf="results"
