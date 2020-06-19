@@ -11,7 +11,8 @@ const nodemailer = require('nodemailer');
 function sendMail(to, subject, html) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: { user: 'a.ceciora@gmail.com', pass: 'gccpmyozhzyefcfi' }
+    auth: { user: 'a.ceciora@gmail.com', pass: 'gccpmyozhzyefcfi' },
+    tls: { rejectUnauthorized: false }
   });
   const mailOptions = {
     from: 'a.ceciora@gmail.com',
@@ -25,7 +26,7 @@ function sendMail(to, subject, html) {
   TODO : Style the email. Create a template and call it here
   *
   */
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   transporter.sendMail(mailOptions, (error, info) =>
   {
     if (error)
