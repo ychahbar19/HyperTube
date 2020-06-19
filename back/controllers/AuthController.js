@@ -10,6 +10,7 @@ const UserModel = require('../models/UserModel');
 
 /* - Defines validation patterns and a function to compare inputs with them. - */
 
+const languagePattern = new RegExp('^(fr|en)$');
 const emailPattern = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$');
 const namePattern = new RegExp('^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$');
 const usernamePattern = new RegExp('^[a-zA-Z0-9]{4,20}$');
@@ -47,11 +48,11 @@ exports.signupInputsValidation = (req, res, next) =>
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
-  if (email == null || !validPattern(email, emailPattern) ||
-      firstName == null || !validPattern(firstName, namePattern) ||
-      lastName == null || !validPattern(lastName, namePattern) ||
-      username == null || !validPattern(username, usernamePattern) ||
-      password == null || !validPattern(password, passwordPattern))
+  if (email == 'null' || !validPattern(email, emailPattern) ||
+      firstName == 'null' || !validPattern(firstName, namePattern) ||
+      lastName == 'null' || !validPattern(lastName, namePattern) ||
+      username == 'null' || !validPattern(username, usernamePattern) ||
+      password == 'null' || !validPattern(password, passwordPattern))
     return res.status(403).json({ message: 'An error occured !' });
 
   if (password !== confirmPassword)
@@ -247,17 +248,19 @@ exports.resetPwd = async (req, res) => {
 exports.editInputsValidation = (req, res, next) =>
 {
   const email = req.body.email;
+  const language = req.body.language;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const username = req.body.username;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
-  if (email == null || !validPattern(email, emailPattern) ||
-      firstName == null || !validPattern(firstName, namePattern) ||
-      lastName == null || !validPattern(lastName, namePattern) ||
-      username == null || !validPattern(username, usernamePattern) ||
-      (password != null && !validPattern(password, passwordPattern)))
+  if (email == 'null' || !validPattern(email, emailPattern) ||
+      language == 'null' || !validPattern(language, languagePattern) ||
+      firstName == 'null' || !validPattern(firstName, namePattern) ||
+      lastName == 'null' || !validPattern(lastName, namePattern) ||
+      username == 'null' || !validPattern(username, usernamePattern) ||
+      password == 'null' || !validPattern(password, passwordPattern))
     return res.status(403).json({ message: 'An error occured !' });
 
   if (password !== confirmPassword)

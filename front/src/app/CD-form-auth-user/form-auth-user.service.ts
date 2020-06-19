@@ -12,6 +12,7 @@ export class FormAuthUserService {
   private form = new FormGroup({});
 
   private validPatterns = {
+    language: '^(en|fr)$',
     name: '^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.\'-]{2,30}$',
     username: '^[a-zA-Z0-9]{4,20}$',
     email: '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$',
@@ -20,7 +21,19 @@ export class FormAuthUserService {
   private addAvatar() {
     this.form.addControl('avatar', new FormControl(null,
       {
+        validators: [Validators.required], asyncValidators: [mimeType]
+      }));
+  }
+  private addAvatarEdit() {
+    this.form.addControl('avatar', new FormControl(null,
+      {
         validators: [], asyncValidators: [mimeType]
+      }));
+  }
+  private addLanguage() {
+    this.form.addControl('language', new FormControl(null,
+      {
+        validators: [Validators.required, Validators.pattern(this.validPatterns.language)]
       }));
   }
   // Common for firstName and lastName
@@ -48,11 +61,6 @@ export class FormAuthUserService {
         validators: [Validators.required, Validators.pattern(this.validPatterns.password)]
       }));
   }
-  private addPasswordEdit(whichPassword) {
-    this.form.addControl(whichPassword, new FormControl(null, {
-        validators: [Validators.pattern(this.validPatterns.password)]
-      }));
-  }
 
   /* ------------------------------------------------------------- *\
     2) Public function defineValidFormGroup(scope).
@@ -66,20 +74,20 @@ export class FormAuthUserService {
   {
     if (scope === 'signup' || scope === 'edit')
     {
-      this.addAvatar();
       this.addName('firstName');
       this.addName('lastName');
       this.addUsername();
       this.addEmail();
+      this.addPassword('password');
+      this.addPassword('confirmPassword');
       if (scope === 'signup')
       {
-        this.addPassword('password');
-        this.addPassword('confirmPassword');
+        this.addAvatar();
       }
       else if (scope === 'edit')
       {
-        this.addPasswordEdit('password');
-        this.addPasswordEdit('confirmPassword');
+        this.addAvatarEdit();
+        this.addLanguage();
       }
     }
     if (scope === 'signin')
