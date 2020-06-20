@@ -61,8 +61,7 @@ export class SearchComponent implements OnInit {
     if (searchParams.value.query_term) {
       this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
       this.changeOrder = true;
-    }
-    if (!searchParams.value.query_term) {
+    } else {
       this.changeOrder = false;
     }
     if (searchParams.value.genre) {
