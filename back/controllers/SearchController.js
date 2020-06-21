@@ -97,12 +97,14 @@ async function search(req, res) {
   });
 
   // Sort based on 'sort_by'
-    if (sort_by == '')
-      hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1);
-    else if (sort_by == 'title')
-      hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1);
-    else if (sort_by == 'year')
-      hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1);
+    if (query_term != '' && page == '') {
+      if (sort_by == '')
+        hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1);
+      else if (sort_by == 'title')
+        hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1);
+      else if (sort_by == 'year')
+        hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1);
+    }
 
   res.status(200).send(hypertubeCompleteResults);
 };
