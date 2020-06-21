@@ -75,22 +75,25 @@ async function search(req, res)
       await searchRarbgMovies(query_term);
   
     hypertubeCompleteResults = [];
-    for (const values of Object.entries(hypertubeResults)) {
+    for (const values of Object.entries(hypertubeResults))
+    {
       const results = await axios.get('http://www.omdbapi.com/?apikey=82d3568e&i=' + values[0]);
-      videoInfo = new VideoModel(results.data);
-      hypertubeCompleteResults.push({
-        imdb_id: values[0],
-        Poster: videoInfo["Poster"],
-        Title: videoInfo["Title"],
-        Year: videoInfo["Year"],
-        imdbRating: videoInfo["imdbRating"],
-        imdbVotes: videoInfo["imdbVotes"],
-        Genre: videoInfo["Genre"],
-        yts_id: values[1].yts_id
-      });
+      if (results.data.Response == "True")
+      {
+        videoInfo = new VideoModel(results.data);
+        hypertubeCompleteResults.push({
+          imdb_id: values[0],
+          Poster: videoInfo["Poster"],
+          Title: videoInfo["Title"],
+          Year: videoInfo["Year"],
+          imdbRating: videoInfo["imdbRating"],
+          imdbVotes: videoInfo["imdbVotes"],
+          Genre: videoInfo["Genre"],
+          yts_id: values[1].yts_id
+        });
+      }
     }
-  } catch (error) { return res.status(400).json({ error });
-  }
+  } catch (error) { return res.status(400).json({ error }); }
 
   // Only keep results that match 'genre'
   if (genre != '')
