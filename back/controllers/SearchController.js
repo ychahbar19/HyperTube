@@ -14,41 +14,43 @@ let hypertubeResults = {};
 \* -------------------------------------------------------------------------- */
 
 //Fetches results from YTS' API.
-async function searchYTSMovies(query_term, genre, sort_by, page) {
+async function searchYTSMovies(query_term, genre, sort_by, page)
+{
   let yts_url = 'https://yts.mx/api/v2/list_movies.json?limit=25';
   if (query_term)             { yts_url += '&query_term=' + query_term; }
   if (genre)                  { yts_url += '&genre=' + genre; }
-  if (sort_by == 'title')     { yts_url += '&sort_by=titl&order_by=asc'; }
+  if (sort_by == 'title')     { yts_url += '&sort_by=title&order_by=asc'; }
   else if (sort_by == 'year') { yts_url += '&sort_by=year&order_by=desc'; }
   else                        { yts_url += '&sort_by=download_count'; }
   if (page)                   { yts_url += '&page=' + page; }
 
-  try {
+  try
+  {
     const results = await axios.get(yts_url);
     const ytsResults = new YtsResultsModel(results.data);
     ytsResults.data.movies.forEach(movie => { hypertubeResults[movie.imdb_code] = { yts_id: movie.id }; });
-  } catch (error) {
-    throw error;
   }
+  catch (error) { throw error; }
 };
 
 //Fetches results from rarbg' API.
-async function searchRarbgMovies(query_term) {
+async function searchRarbgMovies(query_term)
+{
   const options = {
     category: rarbgApi.CATEGORY.MOVIES,
     limit: 25,
     sort: 'last',
-    format: 'json_extended'
-  }
-  try {
+    format: 'json_extended' }
+  try
+  {
     const results = await rarbgApi.search(query_term, options);
-    results.forEach(movie => {
+    results.forEach(movie =>
+    {
       if (movie.episode_info != null && !(movie.episode_info.imdb in hypertubeResults))
         hypertubeResults[movie.episode_info.imdb] = { yts_id: 0 };
     });
-  } catch (error) {
-    throw error;
   }
+  catch (error) { throw error; }
 }
 
 /* -------------------------------------------------------------------------- *\
@@ -56,7 +58,8 @@ async function searchRarbgMovies(query_term) {
 \* -------------------------------------------------------------------------- */
 
 //Calls the different sources and returns their combined results.
-async function search(req, res) {
+async function search(req, res)
+{
   hypertubeResults = {}
   let query_term = (req.query.query_term != undefined) ? req.query.query_term : '';
   let genre = (req.query.genre != undefined) ? req.query.genre : '';
@@ -65,7 +68,8 @@ async function search(req, res) {
   if (query_term != '' && sort_by == '')
     sort_by = 'title';
 
-  try {
+  try
+  {
     await searchYTSMovies(query_term, genre, sort_by, page);
     if (query_term != '' && page == '')
       await searchRarbgMovies(query_term);
@@ -85,8 +89,7 @@ async function search(req, res) {
         yts_id: values[1].yts_id
       });
     }
-  } catch (error) {
-    return res.status(400).json({ error });
+  } catch (error) { return res.status(400).json({ error });
   }
 
   // Only keep results that match 'genre'
@@ -97,12 +100,12 @@ async function search(req, res) {
   });
 
   // Sort based on 'sort_by'
-    if (sort_by == '')
-      hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1);
-    else if (sort_by == 'title')
-      hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1);
-    else if (sort_by == 'year')
-      hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1);
+  if (sort_by == '')
+    hypertubeCompleteResults.sort((a, b) => (a.imdbVotes > b.imdbVotes) ? -1 : 1);
+  else if (sort_by == 'title')
+    hypertubeCompleteResults.sort((a, b) => (a.Title < b.Title) ? -1 : 1);
+  else if (sort_by == 'year')
+    hypertubeCompleteResults.sort((a, b) => (a.Year > b.Year) ? -1 : 1);
 
   res.status(200).send(hypertubeCompleteResults);
 };

@@ -23,8 +23,10 @@ export class SearchService {
               const vid = response[key];
               const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
               vid.isSeen = isSeen;
-              if (lg === 'fr') {
-                for (let i = 0; i < translatedGenres['en'].length; i++) {
+              if (lg === 'fr' && vid['Genre'] != undefined)
+              {
+                for (let i = 0; i < translatedGenres['en'].length; i++)
+                {
                   vid['Genre'] = vid['Genre'].replace(translatedGenres['en'][i], translatedGenres['fr'][i]);
                 }
               }
