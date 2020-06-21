@@ -49,36 +49,70 @@ export class VideoCardComponent implements OnInit {
   // from the API (back), and saves them in the array 'video' for output
   // in video.component.html.
   // and also check if the movie is actually already seen
-  async ngOnInit() {
+  async ngOnInit()
+  {
     this.videoInfos = await this.videoCardService.getVideoInfo(this.lg, this.imdbId, this.ytsId);
     this.isSeen = await this.videoCardService.checkIfSeen(this.imdbId);
     this.isLoading = false;
+
+    if (this.videoInfos['Poster'] == 'N/A')
+      this.videoInfos['Poster'] = '../../assets/img/__default_poster.png';
+
+    if (this.videoInfos['imdbRating'] == undefined)
+      this.videoInfos['imdbRating'] = 0;
     this.videoInfos['rating_average'] = this.videoInfos['imdbRating'] / 2 + '/5';
-    this.videoInfos['ratings_count'] = '(' + this.videoInfos['imdbVotes'] + ' votes)';
-    if (this.lg === 'fr') {
-      if (this.videoInfos['title'] !== this.videoInfos['Title']) {
-        this.videoInfos['Title'] = this.videoInfos['Title'] + ' (' + this.videoInfos['title'] + ')';
-      }
+    if (this.lg === 'fr')
       this.videoInfos['rating_average'] = this.videoInfos['rating_average'].replace('.', ',');
+
+    if (this.videoInfos['imdbVotes'] == 'N/A')
+      this.videoInfos['imdbVotes'] = 0;
+    this.videoInfos['ratings_count'] = '(' + this.videoInfos['imdbVotes'] + ' votes)';
+    if (this.lg === 'fr')
       this.videoInfos['ratings_count'] = this.videoInfos['ratings_count'].replace(',', '.');
+
+    if (this.videoInfos['Genre'] == 'N/A')
+      this.videoInfos['Genre'] = '';
+    if (this.lg === 'fr' && this.videoInfos['Genre'] != '')
+    {
       this.videoInfos['Genre'] = this.videoInfos['Genre']
-        .replace('Adventure', 'Aventure')
-        .replace('Biography', 'Biographie')
-        .replace('Comedy', 'Comédie')
-        .replace('Documentary', 'Documentaire')
-        .replace('Drama', 'Drame')
-        .replace('Family', 'Famille')
-        .replace('Fantasy', 'Fantaisie')
-        .replace('History', 'Histoire')
-        .replace('Horror', 'Horreur')
-        .replace('Music', 'Musique')
-        .replace('Musical', 'Comédie musicale')
-        .replace('Mystery', 'Mystère')
-        .replace('Short Film', 'Court-métrage')
-        .replace('Superhero', 'Super-héro')
-        .replace('War', 'Guerre');
-      this.videoInfos['Plot'] = this.videoInfos['overview'];
+      .replace('Adventure', 'Aventure')
+      .replace('Biography', 'Biographie')
+      .replace('Comedy', 'Comédie')
+      .replace('Documentary', 'Documentaire')
+      .replace('Drama', 'Drame')
+      .replace('Family', 'Famille')
+      .replace('Fantasy', 'Fantaisie')
+      .replace('History', 'Histoire')
+      .replace('Horror', 'Horreur')
+      .replace('Music', 'Musique')
+      .replace('Musical', 'Comédie musicale')
+      .replace('Mystery', 'Mystère')
+      .replace('Short Film', 'Court-métrage')
+      .replace('Superhero', 'Super-héro')
+      .replace('War', 'Guerre');
     }
+
+    if (this.lg === 'fr' &&
+        this.videoInfos['title'] != undefined &&
+        this.videoInfos['title'] !== this.videoInfos['Title'])
+      this.videoInfos['Title'] = this.videoInfos['Title'] + ' (' + this.videoInfos['title'] + ')';
+
+    if (this.lg === 'fr')
+      this.videoInfos['Plot'] = this.videoInfos['overview'];
+    
+    this.videoInfos['Cast'] = '';
+    if (this.videoInfos['Actors'] != 'N/A')
+      this.videoInfos['Cast'] = this.txt['With'][this.lg] + ' ' + this.videoInfos['Actors'];
+    
+    this.videoInfos['Crew'] = '';
+    if (this.videoInfos['Director'] != 'N/A')
+      this.videoInfos['Crew'] += this.videoInfos['Director'] + ', ';
+    if (this.videoInfos['Writer'] != 'N/A')
+      this.videoInfos['Crew'] += this.videoInfos['Writer'] + ', ';
+    if (this.videoInfos['Production'] != 'N/A')
+      this.videoInfos['Crew'] += this.videoInfos['Production'] + ', ';
+    if (this.videoInfos['Crew'] != '')
+      this.videoInfos['Crew'] = this.txt['By'][this.lg] + ' ' + this.videoInfos['Crew'].slice(0, -2);
   }
 
   // 4)
