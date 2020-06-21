@@ -53,19 +53,22 @@ exports.sendConfirmMail = (req, res) =>
     sendMail(to, subject, html);
     res.status(201).json({ message: 'User created', result: res.savedUser });
   } catch (error) {
-    return res.status(500).json({ message: 'Mail couldn not be sent' });
+    return res.status(500).json({ message: 'Mail could not be sent' });
   }
 };
 
 // Password reset email.
-exports.sendResetPwd = async (req, res) =>
-{
-  const to = req.user.email;
-  const subject = 'Reset HyperTube Password';
-  const html = `<h3>Reset Password!</h3>
-                <p>Reset your password by clicking on this 
-                  <a href="http://localhost:4200/forgotPassword?id=` + req.user.id + `&hash=` + res.locals.randomStr +`">link</a>.
-                </p>`;
-  sendMail(to, subject, html);
-  res.status(200).json({ message : 'Reset Password email sent !' });
+exports.sendResetPwd = async (req, res) => {
+  try {
+    const to = req.user.email;
+    const subject = 'Reset HyperTube Password';
+    const html = `<h3>Reset Password!</h3>
+                  <p>Reset your password by clicking on this 
+                    <a href="http://localhost:4200/forgotPassword?id=` + req.user.id + `&hash=` + res.locals.randomStr +`">link</a>.
+                  </p>`;
+    sendMail(to, subject, html);
+    res.status(200).json({ message : 'Reset Password email sent !' });
+  } catch(error) {
+    return res.status(500).json({ message: 'Mail could not be sent' });
+  }
 };

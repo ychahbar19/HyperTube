@@ -12,14 +12,14 @@ export class SearchService {
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
 
-  getResults(encodedSearchParams: string, lg, translatedGenres) {
+  getResults(encodedSearchParams: string, lg, translatedGenres): Promise<object> {
     const thisClass = this;
     return new Promise((resolve, reject) => {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
         .toPromise()
         .then(response => {
           Object.keys(response).forEach(async key => {
-            if ( await this.authService.getIsAuth()){
+            if (this.authService.getIsAuth()) {
               const vid = response[key];
               const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
               vid.isSeen = isSeen;

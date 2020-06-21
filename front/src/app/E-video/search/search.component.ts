@@ -30,17 +30,16 @@ export class SearchComponent implements OnInit {
                           'Court-métrage', 'Sport', 'Super-héro', 'Thriller', 'Guerre', 'Western' ]}
   };
 
-  // public results: Array<object>;
   public results: any;
   public isLoading = true;
   public isLoadingPage = false;
   public changeOrder = false;
-  // public movieIsSeen: boolean;
-  private page = 1;
-  private encodedSearchParams = '?';
   public user: any;
   public busyLoadingData = false;
 
+  private page = 1;
+  private encodedSearchParams = '?';
+  private noMoreResults = false;
 
   constructor(private searchService: SearchService) { }
 
@@ -57,12 +56,12 @@ export class SearchComponent implements OnInit {
     this.results = null;
     this.page = 1;
     this.encodedSearchParams = '?';
+    this.noMoreResults = false;
 
     if (searchParams.value.query_term) {
       this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
       this.changeOrder = true;
-    }
-    if (!searchParams.value.query_term) {
+    } else {
       this.changeOrder = false;
     }
     if (searchParams.value.genre) {
@@ -73,25 +72,30 @@ export class SearchComponent implements OnInit {
     }
 
     // Remove last '&' char
-    this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
+    if (this.encodedSearchParams[this.encodedSearchParams.length - 1] === '&') {
+      this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
+    }
     this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
     this.busyLoadingData = false;
   }
 
   async onScroll() {
     this.busyLoadingData = true;
-    this.page++;
-    const pageChar = this.page.toString();
-    if (this.encodedSearchParams === '?') {
-      this.encodedSearchParams += 'page=' + pageChar;
-    } else if (this.encodedSearchParams.includes('page=')) {
-      this.encodedSearchParams = this.encodedSearchParams.replace(/page=[0-9]*/g, 'page=' + pageChar);
-    } else {
-      this.encodedSearchParams += '&page=' + this.page.toString();
+    if (!this.noMoreResults) {
+      this.page++;
+      const pageChar = this.page.toString();
+      if (this.encodedSearchParams === '?') {
+        this.encodedSearchParams += 'page=' + pageChar;
+      } else if (this.encodedSearchParams.includes('page=')) {
+        this.encodedSearchParams = this.encodedSearchParams.replace(/page=[0-9]*/g, 'page=' + pageChar);
+      } else {
+        this.encodedSearchParams += '&page=' + this.page.toString();
+      }
+      this.isLoadingPage = true;
+      const newResults = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
+      Object.keys(newResults).length ? this.results = this.results.concat(newResults) : this.noMoreResults = true;
+      this.isLoadingPage = false;
     }
-    this.isLoadingPage = true;
-    this.results = this.results.concat(await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']));
-    this.isLoadingPage = false;
     this.busyLoadingData = false;
   }
 }

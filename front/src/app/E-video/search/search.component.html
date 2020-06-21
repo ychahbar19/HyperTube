@@ -52,9 +52,10 @@
     *ngIf="results"
     class="row"
     infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="50"
-    [infiniteScrollDisabled]='busyLoadingData'
+    [infiniteScrollDistance]="1"
+    [infiniteScrollThrottle]="150"
+    [infiniteScrollDisabled]="busyLoadingData"
+    [immediateCheck]="false"
     (scrolled)="onScroll()">
       <div
       *ngIf="results"
