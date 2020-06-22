@@ -83,7 +83,7 @@ exports.createUser = async (req, res, next) => {
       username: req.body.username,
       password: hashPwd
     });
-    await user.save();
+    res.savedUser = await user.save();
 
     return next();
   } catch (error) {
