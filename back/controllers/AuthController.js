@@ -47,11 +47,11 @@ exports.signupInputsValidation = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
-  if (email == 'null' || !validPattern(email, emailPattern) ||
-      firstName == 'null' || !validPattern(firstName, namePattern) ||
-      lastName == 'null' || !validPattern(lastName, namePattern) ||
-      username == 'null' || !validPattern(username, usernamePattern) ||
-      password == 'null' || !validPattern(password, passwordPattern))
+  if (email === null || !validPattern(email, emailPattern) ||
+      firstName === null || !validPattern(firstName, namePattern) ||
+      lastName === null || !validPattern(lastName, namePattern) ||
+      username === null || !validPattern(username, usernamePattern) ||
+      password === null || !validPattern(password, passwordPattern))
     return res.status(403).json({ status: 403, datas: null, message: 'An error occured !' });
 
   if (password !== confirmPassword)
@@ -68,7 +68,14 @@ exports.createUser = async (req, res, next) => {
     const hashPwd = await cryptPwd(req.body.password);
     const url = req.protocol + '://' + req.get('host');
 
-    const user = new UserModel({
+    let user = await UserModel.findOne({ username: req.body.username });
+    if (user)
+      return res.status(403).json({ status: 403, datas: null, message: 'Username exists' });
+    user = await UserModel.findOne({ email: req.body.email });
+    if (user)
+      return res.status(403).json({ status: 403, datas: null, message: 'Email exists' });
+
+    user = new UserModel({
       avatar: url + '/assets/pictures/' + req.file.filename,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -76,16 +83,11 @@ exports.createUser = async (req, res, next) => {
       username: req.body.username,
       password: hashPwd
     });
+    await user.save();
 
-    res.savedUser = await user.save();
     return next();
   } catch (error) {
-    let message = 'Database';
-    if (error.errors.email)
-      message = 'email';
-    else if (error.errors.username)
-      message = 'username';
-    return res.status(500).json({ status: 500, datas: null, message });
+    return res.status(500).json({ status: 500, datas: null, message: error });
   }
 };
 
@@ -132,17 +134,21 @@ exports.loginInputsValidation = (req, res, next) => {
 // a crypted token using the data given in payload and a secret string).
 
 exports.generateLogToken = userInstance => {
-  const token = jwt.sign(
-    {
-      userId: userInstance._id,
-      firstName: userInstance.firstName,
-      lastName: userInstance.lastName,
-      username: userInstance.username
-    },
-    'secret_this_should_be_longer',
-    { expiresIn: '10h' }
-  );
-  return { token: token, expiresIn: 36000 };
+  try {
+    const token = jwt.sign({
+        userId: userInstance._id,
+        firstName: userInstance.firstName,
+        lastName: userInstance.lastName,
+        username: userInstance.username,
+        email: userInstance.email
+      },
+      'secret_this_should_be_longer',
+      { expiresIn: '10h' }
+    );
+    return { token: token, expiresIn: 36000 };
+  } catch (error) {
+    throw error;
+  }
 }
 
 /* ------------------------ SIGNIN (step 2) ------------------------ */
@@ -248,8 +254,7 @@ exports.resetPwd = async (req, res) => {
     5) Defines the validation function for editprofile
 \* -------------------------------------------------------------------------- */
 
-exports.editInputsValidation = (req, res, next) =>
-{
+exports.editInputsValidation = (req, res, next) => {
   const email = req.body.email;
   const language = req.body.language;
   const firstName = req.body.firstName;
@@ -258,16 +263,17 @@ exports.editInputsValidation = (req, res, next) =>
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
 
-  if (email == 'null' || !validPattern(email, emailPattern) ||
-      language == 'null' || !validPattern(language, languagePattern) ||
-      firstName == 'null' || !validPattern(firstName, namePattern) ||
-      lastName == 'null' || !validPattern(lastName, namePattern) ||
-      username == 'null' || !validPattern(username, usernamePattern) ||
-      password == 'null' || !validPattern(password, passwordPattern))
-    return res.status(403).json({ message: 'An error occured !' });
-
+  if (email === null || !validPattern(email, emailPattern) ||
+      language === null || !validPattern(language, languagePattern) ||
+      firstName === null || !validPattern(firstName, namePattern) ||
+      lastName === null || !validPattern(lastName, namePattern) ||
+      username === null || !validPattern(username, usernamePattern) ||
+      password === null || !validPattern(password, passwordPattern) ||
+      confirmPassword === null || !validPattern(confirmPassword, passwordPattern))
+    return res.status(403).json({ status: 403, datas: null, message: 'Fill all' });
+  
   if (password !== confirmPassword)
-    return res.status(403).json({ message: 'Passwords do not match' });
+    return res.status(403).json({ status: 403, datas: null, message: 'Passwords do not match' });
 
   return next();
 };

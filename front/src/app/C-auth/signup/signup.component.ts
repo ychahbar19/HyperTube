@@ -100,9 +100,9 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.errorStatusSub = this.errorService.errorObs.subscribe(
       error => {
         this.signupSuccess = false;
-        if (error === 'email') {
+        if (error === 'Email exists') {
           this.errorMessage = this.txt['Email unique'][this.lg];
-        } else if (error === 'username') {
+        } else if (error === 'Username exists') {
           this.errorMessage = this.txt['Username unique'][this.lg];
         } else if (error === 'Passwords do not match') {
           this.errorMessage = this.txt['Passwords unmatch'][this.lg];

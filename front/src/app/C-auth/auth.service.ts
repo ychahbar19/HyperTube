@@ -13,6 +13,7 @@ export class AuthService {
 
   private authServiceWorkingListener = new Subject<boolean>(); // Tracks if this service is running/done.
   private signupSuccessListener = new Subject<boolean>(); // Tracks if the signup process is a success.
+  private editSuccessListener = new Subject<boolean>(); // Tracks if the signup process is a success.
   private resetStatusListener = new Subject<boolean>();
 
   /* ----- Auth status & token info -----*/
@@ -34,15 +35,23 @@ export class AuthService {
   getAuthServiceWorkingListener() {
     return this.authServiceWorkingListener.asObservable();
   }
+
   getSignupSuccessListener() {
     return this.signupSuccessListener.asObservable();
   }
+
+  getEditSuccessListener() {
+    return this.editSuccessListener.asObservable();
+  }
+
   getResetStatusListener() {
     return this.resetStatusListener.asObservable();
   }
+
   getIsAuth() {
     return this.isAuthenticated;
   }
+
   getToken() {
     return this.token;
   }
@@ -236,6 +245,7 @@ export class AuthService {
       )
       .subscribe(
         response => {
+          this.editSuccessListener.next(true);
           this.token = response.token;
           if (this.token) {
             this.connectUser(response);
