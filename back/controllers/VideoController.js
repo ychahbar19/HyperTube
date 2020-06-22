@@ -16,6 +16,8 @@ const rarbgApi = require('rarbg-api')
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const torrentStream = require('torrent-stream');
+const hbjs = require('handbrake-js');
+var ffmpeg = require('fluent-ffmpeg');
 
 // OpenSubtitles
 const OS = require('opensubtitles-api');
@@ -143,7 +145,7 @@ const updateDB = async (req, next, ext) => {
     }
 }
 
-const streamVideo = (res, datas, completeVideo) => {
+const streamVideo = (req, res, datas, completeVideo) => {
 
   const ext = datas.extension;
   const file = datas.file;
@@ -177,27 +179,120 @@ const streamVideo = (res, datas, completeVideo) => {
 
   //	5.	Create a stream chunk based on what the browser asked us for
   let stream;
-  if (!completeVideo) {
-    stream = file.createReadStream(streamPosition);
-  } else {
-    stream = fs.createReadStream(file, streamPosition);
+  if (ext !== 'mkv') {
+    if (!completeVideo) {
+      stream = file.createReadStream(streamPosition);
+    } else {
+      stream = fs.createReadStream(file, streamPosition);
+    }
   }
   //	6.	Once the stream is open, we pipe the data through the response
   //		object.
-  stream.pipe(res);
+    
+  if (ext === 'mkv')
+  {
+    // console.log('ici');
+    
+    let output = fs.createWriteStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
+    // const command = ffmpeg(stream)
+    //                   .videoCodec('libvpx')
+    //                   .audioCodec('libvorbis')
+    //                   .videoBitrate('512k')
+    //                   .format('webm')
+    //                   .outputOptions([
+    //                     '-deadline realtime',
+    //                     '-error-resilient 1'
+    //                   ])
+    //                   .on('start', () => {
+    //                     console.log('${file.title}' + 'transcoding for tg ...')
+    //                   })
+    //                   .on('error', err => {
+    //                     if (err.message !== 'Output stream closed') {
+    //                       console.log("Cannot convert ${file.title} for tg ...");
+    //                       console.log(err.message)
+    //                       command.kill()
+    //                     }
+    //                   })
+    //                   // .output(output);
+    //     // command.pipe(res);
+    //     command.pipe(output);
+    //     output.pipe(res);
+    
+    const transcoded = ffmpeg(file.createReadStream())
+      .output(output)
+      .videoCodec('libx264')
+      .audioCodec('aac')
+      .addOption([
+          '-threads 1',
+          '-crf 22',
+          '-preset ultrafast',
+          '-tune zerolatency',
+          '-movflags frag_keyframe+empty_moov+faststart',
+          '-f ismv'
+      ])
+      .format('mp4')
+      .on('start', function(commandLine) {
+          console.log('Transcoding started.');
+          console.log(commandLine);
+      })
+      .on('error', e => {
+          console.log('Transcoding error.', e);
+      })
+      .on('end', () => {
+          console.log('Transcoding ended.');
+      })
+      .run();
+      setTimeout(() => {
+        // output = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
+        stream = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
+        stream.pipe(res);
+      }, 60000);
+  }
+  else
+    stream.pipe(res);
+
+
+  // if (ext === 'mkv')
+  // {
+  //   let encodingOptions = {
+  //     // input: '../assets/videos/' + req.params.hash + '/' + file.name,
+  //     input: movie,
+  //     output:  '../assets/videos/downloading/' + req.params.hash + '.mp4',
+  //     preset: 'General/Very Fast 720p30',
+  //     // rotate: 1,
+  //     encoder: "x264",
+  //     quality: 17,
+  //     audio: 1,
+  //     aencoder: "av_aac",
+  //   };
+  //   hbjs.spawn(encodingOptions)
+  //     .on('error', console.error)
+  //     .on('progress', progress => {
+  //       console.log(
+  //         'Percent complete: %s, ETA: %s',
+  //         progress.percentComplete,
+  //         progress.eta
+  //       )
+  //     })
+  // }
+  // else
+  //   stream.pipe(res);
 
   //	->	If there was an error while opening a stream we stop the
   //		request and display it.
-  stream.on('error', function(err) {
-    console.log(err);
-    return next(err);
-  });
+  if (ext === 'mp4')
+  {
+    stream.on('error', function(err) {
+      console.log(err);
+      return next(err);
+    });
+  }
 }
 
-const startDownload = (res, datas, paths) => {
+const startDownload = (req, res, datas, paths) => {
   let src = datas.file.createReadStream();
   src.pipe(fs.createWriteStream(paths.uncomplete));
-  streamVideo(res, datas, false);
+  streamVideo(req, res, datas, false);
 }
 
 //  Download parts asked by the browser
@@ -221,14 +316,14 @@ const downloadTorrent = (req, res, datas, paths) => {
             if (err)
               console.log(err) // a gerer mieux
           });
-          streamVideo(res, datas, true);
+          streamVideo(req, res, datas, true);
         }
       });
     } else {
-      startDownload(res, datas, paths);
+      startDownload(req, res, datas, paths);
     }
   } else {
-    startDownload(res, datas, paths);
+    startDownload(req, res, datas, paths);
   }
 };
 
@@ -337,7 +432,7 @@ const startEngine = (req, res, next, positions, paths) =>
           updateDB(req, next, ext);
           //  2. Movie entirely downloaded -> stream
           datas.file = paths.complete;
-          streamVideo(res, datas, true);
+          streamVideo(req, res, datas, true);
         } else {
           datas.file = file;
           downloadTorrent(req, res, datas, paths);

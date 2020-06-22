@@ -22,6 +22,8 @@
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "handbrake-js": "^5.0.0",
     "iconv-lite": "^0.5.1",
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.4",
