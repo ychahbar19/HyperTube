@@ -67,10 +67,11 @@ exports.updateUser = async (req, res, next) => {
       return res.status(403).json({ status: 403, datas: null, message: 'Email exists' });
     }
 
+    if (req.body.avatar)
+      updateData.avatar = url + '/assets/pictures/' + req.body.avatar;
     updateData.language = req.body.language;
     updateData.firstName = req.body.firstName;
     updateData.lastName = req.body.lastName;
-    updateData.avatar = url + '/assets/pictures/' + req.body.avatar;
     updateData.username = req.body.username;
     updateData.email = req.body.email;
     hashPwd = await bcrypt.hash(req.body.password, 10);
