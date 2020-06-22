@@ -22,6 +22,8 @@ export class SigninComponent implements OnInit, OnDestroy {
     with:                 { en: 'with', fr: 'avec' },
     Username:             { en: 'Username', fr: 'Pseudo' },
     'Username error':     { en: 'Invalid username.', fr: 'Pseudo invalide.' },
+    'User activated':     { en: 'Your account has already been activated. You may log in',
+                            fr: 'Votre compte a déjà été activé. Vous pouvez vous connecter' },
     Password:             { en: 'Password', fr: 'Mot de passe' },
     'Password error':     { en: 'Invalid password.', fr: 'Mot de passe invalide.' },
     'Remember me':        { en: 'Remember me', fr: 'Rester connecté' },
@@ -76,12 +78,12 @@ export class SigninComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       this.accountStatusSub = this.authService.activateAccount(this.route.snapshot.queryParams.id).subscribe(
         success => {
+          this.errorMessage = null;
           this.isLoading = false;
           this.successSignup = true;
         },
         error => {
           this.isLoading = false;
-          this.errorMessage = error.error.message;
         }
       );
     }
@@ -94,9 +96,17 @@ export class SigninComponent implements OnInit, OnDestroy {
 
     // Listens to errors from the signin API process.
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      // errorsArray => { this.errorMessage = errorsArray['message']; }
       error => {
-        this.errorMessage = error;
+        if (error === 'User not found') {
+          this.errorMessage = this.txt['Username error'][this.lg];
+        } else if (error === 'User already activated') {
+          this.errorMessage = this.txt['User activated'][this.lg];
+        } else if (error === 'Wrong password') {
+          this.errorMessage = this.txt['Password error'][this.lg];
+        } else {
+          // Might not be translated. Should be database errors
+          this.errorMessage = error;
+        }
         this.successSignup = false;
       }
     );

@@ -135,11 +135,9 @@ const updateDB = async (req, next, ext) => {
         });
         movieHistory.save();
       }
-    } catch (err) {
-      //  No need to stop the entire process (?)
+    } catch (error) {
       console.log('Could not update `lastSeen` in database...');
-      console.log(err);
-      // return next(err);
+      console.log(error);
     }
 }
 

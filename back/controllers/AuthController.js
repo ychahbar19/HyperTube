@@ -39,8 +39,7 @@ async function isSamePwds(password_input, password_db)
 /* ------------------------ SIGNUP (step 1) ------------------------ */
 // Checks that the input fields (names, email, password) are valid.
 
-exports.signupInputsValidation = (req, res, next) =>
-{
+exports.signupInputsValidation = (req, res, next) => {
   const email = req.body.email;
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
@@ -53,17 +52,16 @@ exports.signupInputsValidation = (req, res, next) =>
       lastName == 'null' || !validPattern(lastName, namePattern) ||
       username == 'null' || !validPattern(username, usernamePattern) ||
       password == 'null' || !validPattern(password, passwordPattern))
-    return res.status(403).json({ message: 'An error occured !' });
+    return res.status(403).json({ status: 403, datas: null, message: 'An error occured !' });
 
   if (password !== confirmPassword)
-    return res.status(403).json({ message: 'Passwords do not match' });
+    return res.status(403).json({ status: 403, datas: null, message: 'Passwords do not match' });
 
   return next();
 };
 
 /* ------------------------ SIGNUP (step 2) ------------------------ */
 // Creates a new instance of UserModel and saves it in the database,
-// or splits the errors into a custom array of field=>type for each error.
 
 exports.createUser = async (req, res, next) => {
   try {
@@ -81,8 +79,13 @@ exports.createUser = async (req, res, next) => {
 
     res.savedUser = await user.save();
     return next();
-  } catch (e) {
-    return res.status(500).json({ e });
+  } catch (error) {
+    let message = 'Database';
+    if (error.errors.email)
+      message = 'email';
+    else if (error.errors.username)
+      message = 'username';
+    return res.status(500).json({ status: 500, datas: null, message });
   }
 };
 
@@ -93,16 +96,17 @@ exports.activateAccount = async (req, res) => {
   try {
     // Fetches the user from the db, if it exists.
     const oUserId = ObjectId(req.body.id);
-    const foundUser = await UserModel.findOne({ _id: oUserId, active: false });
+    const foundUser = await UserModel.findOne({ _id: oUserId });
     if (!foundUser)
-      return res.status(401).json({ message: 'Oops ! Something went wrong !' });
+      return res.status(401).json({ status: 401, datas: null, message: 'User not found' });
+    if (foundUser.active === true)
+      return res.status(403).json({ status: 403, datas: null, message: 'User already activated' })
 
     // Updates the user to set it as active.
     await UserModel.updateOne({ '_id': oUserId }, { $set: { 'active': true } });
-    return res.status(200).json({ message: 'Account activated' });
-  }
-  catch (e) {
-    res.status(500).json({ e });
+    return res.status(200).json({ status: 200, datas: null, message: 'Account activated' });
+  } catch (error) {
+    res.status(500).json({ status: 500, datas: null, message: error });
   }
 };
 
@@ -149,18 +153,18 @@ exports.login = async (req, res) => {
     //  1. Fetches the user from the db, if it exists.
     const foundUser = await UserModel.findOne({ username: req.body.username });
     if (!foundUser)
-      return res.status(401).json({ message: 'The username doesn\'t belong to any account. Please create an account' });
+      return res.status(401).json({ status: 401, datas: null, message: 'User not found' });
     
     //  2. Checks the user & signin passwords match.
     const samePwds = await isSamePwds(req.body.password, foundUser.password);
     if (!samePwds)
-      return res.status(401).json({ message: 'The password is incorrect. Please try again !' });
+      return res.status(401).json({ status: 401, datas: null, message: 'Wrong password' });
 
     //  3. Generates the unique token.
     const token = this.generateLogToken(foundUser);
     return res.status(200).json(token);
   }
-  catch (error) { return res.status(500).send(error); }
+  catch (error) { return res.status(500).json({ status: 500, datas: null, message: error }); }
 };
 
 /* -------------------------------------------------------------------------- *\
@@ -175,11 +179,10 @@ exports.createRandomStr = async (req, res, next) => {
     // Fetches the user from the db, if it exists.
     req.user = await UserModel.findOne({ username: req.body.username });
     if (!req.user)
-      return res.status(401).json({ message: 'User not found in database !'});
+      return res.status(401).json({ status: 401, datas: null, message: 'User not found'});
     
     // Generates a random string for the user and updates the database.
-    crypto.randomBytes(20, async (error, buffer) =>
-    {
+    crypto.randomBytes(20, async (error, buffer) => {
       if (error)
         return res.status(400).json({ message: 'Couldn\'t create a reset hash !'});
       res.locals.randomStr = buffer.toString('hex');

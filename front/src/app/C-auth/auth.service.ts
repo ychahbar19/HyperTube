@@ -186,11 +186,11 @@ export class AuthService {
     this.http
       .post('http://localhost:3000/api/auth/resetPassword', datas)
       .subscribe(
-        (response) => {
+        response => {
           this.resetPasswordSuccessMessage = 2;
           this.authServiceWorkingListener.next(false);
         },
-        (error) => {
+        error => {
           this.resetPasswordSuccessMessage = 0;
           this.authServiceWorkingListener.next(false);
         }

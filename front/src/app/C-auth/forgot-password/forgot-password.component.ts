@@ -30,6 +30,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
                                 // tslint:disable-next-line: max-line-length
                                 fr: 'Votre mot de passe doit contenir minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
+    'Passwords unmatch':      { en: 'Passwords do not match', fr: 'Les mots de passe no sont pas les mêmes' },
     'Save password':          { en: 'Save new password', fr: 'Sauve le nouveau mot de passe' },
     'reset success msg 1':    { en: 'Please check your email: we just sent you a link to choose your new password.',
                                 // tslint:disable-next-line: max-line-length
@@ -78,7 +79,11 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     // and then sets isLoading (=spinner) to FALSE.
     this.authServiceWorkingSub = this.authService.getAuthServiceWorkingListener()
       .subscribe(sub => {
-        this.successMessage = this.txt['reset success msg ' + this.authService.resetPasswordSuccessMessage][this.lg];
+        const resetMessageCode = this.authService.resetPasswordSuccessMessage;
+        if (resetMessageCode !== 0) {
+          this.errorMessage = null;
+          this.successMessage = this.txt['reset success msg ' + resetMessageCode][this.lg];
+        }
         if (this.successMessage === this.txt['reset success msg 2'][this.lg]) {
           this.displayForms = false;
         }
@@ -96,7 +101,12 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     // Listens to ........
     this.errorStatusSub = this.errorService.errorObs.subscribe(
-      error => { this.errorMessage = error; }
+      error => {
+        if (error === 'User not found') {
+          this.errorMessage = this.txt['Username error'][this.lg];
+        }
+        this.successMessage = null;
+      }
     );
   }
 

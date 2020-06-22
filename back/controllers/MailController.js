@@ -41,8 +41,7 @@ function sendMail(to, subject, html) {
 \* -------------------------------------------------------------------------- */
 
 // Signup confirmation email.
-exports.sendConfirmMail = (req, res) =>
-{
+exports.sendConfirmMail = (req, res) => {
   try {
     const to = req.body.email;
     const subject = 'HyperTube Account Confirmation';
@@ -51,9 +50,9 @@ exports.sendConfirmMail = (req, res) =>
                     <a href="http://localhost:4200/signin?id=` + res.savedUser._id + `">link</a>.
                   </p>`;
     sendMail(to, subject, html);
-    res.status(201).json({ message: 'User created', result: res.savedUser });
+    res.status(201).json({ status: 201, datas: res.savedUser, message: 'User created' });
   } catch (error) {
-    return res.status(500).json({ message: 'Mail could not be sent' });
+    return res.status(500).json({ status: 500, datas: null, message: 'Mail' });
   }
 };
 

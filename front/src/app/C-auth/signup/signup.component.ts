@@ -44,9 +44,12 @@ export class SignupComponent implements OnInit, OnDestroy {
     'Password format':        { en: 'Your password must contain at least 8 characters, including 1 digit, 1 lowercase, 1 uppercase, and 1 special character.',
                                 fr: 'Votre mot de passe doit minimum 8 caractères, dont 1 chiffre, 1 minuscule, 1 majuscule, et 1 caractère spécial.' },
     'Password confirmation':  { en: 'Password confirmation', fr: 'Mot de passe (confirmation)' },
+    'Passwords unmatch':      { en: 'Passwords do not match', fr: 'Les mots de passe ne sont pas les mêmes'},
     Submit:                   { en: 'Submit', fr: 'Envoyer' },
     'Have account':           { en: 'Already have an account?', fr: 'Déjà inscrit ?' },
-    'Sign in':                { en: 'Sign in', fr: 'Connexion' }
+    'Sign in':                { en: 'Sign in', fr: 'Connexion' },
+    'Mail error':             { en: 'Confirmation mail could not be sent. Please try again',
+                                fr: 'Le mail de confirmation n\'a pas pu être envoyé. Veuillez réessayer'}
   };
 
   /* ------------------------------------------------------- *\
@@ -67,7 +70,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   public usernameNotUnique = false;
   public emailNotUnique = false;
   public signupSuccess = false; // Used to hide/show the 'successful signup' message.
-  public errorMessage = false; // Used to hide/show the 'error signup' message.
+  public errorMessage: string; // Used to hide/show the 'error signup' message.
 
   /* ------------------------------------------------------- *\
       Initialisation
@@ -91,12 +94,23 @@ export class SignupComponent implements OnInit, OnDestroy {
     // and then sets signupSuccess and errorMessage appropriately.
     this.signupSuccessSub = this.authService.getSignupSuccessListener()
       .subscribe(sub => { this.signupSuccess = true;
-                          this.errorMessage = false; });
+                          this.errorMessage = null; });
 
     // Listens to errors from the API's signup process
     this.errorStatusSub = this.errorService.errorObs.subscribe(
       error => {
-        this.errorMessage = true;
+        this.signupSuccess = false;
+        if (error === 'email') {
+          this.errorMessage = this.txt['Email unique'][this.lg];
+        } else if (error === 'username') {
+          this.errorMessage = this.txt['Username unique'][this.lg];
+        } else if (error === 'Passwords do not match') {
+          this.errorMessage = this.txt['Passwords unmatch'][this.lg];
+        } else if (error === 'Mail') {
+          this.errorMessage = this.txt['Mail error'][this.lg];
+        } else {
+          this.errorMessage = this.txt['Creation error alert'][this.lg];
+        }
       }
     );
   }
