@@ -166,6 +166,8 @@ const streamVideo = (req, res, datas, completeVideo) => {
     'Content-Type': 'video/' + ext,
     'Connection': 'keep-alive'
   };
+  console.log(file);
+  
 
   //	3.	Send the custom header
   res.writeHead(206, head);
@@ -190,33 +192,8 @@ const streamVideo = (req, res, datas, completeVideo) => {
   //		object.
     
   if (ext === 'mkv')
-  {
-    // console.log('ici');
-    
-    let output = fs.createWriteStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
-    // const command = ffmpeg(stream)
-    //                   .videoCodec('libvpx')
-    //                   .audioCodec('libvorbis')
-    //                   .videoBitrate('512k')
-    //                   .format('webm')
-    //                   .outputOptions([
-    //                     '-deadline realtime',
-    //                     '-error-resilient 1'
-    //                   ])
-    //                   .on('start', () => {
-    //                     console.log('${file.title}' + 'transcoding for tg ...')
-    //                   })
-    //                   .on('error', err => {
-    //                     if (err.message !== 'Output stream closed') {
-    //                       console.log("Cannot convert ${file.title} for tg ...");
-    //                       console.log(err.message)
-    //                       command.kill()
-    //                     }
-    //                   })
-    //                   // .output(output);
-    //     // command.pipe(res);
-    //     command.pipe(output);
-    //     output.pipe(res);
+  { 
+    const output = fs.createWriteStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
     
     const transcoded = ffmpeg(file.createReadStream())
       .output(output)
@@ -240,44 +217,19 @@ const streamVideo = (req, res, datas, completeVideo) => {
       })
       .on('end', () => {
           console.log('Transcoding ended.');
+          stream = fs.createReadStream('./assets/videos/downloaded/' + req.params.hash +  '.mp4', streamPosition);
+          stream.pipe(res);
       })
-      .run();
-      setTimeout(() => {
-        // output = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
-        stream = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
-        stream.pipe(res);
-      }, 60000);
+      .run()
+      // .pipe(res, { end: true })
+      // setTimeout(() => {
+      //   // output = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4');
+      //   stream = fs.createReadStream('./assets/videos/downloading/' + req.params.hash +  '.mp4', streamPosition);
+      //   stream.pipe(res);
+      // }, 10000);
   }
   else
     stream.pipe(res);
-
-
-  // if (ext === 'mkv')
-  // {
-  //   let encodingOptions = {
-  //     // input: '../assets/videos/' + req.params.hash + '/' + file.name,
-  //     input: movie,
-  //     output:  '../assets/videos/downloading/' + req.params.hash + '.mp4',
-  //     preset: 'General/Very Fast 720p30',
-  //     // rotate: 1,
-  //     encoder: "x264",
-  //     quality: 17,
-  //     audio: 1,
-  //     aencoder: "av_aac",
-  //   };
-  //   hbjs.spawn(encodingOptions)
-  //     .on('error', console.error)
-  //     .on('progress', progress => {
-  //       console.log(
-  //         'Percent complete: %s, ETA: %s',
-  //         progress.percentComplete,
-  //         progress.eta
-  //       )
-  //     })
-  // }
-  // else
-  //   stream.pipe(res);
-
   //	->	If there was an error while opening a stream we stop the
   //		request and display it.
   if (ext === 'mp4')
@@ -413,7 +365,11 @@ const startEngine = (req, res, next, positions, paths) =>
       //  1. Check if ext is a video file.
       if (ext === 'mkv' || ext === 'mp4' || ext === 'ogg' || ext === 'webm') {
         paths.uncomplete += ('.' + ext);
-        paths.complete += ('.' + ext);
+
+        if (ext !== 'mkv')
+          paths.complete += ('.' + ext);
+        else
+          path.complete += '.mp4';
         // manage the Subtitles from Opensubtitles's API
         await SubtitlesManager(req.params.hash, req.params.imdbId, file.name);
         //  1. Create object with datas needed to stream the movie.
