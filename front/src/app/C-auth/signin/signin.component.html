@@ -27,6 +27,7 @@
               type="text" name="username" placeholder="{{ txt['Username'][lg] }}"
               class="form-control" id="exampleInputUsername1" aria-describedby="usernameHelp"
               ngModel #username="ngModel" pattern="[a-zA-Z0-9]+$" required
+              autocomplete="username"
             >
             <p *ngIf="username.touched && !username.valid" class="error--msg" >
               {{ txt['Username error'][lg] }}
@@ -38,6 +39,7 @@
               type="password" name="password" placeholder="{{ txt['Password'][lg] }}"
               class="form-control" id="exampleInputPassword1"
               ngModel #password="ngModel" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" required
+              autocomplete="current-password"
             >
             <p *ngIf="password.touched && !password.valid" class="error--msg" >
               {{ txt['Password error'][lg] }}

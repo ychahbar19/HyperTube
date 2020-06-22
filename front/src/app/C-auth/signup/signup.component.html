@@ -43,6 +43,7 @@
                 type="text" placeholder="{{ txt['First name'][lg] }}"
                 class="form-control" id="inputFirstname4"
                 #firstName formControlName="firstName"
+                autocomplete="nickname"
               >
               <p *ngIf="form.get('firstName').touched && form.get('firstName').invalid" class="error--msg">
                 <span *ngIf="form.get('firstName').errors.required">{{ txt['Name required'][lg] }}</span>
@@ -54,6 +55,7 @@
                 type="text" placeholder="{{ txt['Last name'][lg] }}"
                 class="form-control" id="inputName4"
                 #lastName formControlName="lastName"
+                autocomplete="name"
               >
               <p *ngIf="form.get('lastName').touched && form.get('lastName').invalid" class="error--msg">
                 <span *ngIf="form.get('lastName').errors.required">{{ txt['Name required'][lg] }}</span>
@@ -67,6 +69,7 @@
               type="text" placeholder="{{ txt['Username'][lg] }}"
               class="form-control" id="inputUsername"
               #username formControlName="username"
+              autocomplete="username"
             >
             <p *ngIf="form.get('username').touched && form.get('username').invalid" class="error--msg">
               <span *ngIf="form.get('username').errors.required">{{ txt['Username required'][lg] }}</span>
@@ -80,6 +83,7 @@
               type="email" placeholder="{{ txt['Email'][lg] }}"
               class="form-control" id="inputEmail"
               #email formControlName="email"
+              autocomplete="email"
             >
             <p *ngIf="form.get('email').touched && form.get('email').invalid" class="error--msg">
               <span *ngIf="form.get('email').errors.required">{{ txt['Email required'][lg] }}</span>
@@ -93,6 +97,7 @@
               type="password" placeholder="{{ txt['Password'][lg] }}"
               class="form-control" id="inputPassword"
               #password formControlName="password"
+              autocomplete="current-password"
             >
             <p *ngIf="form.get('password').touched && form.get('password').invalid" class="error--msg">
               <span *ngIf="form.get('password').errors.required">{{ txt['Password required'][lg] }}</span>
@@ -105,6 +110,7 @@
               type="password" placeholder="{{ txt['Password confirmation'][lg] }}"
               class="form-control" id="inputConfirmPassword"
               #confirmPassword formControlName="confirmPassword"
+              autocomplete="current-password"
             >
             <p *ngIf="form.get('password').touched && form.get('confirmPassword').touched && form.get('password').value != form.get('confirmPassword').value" class="error--msg">
               {{ txt['Passwords unmatch'][lg] }}
