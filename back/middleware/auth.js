@@ -4,10 +4,8 @@
 
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) =>
-{
-  try
-  {
+module.exports = (req, res, next) => {
+  try {
     
     // Gets the token from the Authorization header
     // (i.e. the element after the space: "Authorization: Bearer eyJhbGciO...")

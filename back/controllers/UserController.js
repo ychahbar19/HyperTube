@@ -17,11 +17,9 @@ const VideoModel = require('../models/VideoModel');
 /* ------------------------ READ ------------------------ */
 
 // Gets the user's personal information
-exports.getUserInfo = async (req, res) =>
-{
-  try
-  {
-    const id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
+exports.getUserInfo = async (req, res) => {
+  try {
+    let id = (!req.params.user_id) ? req.userToken.userId : req.params.user_id;
     const userInfo = await UserModel.findOne({ _id: ObjectId(id) });
     if (!userInfo)
       return res.status(401).json({ message: "Oops ! User not found !" });
@@ -45,72 +43,61 @@ exports.getUserInfo = async (req, res) =>
       comments: userComments
     });
   }
-  catch(err) { res.status(500).send(err); }
+  catch(error) { res.status(500).json({ status: 500, datas: null, message: error }); }
 }
 
 /* ------------------------ UPDATE ------------------------ */
 
 // Updates the user's personal information
-exports.updateUser = async (req, res, next) =>
-{
-  try
-  {
-    const url = req.protocol + "://" + req.get("host");
+exports.updateUser = async (req, res, next) => {
+  try {
+    const url = req.protocol + '://' + req.get('host');
     let userToken;
     let updateData = new Object;
-    if (req.userToken)
-    {
-      userToken = req.userToken;
-      updateData.userId = userToken.userId;
-    }
+    userToken = req.userToken;
+    updateData.userId = userToken.userId;
     const oUserId = ObjectId(userToken.userId);
 
-    if (req.body.language)
-      updateData.language = req.body.language;
-    if (req.body.firstName)
-      updateData.firstName = req.body.firstName;
-    if (req.body.lastName)
-      updateData.lastName = req.body.lastName;
-    if (req.body.avatar)
-      updateData.avatar = url + "/assets/pictures/" + req.body.avatar;
-    if (req.body.username)
-      updateData.username = req.body.username;
-    if (req.body.email)
-      updateData.email = req.body.email;
-    if (req.body.password && req.body.password == req.body.confirmPassword)
-    {
-      hashPwd = await bcrypt.hash(req.body.password, 10);
-      updateData.password = hashPwd;
+    let user = await UserModel.findOne({ username: req.body.username });
+    if (user && req.body.username !== userToken.username)
+      return res.status(403).json({ status: 403, datas: null, message: 'Username exists' });
+    user = await UserModel.findOne({ email: req.body.email });
+    if (user && req.body.email !== userToken.email) {
+      console.log('VMT ?');
+      return res.status(403).json({ status: 403, datas: null, message: 'Email exists' });
     }
 
-    // error
-    if (!updateData)
-      return res.status(403).json({ message: 'An error occured !' });
+    updateData.language = req.body.language;
+    updateData.firstName = req.body.firstName;
+    updateData.lastName = req.body.lastName;
+    updateData.avatar = url + '/assets/pictures/' + req.body.avatar;
+    updateData.username = req.body.username;
+    updateData.email = req.body.email;
+    hashPwd = await bcrypt.hash(req.body.password, 10);
+    updateData.password = hashPwd;
+
     await UserModel.updateOne({_id: oUserId}, { $set: updateData });
     
     // Removes the email & password from the object since we don't need them in the updated Token.
     delete updateData.language;
-    delete updateData.email;
     delete updateData.password;
     delete updateData.confirmPassword;
     res.updatedDataToToken = updateData;
     return next();
   }
-  catch (err) { return res.status(500).send(err); }
+  catch (error) { return res.status(500).json({ status: 500, datas: null, message: error }); }
 };
 
 // updates token with new informations about user and takes remaining time for the expiration
-exports.updateToken = async (req, res, next) =>
-{
+exports.updateToken = async (req, res, next) => {
   const data = req.res.updatedDataToToken;
-  try
-  {
+  try {
     const token = jwt.sign(data, 'secret_this_should_be_longer', { expiresIn: parseInt(req.body.remainingTime, 10) });
     return res.status(200).json({
       token: token,
       expiresIn: parseInt(req.body.remainingTime, 10)
     });
-  } catch (err) {
-      return res.status(500).send(err);
+  } catch (error) {
+      return res.status(500).json({ status: 500, datas: null, message: error });
   }
 };

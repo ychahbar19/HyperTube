@@ -8,14 +8,14 @@
         <form #f [formGroup]="form" (ngSubmit)="onEdit()" class="user-form">
           <h4 class="form-yellow-title">{{ txt['Edit profile'][lg] }}</h4>
 
-          <div *ngIf="this.successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+          <div *ngIf="this.editSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
             {{ txt['Success'][lg] }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div *ngIf="this.errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ txt['Error'][lg] }}
+            {{ errorMessage }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -78,7 +78,7 @@
                 <span *ngIf="form.get('lastName').errors.pattern">{{ txt['Name format'][lg] }}</span>
               </p>
             </div>
-            
+
           </div>
 
           <div class="form-group">
