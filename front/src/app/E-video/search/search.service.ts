@@ -12,7 +12,7 @@ export class SearchService {
   // to save the results as an array that also includes IMDB info.
   // Returns that array.
 
-  getResults(encodedSearchParams: string, lg, translatedGenres): Promise<object> {
+  getResults(encodedSearchParams: string, lg): Promise<object> {
     const thisClass = this;
     return new Promise((resolve, reject) => {
       this.http.get<{}>('http://localhost:3000/api/search' + encodedSearchParams)
@@ -23,12 +23,42 @@ export class SearchService {
               const vid = response[key];
               const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
               vid.isSeen = isSeen;
-              if (lg === 'fr' && vid['Genre'] != undefined)
+
+              if (vid['Poster'] == 'N/A')
+                vid['Poster'] = '../../assets/img/__default_poster.png';
+          
+              if (vid['imdbRating'] == undefined)
+                vid['imdbRating'] = 0;
+              vid['rating_average'] = vid['imdbRating'] / 2 + '/5';
+              if (lg === 'fr')
+                vid['rating_average'] = vid['rating_average'].replace('.', ',');
+          
+              if (vid['imdbVotes'] == 'N/A')
+                vid['imdbVotes'] = 0;
+              vid['ratings_count'] = '(' + vid['imdbVotes'] + ' votes)';
+              if (lg === 'fr')
+                vid['ratings_count'] = vid['ratings_count'].replace(',', '.');
+
+              if (vid['Genre'] == 'N/A')
+                vid['Genre'] = '';
+              if (lg === 'fr' && vid['Genre'] != '')
               {
-                for (let i = 0; i < translatedGenres['en'].length; i++)
-                {
-                  vid['Genre'] = vid['Genre'].replace(translatedGenres['en'][i], translatedGenres['fr'][i]);
-                }
+                vid['Genre'] = vid['Genre']
+                .replace('Adventure', 'Aventure')
+                .replace('Biography', 'Biographie')
+                .replace('Comedy', 'Comédie')
+                .replace('Documentary', 'Documentaire')
+                .replace('Drama', 'Drame')
+                .replace('Family', 'Famille')
+                .replace('Fantasy', 'Fantaisie')
+                .replace('History', 'Histoire')
+                .replace('Horror', 'Horreur')
+                .replace('Music', 'Musique')
+                .replace('Musical', 'Comédie musicale')
+                .replace('Mystery', 'Mystère')
+                .replace('Short Film', 'Court-métrage')
+                .replace('Superhero', 'Super-héro')
+                .replace('War', 'Guerre');
               }
             }
           });

@@ -88,9 +88,7 @@
                     <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
                     <span class="front-stars" [style.width]="result['imdbRating']*10+'%'"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span>
                   </span>
-                  <span class="small">
-                    {{ result['imdbRating'] / 2 }}/5 ({{ result['imdbVotes'] }} votes)
-                  </span>
+                  <span class="small">{{ result['rating_average'] }} {{ result['ratings_count'] }}</span>
                 </span>
               </div>
               <p>{{ result['Genre'] }}</p>

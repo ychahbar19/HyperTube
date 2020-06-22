@@ -283,7 +283,7 @@ const downloadSubtitles = async (subArray, hash) => {
 
 const SubtitlesManager = async (hash, imdbId, fileName) => {
   if (!fs.existsSync('./assets/subtitles/' + hash + '/'))
-  { 
+  {
     // 1. Connect to the Subtitle API and generate the access token
     const SubLogin =  await OpenSubtitles.api.LogIn('ychahbar', 'qwerty1994*', 'en', 'ychahbar');
     // 2. Search for Subtitles with the right IMDB ID
@@ -302,14 +302,9 @@ const SubtitlesManager = async (hash, imdbId, fileName) => {
 //  Download parts asked by the browser
 const startEngine = (req, res, next, positions, paths) =>
 {
-  console.log('---hash', req.params.hash)
-
   const engine = torrentStream('magnet:?xt=urn:btih:' + req.params.hash, { path: './assets/videos/' + req.params.hash, dht: true });
-  console.log('---engine defined')
-  
   engine.on('ready', () =>
   {
-    console.log('---engine ready')
     engine.files.forEach(async file =>
     {  
       let ext = file.name.split('.').pop();

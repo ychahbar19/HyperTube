@@ -45,7 +45,7 @@ export class SearchComponent implements OnInit {
 
   // 2) Triggers getSearchResults() on init.
   async ngOnInit() {
-    this.results = await this.searchService.getResults('', this.lg, this.txt['genres']);
+    this.results = await this.searchService.getResults('', this.lg);
     this.isLoading = false;
   }
 
@@ -75,7 +75,7 @@ export class SearchComponent implements OnInit {
     if (this.encodedSearchParams[this.encodedSearchParams.length - 1] === '&') {
       this.encodedSearchParams = this.encodedSearchParams.substring(0, this.encodedSearchParams.length - 1);
     }
-    this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
+    this.results = await this.searchService.getResults(this.encodedSearchParams, this.lg);
     this.busyLoadingData = false;
   }
 
@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
         this.encodedSearchParams += '&page=' + this.page.toString();
       }
       this.isLoadingPage = true;
-      const newResults = await this.searchService.getResults(this.encodedSearchParams, this.lg, this.txt['genres']);
+      const newResults = await this.searchService.getResults(this.encodedSearchParams, this.lg);
       Object.keys(newResults).length ? this.results = this.results.concat(newResults) : this.noMoreResults = true;
       this.isLoadingPage = false;
     }
