@@ -10,8 +10,8 @@ export class FooterComponent {
   // Defines the translations for the static taxt.
   public lg = AppComponent.userLanguage;
   public txt = {
-    'Created by': { en: 'Created by cbrichau, aceciora, asouat and ychahbar from 19CodingSchool (42 Network)',
-                    fr: 'Créé par cbrichau, aceciora, asouat et ychahbar de 19CodingSchool (42 Network)' }
+    'Created by': { en: 'Created by cbrichau, aceciora and ychahbar from 19CodingSchool (42 Network)',
+                    fr: 'Créé par cbrichau, aceciora et ychahbar de 19CodingSchool (42 Network)' }
   };
 
   constructor() {}
