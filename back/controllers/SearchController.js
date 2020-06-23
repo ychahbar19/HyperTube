@@ -71,7 +71,7 @@ async function search(req, res)
   try
   {
     await searchYTSMovies(query_term, genre, sort_by, page);
-    if (query_term != '' && page == '')
+    if (query_term != '' && page == '' && Object.entries(hypertubeResults).length > 0)
       await searchRarbgMovies(query_term);
   
     hypertubeCompleteResults = [];

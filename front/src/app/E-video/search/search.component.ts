@@ -59,16 +59,16 @@ export class SearchComponent implements OnInit {
     this.noMoreResults = false;
 
     if (searchParams.value.query_term) {
-      this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term) + '&';
+      this.encodedSearchParams += 'query_term=' + encodeURIComponent(searchParams.value.query_term).replace('/~!*()\'/g','-') + '&';
       this.changeOrder = true;
     } else {
       this.changeOrder = false;
     }
     if (searchParams.value.genre) {
-      this.encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre) + '&';
+      this.encodedSearchParams += 'genre=' + encodeURIComponent(searchParams.value.genre).replace('/~!*()\'/g','-') + '&';
     }
     if (searchParams.value.sort_by) {
-      this.encodedSearchParams += 'sort_by=' + encodeURIComponent(searchParams.value.sort_by) + '&';
+      this.encodedSearchParams += 'sort_by=' + encodeURIComponent(searchParams.value.sort_by).replace('/~!*()\'/g','-') + '&';
     }
 
     // Remove last '&' char
