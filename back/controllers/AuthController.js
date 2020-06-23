@@ -161,6 +161,10 @@ exports.login = async (req, res) => {
     if (!foundUser)
       return res.status(401).json({ status: 401, datas: null, message: 'User not found' });
     
+    //  2. Check if user is active
+    if (foundUser.active === false)
+      return res.status(403).json({ status: 403, datas: null, message: 'User not active' });
+    
     //  2. Checks the user & signin passwords match.
     const samePwds = await isSamePwds(req.body.password, foundUser.password);
     if (!samePwds)

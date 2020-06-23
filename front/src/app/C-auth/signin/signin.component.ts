@@ -22,6 +22,8 @@ export class SigninComponent implements OnInit, OnDestroy {
     with:                 { en: 'with', fr: 'avec' },
     Username:             { en: 'Username', fr: 'Pseudo' },
     'Username error':     { en: 'Invalid username.', fr: 'Pseudo invalide.' },
+    'User not active':    { en: 'You should first validate your account by clicking on the link in the email we sent you.',
+                            fr: 'Vous devez d\'abord valider votre compte en cliquant sur le lien dans le mail que nous vous avons envoyé.' },
     'User activated':     { en: 'Your account has already been activated. You may log in',
                             fr: 'Votre compte a déjà été activé. Vous pouvez vous connecter' },
     Password:             { en: 'Password', fr: 'Mot de passe' },
@@ -99,6 +101,8 @@ export class SigninComponent implements OnInit, OnDestroy {
       error => {
         if (error === 'User not found') {
           this.errorMessage = this.txt['Username error'][this.lg];
+        } else if (error === 'User not active') {
+          this.errorMessage = this.txt['User not active'][this.lg];
         } else if (error === 'User already activated') {
           this.errorMessage = this.txt['User activated'][this.lg];
         } else if (error === 'Wrong password') {
