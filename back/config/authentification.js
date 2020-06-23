@@ -56,13 +56,17 @@ function authSuccess(authProvider, profile, done)
     profile.name.givenName = userName;
   if (profile.name.familyName == '')
     profile.name.familyName = userName;
+  if (authProvider == 'google')
+    avatar = 'http://localhost:3000/assets/pictures/__default-profile-pic.png';
+  else
+    avatar = profile.photos[0].value
   UserModel.findOrCreate(
     { email: profile.emails[0].value },
     {
       active: true,
       provider: authProvider,
       providerId: profile.id,
-      avatar: 'http://localhost:3000/assets/pictures/__default-profile-pic.png', //profile.photos[0].value,
+      avatar: avatar,
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       email: profile.emails[0].value,
