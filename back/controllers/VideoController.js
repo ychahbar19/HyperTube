@@ -44,6 +44,8 @@ async function getInfo(user_language, imdb_id)
       videoInfo = new VideoModel(results.data);
       videoInfo['Director'] = videoInfo['Director'].replace(/ *\([^)]*\) */g, "");
       videoInfo['Writer'] = videoInfo['Writer'].replace(/ *\([^)]*\) */g, "");
+      if (videoInfo['Poster'] == 'N/A')
+        videoInfo['Poster'] = '../../assets/img/__default_poster.png';
       if (user_language == 'fr')
       {
         await axios.get('https://api.themoviedb.org/3/find/' + imdb_id + '?external_source=imdb_id&language=fr-FR&api_key=d3cba2eda31968ee058ffc7166dbfad9')
