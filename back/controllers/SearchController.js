@@ -81,6 +81,8 @@ async function search(req, res)
       if (results.data.Response == "True")
       {
         videoInfo = new VideoModel(results.data);
+        if (videoInfo['Poster'] == 'N/A')
+          videoInfo['Poster'] = '../../assets/img/__default_poster.png';
         hypertubeCompleteResults.push({
           imdb_id: values[0],
           Poster: videoInfo["Poster"],

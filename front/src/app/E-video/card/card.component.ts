@@ -55,9 +55,6 @@ export class VideoCardComponent implements OnInit {
     this.isSeen = await this.videoCardService.checkIfSeen(this.imdbId);
     this.isLoading = false;
 
-    if (this.videoInfos['Poster'] == 'N/A')
-      this.videoInfos['Poster'] = '../../assets/img/__default_poster.png';
-
     if (this.videoInfos['imdbRating'] == undefined)
       this.videoInfos['imdbRating'] = 0;
     this.videoInfos['rating_average'] = this.videoInfos['imdbRating'] / 2 + '/5';

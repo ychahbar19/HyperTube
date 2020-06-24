@@ -24,9 +24,6 @@ export class SearchService {
               const isSeen = await thisClass.checkIfSeen(vid.imdb_id);
               vid.isSeen = isSeen;
 
-              if (vid['Poster'] == 'N/A')
-                vid['Poster'] = '../../assets/img/__default_poster.png';
-          
               if (vid['imdbRating'] == undefined)
                 vid['imdbRating'] = 0;
               vid['rating_average'] = vid['imdbRating'] / 2 + '/5';
