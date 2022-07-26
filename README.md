@@ -1,4 +1,4 @@
-##Description
+**Description**<br/>
 Hypertube is a torrent-based Netflix-like website.
 
 It allows logged users to search for and watch films in streaming. The search box is directly connected to torrent websites (using their APIs) and, as soon as a user clicks "Play" on a film, the file is downloaded on the server and streamed on the web player at the same time. See hypertube.fr.pdf for details.
@@ -15,7 +15,7 @@ Peer evaluations:
 112% "Vraiment bon boulot! En plus bravo pour le choix Angular!"
 109% "Très bon boulot, très beau site."
 
-##Installation
+**Installation**<br/>
 `git clone
 cd back > npm install > nodemon > open http://localhost:3000/
 cd front > npm install > ng serve > open http://localhost:4200/
